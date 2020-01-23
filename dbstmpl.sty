@@ -24,12 +24,40 @@
 %% sonst: für deutsche Arbeiten:
 %\RequirePackage[english,german]{babel}
 \RequirePackage{german}
-\RequirePackage{amsmath}
+\RequirePackage{amsmath,amsthm}
 \RequirePackage{amssymb}
 \RequirePackage{geometry}
 \RequirePackage{fancyhdr}
+\RequirePackage{float}
 \RequirePackage[nottoc]{tocbibind}
 \RequirePackage{graphicx}
+\RequirePackage{acronym}
+\RequirePackage{caption}
+\RequirePackage{enumitem}
+\RequirePackage{titlesec}
+\RequirePackage{hyperref}
+
+% \RequirePackage[square,sort,comma,numbers]{natbib}
+\RequirePackage[ruled,vlined,linesnumbered]{algorithm2e}
+\SetKwRepeat{Do}{do}{while}
+
+\RequirePackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\RequirePackage{quoting}
+\quotingsetup{vskip=0pt, leftmargin=7pt, rightmargin=7pt}
+
+%MAYBE
+% \titleformat*{\subsubsection}{\scshape}
+% \newcommand{\ssubsection}[1]{%
+%   \subsection[#1]{\raggedright\normalfont\scshape #1}}
+
+\usepackage[utf8]{inputenc}
+\RequirePackage{subfigure}
+\RequirePackage[backend=biber, style=ieee-alphabetic]{biblatex}
+\RequirePackage{csquotes}
+\addbibresource{dbstmpl.bib}
+% \usepackage[square,sort,comma,numbers]{natbib}
+\newcommand*{\fullref}[1]{\hyperref[{#1}]{\autoref*{#1} \nameref*{#1}}} 
+\newcommand*{\secref}[1]{\hyperref[{#1}]{chapter \nameref*{#1}}}
 
 %%
 %% haeufig benutzte Symbole
@@ -40,14 +68,26 @@
 \newcommand{\R}{\mathbb{R}}    % Menge der reellen Zahlen
 \newcommand{\C}{\mathbb{C}}    % Menge der komplexen Zahlen
 
+\newcommand{\D}{\mathcal{D}}    % Data space
+\newcommand{\PS}{\mathcal{P}}    % Parameter space
+
 %%
 %% Einstellungen
 %%
+\DeclareCiteCommand{\citeauthor}
+  {\boolfalse{citetracker}%
+   \boolfalse{pagetracker}%
+   \usebibmacro{prenote}}
+  {\ifciteindex
+     {\indexnames{labelname}}
+     {}%
+   \printtext[bibhyperref]{\printnames{labelname}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
 
 %%
 %% Custom Settings
 %%
-\usepackage{hyperref}
 \hypersetup{
     colorlinks,
     citecolor=black,
@@ -55,6 +95,48 @@
     linkcolor=black,
     urlcolor=black
 }
+
+%% custom theorems
+\newtheoremstyle{propertystyle}% name of the style to be used
+  {\topsep}% measure of space to leave above the theorem. E.g.: 3pt
+  {\topsep}% measure of space to leave below the theorem. E.g.: 3pt
+  {}% name of font to use in the body of the theorem
+  {0pt}% measure of space to indent
+  {\scshape}% name of head font itshape
+  {.}% punctuation between head and body
+  { }% space after theorem head; " " = normal interword space
+  {}% Manually specify head
+  
+\newtheoremstyle{definitionstyle}% name of the style to be used
+  {}% measure of space to leave above the theorem. E.g.: 3pt
+  {}% measure of space to leave below the theorem. E.g.: 3pt
+  {}% name of font to use in the body of the theorem
+  {3pt}% measure of space to indent
+  {\scshape}% name of head font itshape
+  {.\\}% punctuation between head and body
+  { }% space after theorem head; " " = normal interword space
+  {\thmname{#1}\thmnumber{ #2}.\thmnote{ (#3)}}% Manually specify head
+
+\theoremstyle{propertystyle}
+% \newtheorem{property}{Property}
+% \newtheorem{thm}{Theorem}[subsection] % reset theorem numbering for each chapter
+% % \renewcommand{\thethm}{\arabic{thm}}
+% \newtheorem{property}[thm]{Property}
+% \newtheorem{defn}[thm]{Definition}
+\newtheorem{defn}{Definition}
+\newcommand{\defnautorefname}{Definition.}
+\newtheorem{property}{Property}[subsection]
+\newcommand{\propertyautorefname}{Property.}
+
+
+%% todolistcommands
+\newcommand{\insertref}[1]{\todo[color=blue!30]{insert ref #1}}
+\newcommand{\crit}[1]{\todo[color=red!70]{check!: #1}}
+\newcommand{\todor}[1]{\todo[color=red!70]{#1}}
+\newcommand{\todog}[1]{\todo[color=green!70]{#1}}
+\newcommand{\todob}[1]{\todo[color=blue!30]{#1}}
+\newcommand{\sugg}[1]{\todo[color=blue!30]{suggestion: #1}}
+
 
 % Seitenraender
 \geometry{body={140mm,210mm},footskip=12mm}

@@ -1,0 +1,31 @@
+\chapter{Synthetic Data Generation}
+\label{sec:datagen}
+For completeness sake and for testing purposes we created a random generator of data sets and noise creation.
+If someone is interested:
+
+Generation of n-dimensional linear correlations is done in three steps:
+First Generation of random normalvectors and distances: 
+$$ n: number of Dimensions$$
+$$normalvector: (a_0, \cdots, a_n )^T, a \in \mathbb{R}$$
+$$distance: d, d \in \mathbb{R}$$
+Second Create HNF and solve by last dependent dimension:
+$$HNF: a_0 * x_0 + \cdots + a_n * x_n = d, x_i \in Set of Dimensions$$
+
+\begin{align}
+    last Dim: x_n = f(x_0, \cdots, x_{n-1}) = \frac{a_0 * x_0 + \cdots + a_{n-1} * x_{n-1}}{a_n}
+\end{align}
+Last Generate numpts points with n-1 dimensions to calculate their lastDim according to HNF and stack them together
+\begin{align}
+    randomPts: tmp = (v_0, \cdots, v_{n-1}), tmp \in \mathbb{R}^{numpts} \times \mathbb{R}^{n-1}
+    \end{align}
+    
+\begin{align}
+    linCorrPts: corrPts =  (v_0, \cdots, v_{n-1}, f(tmp)), corrPts \in \mathbb{R}^{numpts} \times \mathbb{R}^{n}
+\end{align}
+Lincorr\_ds.shape = (numpts, dimensions)
+
+For noise Generation of noise and attaching it to working dataset:
+$$noisePts: noise = (w_0, \cdots, w_n), noise \in \mathbb{R}^{noisenum} \times \mathbb{R}^{n}$$
+$$noisyDS: ds = (p_0, \cdots, p_n), p_i = (v_i, w_i)^T, ds \in \mathbb{R}^{numpts+noisenum} \times \mathbb{R}^n$$
+
+\chapter{Results}

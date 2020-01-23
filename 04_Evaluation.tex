@@ -1,13 +1,22 @@
 \chapter{Evaluation}
+
 \section{Setup}
+Initial tests were done on random data sets generated via the method mentioned in \autoref{sec:datagen}. 
+
+All following tests were executed in docker containers running on a Virtual Machine with an x86\_64 bit architecture, 48 CPUs and 246GB RAM. 
+
 (which data sets have been used? How many data objects? How many clusters? Which programming language and libraries? On which hardware?) [0.5]
 
 \section{Parameters available and their impacts}
+Our algorithm depends on many subprocesses which come with several parameters themselves. In this section we discuss their meaning and especially their impact for the clustering results.
+
 \subsection{Metrics: CosineSimiliarity(n1,n2), CosineSimiliarity(n1,n2) + EuclidianDistance(d) [2-3]}
 
-\subsection{Mode, Median, Mean [2-3]}
+\subsection{Median vs.  Mean [2-3]}
 
 \section{Results between Dense approach with stitching and Global approach (runtime included) [2-3]
 }
 
 \section{Test on real world data set(s) [1]}
+
+%evtl. "Hyperparameter sensitivity" d.h. wie 'empfindlich' ist das verfahren bzgl. welchen Parameter Einstellungen?

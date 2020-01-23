@@ -1,19 +1,18 @@
 \documentclass[pdftex,12pt,a4paper]{report}
 \usepackage{dbstmpl}
-\usepackage{subfigure}
 
 % Hier die eigenen Daten eintragen
 \global\arbeit{Master's Thesis}
 \global\titel{Detecting Global Correlated Clusters using Hough Transform through Locally Dense Correlations}
 \global\bearbeiter{Long Mathias Yan}
 \global\betreuer{Daniyal Kazempour}
-\global\aufgabensteller{Dr. Peer Kr"oger}
+\global\aufgabensteller{Prof. Dr. Peer Kr"oger}
 \global\abgabetermin{14. November 2019}
 \global\ort{Munich}
 \global\fach{Computer Science}
 
 \begin{document}
-
+\listoftodos 
 % Deckblatt
 \deckblatt
 
@@ -31,26 +30,32 @@ Informatik der LMU M"unchen.
 \tableofcontents
 
 % Hier beginnt der eigentliche Text
+\input{abbreviations.tex}
 \input{01_intro.tex}
+\input{01a_fundamentals.tex}
 \input{02_relatedwork.tex}
-\input{03_Setup.tex}
+\input{03_Methods.tex}
 \input{04_Evaluation.tex}
 \input{05_Conclusion.tex}
 
 \appendix
-\chapter{Results}
+\input{0Z_Appendix.tex}
 
 Results with Figures?
 
 % Abbildungsverzeichnis (kann auch nach dem Inhaltsverzeichnis kommen)
 \listoffigures
 
+\listofalgorithms
+\addcontentsline{toc}{chapter}{List of Algorithms}
 % Tabellenverzeichnis (kann auch nach dem Inhaltsverzeichnis kommen)
 \listoftables
 
 % Literaturverzeichnis
-\bibliographystyle{dbstmpl}    % verwendet dbstmpl.bst
-% alternative, vorinstallierte Stile sind z.B. plain oder abbrv
-\bibliography{dbstmpl}         % verwendet dbstmpl.bib
+% \bibliographystyle{plainnat}
+% \bibliographystyle{dbstmpl}    % verwendet dbstmpl.bst
+% % alternative, vorinstallierte Stile sind z.B. plain oder abbrv
+% \bibliography{dbstmpl}         % verwendet dbstmpl.bib
+\printbibliography
 
 \end{document}

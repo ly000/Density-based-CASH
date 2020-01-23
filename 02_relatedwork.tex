@@ -1,21 +1,27 @@
 \chapter{Related Work}
+\label{sec:Related Work}
+This chapter introduces some foundational work on density-based and subspace clustering and also gives an insight into existing approaches to solve the problem of subspace clustering. We also elaborate, where these existing approaches lack in ability and capability and show some of the current optimization approaches.
 
-
-In this chapter 
-Clustering in Arbitrary Subspaces based on the Hough transform (CASH) is cool, however its complexity is $\mathcal{O}(n^2)$.
-We try to do it better via using a density based approach to prune away irrelevant points and noise..
 \section{Clustering}
-(Global) Correlation Clustering, other algorithms so far (ORCLUS, LMCLUS, 4C, HiCO, ERiC)\cite{10.1007/978-3-030-02224-2_13}[1]
+There are many approaches to gain more information about unknown data. 
+(Global) Correlation Clustering, other algorithms so far (ORCLUS \cite{orclusaggarwal2000finding}, LMCLUS \cite{}, 4C, HiCO, ERiC)[1]
 Hough Transform [0.5]
+
+The following related work will be elaborated in detail in the chapter \nameref{sec:Foundations}
 
 \section{Hough Transformation}
-Hough Transform [0.5]
+The Hough Transform originally was introduced in the field of computer vision for edge detection. However it 
 
 \section{CASH}
+\ac{CASH}
+\cite{CASHachtert2008robust}
 
 \section{DBSCAN}
+\ac{DBSCAN}
 Density-based Clustering [0.5]
 
+\section{OPTICS}
+\cite{opticsankerst1999optics}
 % Maybe OPTICS? DIRECTLY COPIED OUT OF \cite{ankerst1999optics}
 %  First, almost all clustering algorithms require values for input parameters which are hard to
 % determine, especially for real-world data sets containing highdimensional objects. Second, the algorithms are very sensible to
@@ -24,4 +30,5 @@ Density-based Clustering [0.5]
 % distribution that cannot be revealed by a clustering algorithm using only one global parameter setting. 
 
 \section{Current Optimization Approaches}
- (D-MASC, A Galaxy of Correlations etc.) [0.5]
+    (D-MASC\cite{kazempour2018d, kazempour2019galaxy}, A Galaxy of Correlations etc.) [0.5]
+    

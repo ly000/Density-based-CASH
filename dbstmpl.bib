@@ -1,40 +1,78 @@
-@string{sigmod99 = "Proc.\ ACM SIGMOD Int.\ Conf.\ on Management of Data (SIGMOD'99), Philadelphia, PA"}
-
-@Inproceedings{ABKS99,
-  author    = {Ankerst, M. and Breunig, M. M. and Kriegel, H.-P. and Sander, J.},
-  title     = {OPTICS: Ordering Points to Identify the Clustering Structure},
-  booktitle = sigmod99,
-  pages     = {49--60},
-  year      = {1999}
-}
-
-@Inproceedings{EKSX96,
-  author    = {Ester, M. and Kriegel, H.-P. and Sander, J. and Xu, X.},
+@Inproceedings{DBSCANEKSX96,
+  Author    = {Ester, M. and Kriegel, H.-P. and Sander, J. and Xu, X.},
   title     = {A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise},
   booktitle = {Proc.\ 2nd Int.\ Conf.\ on Knowledge Discovery and Data Mining (KDD'96), Portland, OR},
   pages     = {226--231},
   year      = {1996}
 }
 
-@InProceedings{10.1007/978-3-030-02224-2_13,
-author="Kazempour, Daniyal
-and Bein, Kevin
-and Kr{\"o}ger, Peer
-and Seidl, Thomas",
-editor="Marchand-Maillet, St{\'e}phane
-and Silva, Yasin N.
-and Ch{\'a}vez, Edgar",
-title="D-MASC: A Novel Search Strategy for Detecting Regions of Interest in Linear Parameter Space",
-booktitle="Similarity Search and Applications",
-year="2018",
-publisher="Springer International Publishing",
-address="Cham",
-pages="163--176",
-abstract="The parameter space transform has been utilized over decades in context of edge detection in the computer vision domain. However the usage of the parameter space transform in context of clustering is a more recent application with the purpose of detecting (hyper)linear correlated clusters. The runtime for detecting edges or hyperlinear correlations can be very high. The contribution of our work is to provide a novel search strategy in order to accelerate the detection of regions of interest in parameter space serving as a foundation for faster detection of edges and linear correlated clusters.",
-isbn="978-3-030-02224-2"
+@inproceedings{kazempour2018d,
+  title={D-MASC: A Novel Search Strategy for Detecting Regions of Interest in Linear Parameter Space},
+  author={Kazempour, Daniyal and Bein, Kevin and Kr{\"o}ger, Peer and Seidl, Thomas},
+  booktitle={International Conference on Similarity Search and Applications},
+  pages={163--176},
+  year={2018},
+  organization={Springer}
 }
 
-@inproceedings{ankerst1999optics,
+@article{kazempour2019galaxy,
+  title={A Galaxy of Correlations Detecting Linear Correlated Clusters through k-Tuples Sampling using Par},
+  author={Kazempour, Daniyal and Krombholz, Lisa and Kr{\"o}ger, Peer and Seidl, Thomas},
+  year={2019}
+}
+
+%start
+
+@article{parsons2004subspace,
+  title={Subspace clustering for high dimensional data: a review},
+  author={Parsons, Lance and Haque, Ehtesham and Liu, Huan},
+  journal={Acm Sigkdd Explorations Newsletter},
+  volume={6},
+  number={1},
+  pages={90--105},
+  year={2004},
+  publisher={ACM}
+}
+
+@inproceedings{4cbohm2004computing,
+  title={Computing clusters of correlation connected objects},
+  author={B{\"o}hm, Christian and Kailing, Karin and Kr{\"o}ger, Peer and Zimek, Arthur},
+  booktitle={Proceedings of the 2004 ACM SIGMOD international conference on Management of data},
+  pages={455--466},
+  year={2004},
+  organization={ACM}
+}
+
+@inproceedings{robustpcakriegel2008general,
+  title={A general framework for increasing the robustness of PCA-based correlation clustering algorithms},
+  author={Kriegel, Hans-Peter and Kr{\"o}ger, Peer and Schubert, Erich and Zimek, Arthur},
+  booktitle={International Conference on Scientific and Statistical Database Management},
+  pages={418--435},
+  year={2008},
+  organization={Springer}
+}
+
+@inproceedings{CASHachtert2008robust,
+  title={Robust clustering in arbitrarily oriented subspaces},
+  author={Achtert, Elke and B{\"o}hm, Christian and David, J{\"o}rn and Kr{\"o}ger, Peer and Zimek, Arthur},
+  booktitle={Proceedings of the 2008 SIAM International Conference on Data Mining},
+  pages={763--774},
+  year={2008},
+  organization={SIAM}
+}
+
+@article{CASHachtert2008global,
+  title={Global correlation clustering based on the Hough transform},
+  author={Achtert, Elke and B{\"o}hm, Christian and David, J{\"o}rn and Kr{\"o}ger, Peer and Zimek, Arthur},
+  journal={Statistical Analysis and Data Mining: The ASA Data Science Journal},
+  volume={1},
+  number={3},
+  pages={111--127},
+  year={2008},
+  publisher={Wiley Online Library}
+}
+
+@inproceedings{opticsankerst1999optics,
   title={OPTICS: ordering points to identify the clustering structure},
   author={Ankerst, Mihael and Breunig, Markus M and Kriegel, Hans-Peter and Sander, J{\"o}rg},
   booktitle={ACM Sigmod record},
@@ -43,4 +81,143 @@ isbn="978-3-030-02224-2"
   pages={49--60},
   year={1999},
   organization={ACM}
+}
+
+@inproceedings{sublcukailing2004density,
+  title={Density-connected subspace clustering for high-dimensional data},
+  author={Kailing, Karin and Kriegel, Hans-Peter and Kr{\"o}ger, Peer},
+  booktitle={Proceedings of the 2004 SIAM international conference on data mining},
+  pages={246--256},
+  year={2004},
+  organization={SIAM}
+}
+
+@inproceedings{proclusaggarwal1999fast,
+  title={Fast algorithms for projected clustering},
+  author={Aggarwal, Charu C and Wolf, Joel L and Yu, Philip S and Procopiuc, Cecilia and Park, Jong Soo},
+  booktitle={ACM SIGMoD Record},
+  volume={28},
+  number={2},
+  pages={61--72},
+  year={1999},
+  organization={ACM}
+}
+
+@inproceedings{delicluachtert2006deli,
+  title={DeLi-Clu: boosting robustness, completeness, usability, and efficiency of hierarchical clustering by a closest pair ranking},
+  author={Achtert, Elke and B{\"o}hm, Christian and Kr{\"o}ger, Peer},
+  booktitle={Pacific-Asia Conference on Knowledge Discovery and Data Mining},
+  pages={119--128},
+  year={2006},
+  organization={Springer}
+}
+
+@inproceedings{kmeansmacqueen1967some,
+  title={Some methods for classification and analysis of multivariate observations},
+  author={MacQueen, James and others},
+  booktitle={Proceedings of the fifth Berkeley symposium on mathematical statistics and probability},
+  volume={1},
+  number={14},
+  pages={281--297},
+  year={1967},
+  organization={Oakland, CA, USA}
+}
+
+@book{orclusaggarwal2000finding,
+  title={Finding generalized projected clusters in high dimensional spaces},
+  author={Aggarwal, Charu C and Yu, Philip S},
+  volume={29},
+  number={2},
+  year={2000},
+  publisher={ACM}
+}
+
+@inproceedings{ertoz2003finding,
+  title={Finding clusters of different sizes, shapes, and densities in noisy, high dimensional data},
+  author={Ert{\"o}z, Levent and Steinbach, Michael and Kumar, Vipin},
+  booktitle={Proceedings of the 2003 SIAM international conference on data mining},
+  pages={47--58},
+  year={2003},
+  organization={SIAM}
+}
+
+@inproceedings{lmclusharalick2005linear,
+  title={Linear manifold clustering},
+  author={Haralick, Robert and Harpaz, Rave},
+  booktitle={International Workshop on Machine Learning and Data Mining in Pattern Recognition},
+  pages={132--141},
+  year={2005},
+  organization={Springer}
+}
+
+@misc{houghOriginal1962method,
+  title={Method and means for recognizing complex patterns},
+  author={Hough, Paul VC},
+  year={1962},
+  month=dec # "~18",
+  publisher={Google Patents},
+  note={US Patent 3,069,654}
+}
+
+@article{ballard1981generalizing,
+  title={Generalizing the Hough transform to detect arbitrary shapes},
+  author={Ballard, Dana H},
+  journal={Pattern recognition},
+  volume={13},
+  number={2},
+  pages={111--122},
+  year={1981},
+  publisher={Elsevier}
+}
+
+@book{davies2004machine,
+  title={Machine vision: theory, algorithms, practicalities},
+  author={Davies, E Roy},
+  year={2004},
+  publisher={Elsevier}
+}
+
+@article{rosenfeld1969picture,
+  title={Picture processing by computer},
+  author={Rosenfeld, Azriel},
+  journal={ACM Computing Surveys (CSUR)},
+  volume={1},
+  number={3},
+  pages={147--176},
+  year={1969},
+  publisher={ACM}
+}
+
+@article{illingworth1988survey,
+  title={A survey of the Hough transform},
+  author={Illingworth, John and Kittler, Josef},
+  journal={Computer vision, graphics, and image processing},
+  volume={44},
+  number={1},
+  pages={87--116},
+  year={1988},
+  publisher={Elsevier}
+}
+
+@techreport{duda1971use,
+  title={Use of the Hough transformation to detect lines and curves in pictures},
+  author={Duda, Richard O and Hart, Peter E},
+  year={1971},
+  institution={Sri International Menlo Park Ca Artificial Intelligence Center}
+}
+
+@inproceedings{agrawal1998automatic,
+  title={Automatic subspace clustering of high dimensional data for data mining applications},
+  author={Agrawal, Rakesh and Gehrke, Johannes and Gunopulos, Dimitrios and Raghavan, Prabhakar},
+  booktitle={Proceedings of the 1998 ACM SIGMOD international conference on Management of data},
+  pages={94--105},
+  year={1998}
+}
+
+@inproceedings{cliqueagrawal1998automatic,
+  title={Automatic subspace clustering of high dimensional data for data mining applications},
+  author={Agrawal, Rakesh and Gehrke, Johannes and Gunopulos, Dimitrios and Raghavan, Prabhakar},
+  booktitle={Proceedings of the 1998 ACM SIGMOD international conference on Management of data},
+  pages={94--105},
+  year={1998}
 }
