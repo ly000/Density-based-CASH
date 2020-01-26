@@ -1,14 +1,14 @@
 \chapter{Methods}\label{ch:Methods}
-In this chapter we introduce the necessary mathematical and algorithm foundations, give an indepth view of its components and explain their relevance in the new approach.
+In this chapter we introduce the necessary mathematical and algorithm foundations, give an in-depth view of its components and explain their relevance in the new approach.
 
 In this chapter 
 Clustering in Arbitrary Subspaces based on the Hough transform (CASH) is cool, however its complexity is $\mathcal{O}(n^2)$.
 We try to do it better via using a density based approach to prune away irrelevant points and noise..
 
-\section{Mathematical and Algorithmic Foundations [4]}
+\section{Mathematical and Algorithmic Foundations}
 \label{sec:Foundations}
 Our Algorithm builds on top of two algorithms which both were build on two other well-known algorithms: OPTICS, which is closely related to DBSCAN, and CASH, which is inherently based on the Hough Transform.
-\subsection{DBSCAN}
+\subsection{DBSCAN In Depth}
 \label{ssec:DBSCANindepth}
 \begin{figure}
     \centering
@@ -169,7 +169,7 @@ This algorithm was the first approach to segmenting the original data space into
     \label{fig:DBSCANhierarchy}
 \end{figure}
 
-\subsection{OPTICS}\label{ssec:OPTICSindepth} \todob{check comment}%OPTICS ONLY wide range of epsranges, not different minpts, since reachability is dependent on minpts, it extends epsilon, if minpts is not satisfied
+\subsection{OPTICS In Depth}\label{ssec:OPTICSindepth} \todob{check comment}%OPTICS ONLY wide range of epsranges, not different minpts, since reachability is dependent on minpts, it extends epsilon, if minpts is not satisfied
 To tackle this problem, we replaced DBSCAN with a more versatile algorithm/extension called \acf{OPTICS}, which had the capabilities to not only detect clusters of different densities more accurately but also opens more possibilities for different approaches, e.g. a more hierarchical approach, for future work.
 Although \ac{OPTICS} itself is not a clustering algorithm, it does create an ordering of the points in a database, which represents the density-based clustering structure of a wide range of $\epsilon$-parameter settings, with which it is possible to automatically create a more accurate clustering with different densities compared to \ac{DBSCAN}~\cite{opticsankerst1999optics}. To create such a consistent ordering \todo{cite style} \citeauthor{opticsankerst1999optics} defines the following two distances on top of the previously mentioned definitions of \autoref{ssec:DBSCANindepth}:
 \vspace{5mm}
@@ -245,7 +245,7 @@ To create this ordering, \ac{OPTICS} first initializes the ordering $O$ with a r
 
 \todob{maybe chapter about reachability plots}
 
-\subsection{Hough Transformation [2]}\label{ssec:houghindepth}
+\subsection{Hough Transformation In Depth}\label{ssec:houghindepth}
 The initial purpose of the Hough transform was a technique to detect colinear points~\cite{houghOriginal1962method} and has since then found various other applications in fields like image processing/analysis~\cite{rosenfeld1969picture,ballard1981generalizing}, computer vision~\cite{davies2004machine} and correlation clustering~\cite{CASHachtert2008robust}.
 % \subsubsection{The basic idea}
 The basic idea was the transformation of 2-dimensional points $p_i = (x_i,y_i)$ in data space $\mathcal{D} \subseteq \R^2$ with x and y axis to functions in the form of ${m_{p_i}(t_{p_i}) = \frac{y_i}{x_i} - \frac{t_{p_i}}{x_i}}$ in parameter space $\mathcal{P} \subseteq \R^2$, also known as Hough space, with t and m axis, where $m$ is the slope and $t$ is the y-intercept of a line passing through point $p_i$~\cite{illingworth1988survey}. It can be visualized by imagining that each point $p_i$ can be explained by an infinite number of concurrent lines $C$ defined by the functions 
@@ -321,9 +321,9 @@ Points lying on the same line in data space have a common intersection in parame
 Points lying on the same (sinusoidal) function in parameter space correspond to lines through the same point in data space.
 \end{property}
 
-Since points in parameter space correspond to a linear function in data space and a curve in parameter space corresponds to a point in data space, we can deduct that intersections of curves in parameter space correspond to points lying on the same line in data space. Therefore through the transformation the problem of finding correlated points becomes a problem of finding points or regions of intersections of curves in parameter space. Another added benefit is the parameter space's independence of the locality assumption since regardless of the points locations in data space its functions intersections in parameter space represent points lying on the same line. \todor{wtf sentence} To solve this problem there are several approaches. For exact results looking for points with high intersections can be done by solving linear equation systems of the functions in parameter space. This however can quickly become computationally infeasible and does not cope for jitter, which causes disruptions in the exact intersections in parameter space. Static predefined grid-based approaches, like searching for 2-dimensional regions of interest with a predefined grid, or dynamic approaches, like done in \textcite{CASHachtert2008global} by splitting the 2d search space more efficiently, are some computationally less expensive solutions. An indepth explanation of one approach, namely \acf{CASH}, will be given in \fullref{ssec:CASHindepth}.
+Since points in parameter space correspond to a linear function in data space and a curve in parameter space corresponds to a point in data space, we can deduct that intersections of curves in parameter space correspond to points lying on the same line in data space. Therefore through the transformation the problem of finding correlated points becomes a problem of finding points or regions of intersections of curves in parameter space. Another added benefit is the parameter space's independence of the locality assumption since regardless of the points locations in data space its functions intersections in parameter space represent points lying on the same line. \todor{wtf sentence} To solve this problem there are several approaches. For exact results looking for points with high intersections can be done by solving linear equation systems of the functions in parameter space. This however can quickly become computationally infeasible and does not cope for jitter, which causes disruptions in the exact intersections in parameter space. Static predefined grid-based approaches, like searching for 2-dimensional regions of interest with a predefined grid, or dynamic approaches, like done in \textcite{CASHachtert2008global} by splitting the 2d search space more efficiently, are some computationally less expensive solutions. An in-depth explanation of one approach, namely \acf{CASH}, will be given in \fullref{ssec:CASHindepth}.
 
-\subsection{CASH [1]}\label{ssec:CASHindepth}
+\subsection{CASH In Depth}\label{ssec:CASHindepth}
 \todo{check n-dim Hough transform explanation with DK}
 \acf{CASH} is a subspace clustering algorithm based on the principle of the Hough Transform which, in contrast to the axis-parallel algorithms \ac{SUBCLU}\cite{sublcukailing2004density} and \ac{CLIQUE}\cite{cliqueagrawal1998automatic}, can detect arbitrarily oriented subspaces (c.f.~\autoref{ssec:houghindepth}. \todor{sounds awful}
 For arbitrary-dimensional data spaces $\mathcal{D} \subseteq \R^d$ \textcite{CASHachtert2008robust} reformulates the Hough transformation via a generalized description of spherical coordinates. A $d$-dimensional point/vector $x=(x_1,\dotsc,x_d)$ w.r.t.\ the given orthonormal basis $e_1,\dotsc,e_d$, can be described with $d-1$ independent angles $\alpha_1,\dotsc,\alpha_{d-1}$ and the norm/distance to origin of vector/point $x$. The following definitions are taken from \cite{CASHachtert2008robust}:
@@ -425,7 +425,7 @@ The resulting set $C$ contains all $n$-dimensional subspace clusters with $n < d
 
 Summarized we now possess means to find density-based clusters and global subspace clusters in an original dataset $DS$. The density-based approach \ac{OPTICS} requires two parameters, minimum number of points $minPts$ and a maximum epsilon distance $\epsilon$, which essentially specify the minimum density allowed, to acquire a hierarchical view of density-connected clusters in $DS$. The subspace clustering approach \ac{CASH} also requires another two parameters, minimum number of points/intersections $m$ and number of splits $s$ to be considered as a subspace cluster.
 
-\section{The Algorithm [5]}
+\section{The Algorithm}
 With the previously mentioned algorithms we are already able to find arbitrarily shaped clusters with a density-based approach, and arbitrarily oriented subspace clusters with e.g. \ac{4C} or \ac{CASH}, however all of them are restricted to finding those clusters in a purely local or purely global fashion. E.g. none of the previously mentioned algorithms can handle scenarios as shown in 
 % \begin{minipage}{.47\textwidth}
 %       \centering
