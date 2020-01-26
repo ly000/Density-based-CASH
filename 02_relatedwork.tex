@@ -1,26 +1,24 @@
 \chapter{Related Work}
 \label{sec:Related Work}
-This chapter introduces some foundational work on density-based and subspace clustering and also gives an insight into existing approaches to solve the problem of subspace clustering. We also elaborate, where these existing approaches lack in ability and capability and show some of the current optimization approaches.
+This chapter introduces some foundational work on density-based and subspace/correlation clustering and gives an insight into existing approaches to solve the problem of subspace clustering. We also elaborate, where these existing approaches lack in ability and capability and show some of the current optimization approaches.
 
-\section{Clustering}
-There are many approaches to gain more information about unknown data. 
-(Global) Correlation Clustering, other algorithms so far (ORCLUS \cite{orclusaggarwal2000finding}, LMCLUS \cite{}, 4C, HiCO, ERiC)[1]
-Hough Transform [0.5]
+Since sections \nameref{sec:houghintro}, \nameref{sec:cashintro}, \nameref{sec:dbscanintro} and \nameref{sec:OPTICSintro} are essential to our work they will be elaborated in greater detail in the chapter \nameref{sec:Foundations}
 
-The following related work will be elaborated in detail in the chapter \nameref{sec:Foundations}
+\section{Hough Transformation}\label{sec:houghintro}
+The Hough Transform originally was introduced by \textcite{houghOriginal1962method} and extended by \textcite{rosenfeld1969picture} in the field of computer vision for edge detection~\cite{houghhistoryhart2009hough}. The initial purpose of the Hough transform was a technique to detect colinear points in an image space and has since then found various other applications in fields like image processing/analysis~\cite{rosenfeld1969picture,ballard1981generalizing}, computer vision~\cite{davies2004machine} and subspace clustering~\cite{CASHachtert2008robust}.
+The basic idea of the Hough transform is the transformation of all points $p_i = (x_i,y_i)$ in a 2-dimensional image space $\mathcal{D} \subseteq \R^2$ to functions in the form of ${m_{p_i}(t_{p_i}) = \frac{y_i}{x_i} - \frac{t_{p_i}}{x_i}}$ in a  2-dimensional parameter space $\mathcal{P} \subseteq \R^2$, also known as Hough space, where $m$ is the slope and $t$ is the y-intercept of a line passing through point $p_i$~\cite{illingworth1988survey}.
+\todor{Ich plagiere mich selbst. 1zu1 aus unterem abschnitt}
 
-\section{Hough Transformation}
-The Hough Transform originally was introduced in the field of computer vision for edge detection. However it 
+However it
 
-\section{CASH}
+\section{CASH}\label{sec:cashintro}
 \ac{CASH}
 \cite{CASHachtert2008robust}
 
-\section{DBSCAN}
-\ac{DBSCAN}
-Density-based Clustering [0.5]
+\section{DBSCAN}\label{sec:dbscanintro}
+\citeauthor{DBSCANEKSX96} created a foundational algorithm with \ac{DBSCAN}. With over sixteenthousand citations on google scholar as of December 2019 it is one of the most influential works created in the field of density-based clustering. 
 
-\section{OPTICS}
+\section{OPTICS}\label{sec:OPTICSintro}
 \cite{opticsankerst1999optics}
 % Maybe OPTICS? DIRECTLY COPIED OUT OF \cite{ankerst1999optics}
 %  First, almost all clustering algorithms require values for input parameters which are hard to
@@ -32,3 +30,12 @@ Density-based Clustering [0.5]
 \section{Current Optimization Approaches}
     (D-MASC\cite{kazempour2018d, kazempour2019galaxy}, A Galaxy of Correlations etc.) [0.5]
     
+\section{Other Subspace Clustering Algorithms}
+There are many other approaches to find relevant subspaces/correlations in data. Like \ac{ORCLUS} and \ac{4C}, many of them are based on the application of the \ac{PCA} to extract the correlations. This subsection introduces some of those subspace algorithms and explains, in which way those works would or would not be suited for our idea.
+
+\subsection{ORCLUS}
+
+\subsection{4C and COPAC}
+
+\subsection{HiCO and ERiC}
+(Global) Correlation Clustering, other algorithms so far (ORCLUS \cite{orclusaggarwal2000finding}, LMCLUS \cite{}, 4C, HiCO, ERiC)[1]
