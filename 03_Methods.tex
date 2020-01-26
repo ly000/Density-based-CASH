@@ -95,7 +95,7 @@ The last relation between points is the density-connectedness. Two points $p$ an
 
 Given the previous defined relations we can now define the notion of clusters and noise in DBSCAN:
 
-\subsubsection*{Clusters}
+\subsubsection*{Density-based Clusters}
 A dense cluster is the union of a set of density-connected core points $CP$ and the set of border points $BP$ which are density-reachable from $CP$.
 Formally \todo{cite style}\citeauthor{DBSCANEKSX96} defines a DBSCAN-cluster as:
 
@@ -112,11 +112,13 @@ A dense cluster in data set $DS$ is a non-empty subset $C$ of points $p$ and $q$
 
 This definition of clustering therefore defines any cluster with \textit{at least} a density defined by the Epsilon-distance $\epsilon$ and the number of minimum points $MinPts$.
 
-\subsubsection*{Noise}
+\subsubsection*{Density-based Noise}
 Every point not belonging to any of the existing clusters $C_1, \dotsc, C_k$ in data set $DS$ are now considered as noise: 
 \begin{align}
     noise = \{p \in  DS | \forall i : p \notin C_i\}
 \end{align}
+\todob{transition?}
+
 \subsubsection*{The DBSCAN-Algorithm}
 One way to calculate the clusters using DBSCAN is as follows:
 
@@ -173,7 +175,8 @@ Although \ac{OPTICS} itself is not a clustering algorithm, it does create an ord
 \vspace{5mm}
 
 Given a point $p$ from the data set $DS$, an epsilon-distance $\epsilon$, the \todor{format} $\epsilon$-neighborhood of $p$ $N_{\epsilon}(p)$, the minimum number of points to be a cluster $MinPts$ and the distance measure from $p$ to its $MinPts$-nearest neighbors $MinPts$-$dist(p)$. Then:
-\todo{DBSCAN with one whole cluster instead of 2 seperate}
+\todo{DBSCAN with one whole cluster instead of 2 separate}
+\todor{Figure without bounding box}
 \begin{figure}
     \centering
     \begin{minipage}{.47\textwidth}
@@ -288,7 +291,13 @@ where $\delta$ denotes the shortest distance from the respective line to the ori
     \delta &= \vec{n_0}\cdot\vec{x} 
 \end{align}
 
-\missingfigure{hnf visualizations in 2d}
+\begin{figure}
+    \centering
+    % \includegraphics{}
+    \missingfigure{hnf visualizations in 2d}
+    \caption{Caption}
+    \label{fig:my_label}
+\end{figure}
 
 \begin{figure}
     \centering
@@ -365,13 +374,18 @@ Points lying on the same sinusoidal curve in parameter space represent $(d-1)$-d
 Boundaries of the parameter space $\mathcal{P}$ are extended to $\mathcal{P} = [\delta_{min}, \delta_{max}]\times [0,\pi)^{d-1}$ with $\delta_{min}$ and $\delta_{max}$ being the minimum and maximum of all functions $f_p$ for $\alpha \in [0,\pi)$ again: $[\delta_{min}, \delta_{max}] = [min_{p \in \mathcal{D}}(f_p(\alpha_p^{min})), max_{p \in \mathcal{D}}(f_p(\alpha_p^{max}))$, where $\alpha_p^{min}$ and $\alpha_p^{max}$ denote the minimum and maximum of function $f_p$. An in detail explanation is found in \textcite{CASHachtert2008robust}.
 Applying the same concept of \autoref{ssec:houghindepth} the goal of finding $d$-dimensional points lying on the same hyperplane requires finding intersections of the corresponding $d$-dimensional curves in parameter space. Since an analytical solution of the intersections in multi-dimensional space is infeasible, the parameter space is scanned for $d$-dimensional regions/hypercuboids of a certain amount $m$ of intersections instead which additionally copes for jitter. Regions which fulfill the number of intersections are called \textit{dense grid cells}.
 
+\subsubsection*{Correlation Cluster}
+\todor{eigene definition, consistent with dbscan}
+
+\subsubsection*{Correlation Noise}
+
 \subsubsection*{The CASH-Algorithm}
 Given previously defined data representation in data and parameter space, the goal is finding dense grid cells in parameter space. However since the complexity of searching the parameter space with a predefined grid is exponential w.r.t.\ dimension $d$ it also quickly gets too computational expensive for higher dimensional spaces. \ac{CASH} tackles this problem by smartly dividing the search space. \citeauthor{CASHachtert2008robust} proposed the following search strategy:
 \vspace{5mm}
 
-The parameter space is successively divided by the axes in the static order given by $\delta,\alpha_1,\dotsc,\alpha_{d-1}$. After each split the hypercuboid with more intersections is divided at the next axis of the order. If both hypercuboids have the same amount of intersections, the first hypercuboid is selected (arbitrarily). The other hypercuboid is kept in a queue, which is ordered descendingly by the number of its intersecting curves/points. If regions in the queue have an equal amount of intersections, the smaller region is prefered. These splits and additions to the queue are done until both split hypercuboids have less than a minimum number of intersections $m$ to be considered as dense or a predefined depth $s$ has been reached and the hypercuboids fulfilling $m$ and are dense are considered as valid subspace clusters. These valid $(d-1)$-dimensional subspace clusters are then recursively evaluated by CASH again until the resulting found subspace clusters have a minimum dimensionality of $minDims$. If a subspace cluster is found, its intersecting curves are removed from any other hypercuboid in the queue, which is then updated and sorted according to its new status. If the number of intersections drops below $m$, the hypercuboid is removed from the queue. This procedure is done, until the queue is empty.
+The parameter space is successively divided by the axes in the static order given by $\delta,\alpha_1,\dotsc,\alpha_{d-1}$. After each split the hypercuboid with more intersections is divided at the next axis of the order. If both hypercuboids have the same amount of intersections, the first hypercuboid is selected (arbitrarily). The other hypercuboid is kept in a queue, which is ordered descendingly by the number of its intersecting curves/points. If regions in the queue have an equal amount of intersections, the smaller region is preferred. These splits and additions to the queue are done until both split hypercuboids have less than a minimum number of intersections $m$ to be considered as dense or a predefined depth $s$ has been reached and the hypercuboids fulfilling $m$ and are dense are considered as valid subspace clusters. These valid $(d-1)$-dimensional subspace clusters are then recursively evaluated by CASH again until the resulting found subspace clusters have a minimum dimensionality of $minDims$. If a subspace cluster is found, its intersecting curves are removed from any other hypercuboid in the queue, which is then updated and sorted according to its new status. If the number of intersections drops below $m$, the hypercuboid is removed from the queue. This procedure is done, until the queue is empty.
 
-\begin{algorithm}[H]
+\begin{algorithm}
 % \algsetup{linenosize=\tiny}
 % \scriptsize
 \SetAlgoLined
@@ -409,28 +423,77 @@ h := $\PS$\tcp*{working hypercuboid}
 The resulting set $C$ contains all $n$-dimensional subspace clusters with $n < d$ found within the constraints of minimum points in correlation $m$ and maximum splits $s$.
 \todor{Check recursive CASH}
 
-Summarized we now possess means to find density-based clusters and global subspace clusters in an original dataset $DS$. The density-based approach \ac{OPTICS} requires two parameters, minimum number of points $minPts$ and a maximum epsilon distance $\epsilon$, which essentially specifiy the minimum density allowed, to acquire a hierarchical view of density-connected clusters in $DS$. The subspace clustering approach \ac{CASH} also requires another two parameters, minimum number of points/intersections $m$ and number of splits $s$ to be considered as a subspace cluster.
+Summarized we now possess means to find density-based clusters and global subspace clusters in an original dataset $DS$. The density-based approach \ac{OPTICS} requires two parameters, minimum number of points $minPts$ and a maximum epsilon distance $\epsilon$, which essentially specify the minimum density allowed, to acquire a hierarchical view of density-connected clusters in $DS$. The subspace clustering approach \ac{CASH} also requires another two parameters, minimum number of points/intersections $m$ and number of splits $s$ to be considered as a subspace cluster.
 
 \section{The Algorithm [5]}
 With the previously mentioned algorithms we are already able to find arbitrarily shaped clusters with a density-based approach, and arbitrarily oriented subspace clusters with e.g. \ac{4C} or \ac{CASH}, however all of them are restricted to finding those clusters in a purely local or purely global fashion. E.g. none of the previously mentioned algorithms can handle scenarios as shown in 
-\missingfigure[]{scenario zeigen}
-Above Figures \todor{figure erstellen} depict settings, where the data contains multiple characteristic local correlations which however cannot be accurately described by the aforementioned methods alone. Figure 1 shows cross-shaped dense clusters which can be picked up by \ac{DBSCAN} or \ac{OPTICS}, however it does not deliver their correlations. As an extension \ac{4C} is able to detect the local correlations, however gets skewed results in the crosses due to the correlations orientation not being accurately representable by the eigenvectors of the \ac{PCA}. \ac{CASH} on the other hand could find the correlations. Figure 2 \todor{figure} shows multiple local settings of different  correlations. \ac{4C} is able to find the accurate local correlations, however can not categorize those local correlations as one global correlation\todor{naja an sich schon. mit richtigem parameter setting}. On the other hand CASH can only find the global correlation while ommitting the information of the gaps in data. Hierarchical subspace clustering methods like \ac{HiCO} and \ac{ERiC} are not helpful either, since their hierarchy is based on lower dimensional subspaces contained in subspaces and not subspaces composed of same dimensional subspaces. Either the subspace clustering method detects local correlations while missing the big picture or they do find global correlations while losing structural information of its particular correlation. This thesis proposes an algorithm that unifies local and global correlation clustering by evaluating \textit{locally dense} regions of interest with a correlation clustering method, e.g. \ac{CASH}, and combining those local intermediate correlations into a global correlation clustering to get a universal subspace clustering result. 
+% \begin{minipage}{.47\textwidth}
+%       \centering
+%       \includegraphics[width=.8\textwidth]{figures/DSwithDBSCANbadBoundingBoxes.pdf}
+%       \captionof{figure}{A figure}
+%       \label{fig:baddbscan}
+%     \end{minipage}%
+%     \begin{minipage}{.53 \textwidth}
+%       \centering
+%       \includegraphics[width=.8\textwidth]{figures/DSwithOPTICSBoundingBoxes.pdf}
+%       \captionof{figure}{Another figure}
+%       \label{fig:goodoptics}
+%     \end{minipage}
+\begin{figure}
+    \centering
+    \includegraphics{}
+    \missingfigure[]{scenario zeigen}
+    \caption{Caption}
+    \label{fig:}
+\end{figure}
+Above Figures \todor{figure erstellen} depict settings, where the data contains multiple characteristic local correlations which however cannot be accurately described by the aforementioned methods alone. Figure 1 shows cross-shaped dense clusters which can be picked up by \ac{DBSCAN} or \ac{OPTICS}, however it does not deliver their correlations. As an extension \ac{4C} is able to detect the local correlations, however gets skewed results in the crosses due to the correlations orientation not being accurately representable by the eigenvectors of the \ac{PCA}\cite{PCAshlens2014tutorial}. 
+\ac{CASH} on the other hand could find the correlations. 
+
+\begin{figure}
+    \centering
+    \includegraphics{}
+    \missingfigure[]{local global problem}
+    \caption{Caption}
+    \label{fig:localglobalproblem}
+\end{figure}
+
+\autoref{fig:localglobalproblem} \todor{figure} shows multiple local settings of different correlations. \ac{4C} is able to find the accurate local correlations, however can not categorize those local correlations as one global correlation\todor{naja an sich schon. mit richtigem parameter setting}. 
+On the other hand CASH can only find the global correlation while omitting the information of the gaps in data. Hierarchical subspace clustering methods like \ac{HiCO} and \ac{ERiC} do not address the problem either, since their hierarchy is based on lower dimensional subspaces contained in the original space and not spaces composed of same dimensional subintervals of the same space. These subintervals of a space further will be referred as \textit{subclusters} or \textit{clusterpartitions}\todor{2 begriffe oder lieber consistent einen benutzen?}.
+So either the subspace clustering method detects local correlations while missing the big picture or they do find global correlations while losing structural information of its particular correlation. This thesis proposes an algorithm that unifies local and global correlation clustering by evaluating \textit{locally dense} regions of interest with a correlation clustering method, e.g. \ac{CASH}, and combining those local intermediate correlations into a global correlation clustering to get a universal subspace clustering result. 
 
 %Additionally it does not categorize both horizontal local correlations as one, even though they arguably could be interpreted that way.
 % , not the big picture
 
 \subsection{Partitioning Data into Dense Clusters}
-% The first step we do is the partitioning of the data space into dense clusters via a density-based clustering approach like \ac{DBSCAN} or \ac{OPTICS}. 
+The first step we perform is the partitioning of the data space into dense clusters via a density-based clustering approach like \ac{DBSCAN} or \ac{OPTICS}. 
 %However like mentioned in \autoref{ssec:DBSCANindepth} and \autoref{ssec:OPTICSindepth}
-Since we want to find \textit{local} linear correlations within \textit{global} linear correlations, we assume that the global linear correlation is composed of a set of its local linear correlations. This also means that points belonging to the same global linear correlation are also part of the composing local subclusters which have a similar inherent linear correlation as the global correlation. These subclusters have a continous distribution of density compared to the global correlation itself, since else it would have been split as well and counted as seperate local subclusters. Vice versa the local components are also disjunct to each other, since else there would be a connection to each other to create a bigger subcluster. Although it is not optimal even if there is an overlap of different global linear correlations and the subcluster contains multiple of them, it still can retain the information of its composing linear correlations.
+Since we want to find \textit{local} linear correlations within \textit{global} linear correlations, we assume that the global linear correlation is composed of a set of its local linear correlations. This also means that points belonging to the same global linear correlation are also part of the composing local subclusters which have a similar inherent linear correlation as the global correlation. These subclusters have a continuous distribution of density compared to the global correlation itself, since else it would have been split as well and counted as separate local subcluster. Vice versa the local components are also disjunct to each other, since else there would be a connection to each other to create a bigger clusterpartition. Although it is not optimal even if there is an overlap of different global linear correlations and the clusterpartition contains multiple of them, it still can retain the information of its composing linear correlations.
 We can therefore retrieve these local subclusters by searching the data for density-connected sets of points via a density-based clustering approach like \ac{DBSCAN} or \ac{OPTICS}. This comes with an additional benefit by automatically removing noise. 
 
 However like mentioned in \autoref{ssec:DBSCANindepth} and \autoref{ssec:OPTICSindepth} \ac{DBSCAN} is not able to find clusters with different density and mixes multiple densities together into one cluster due to its global parameter setting only defining a minimum density. High variance in data densities can therefore strongly influence the result of \ac{DBSCAN}, either by making it harder to choose the appropriate parameters for a better clustering result or by having more variety in density in found clusters which would result in less conclusive detection of their linear correlations. 
-To receive a more suited clustering we preferred the use of \ac{OPTICS}, which is able to detect clusters with different densities (c.f.~\autoref{ssec:OPTICSindepth}). Since we do not want to prune any information away we can generally use a very high epsilon-distance $\epsilon$ to create a detailed ordering and therefore only rely on $MinPts$ as a parameter. From this ordering we can extract clusters with a new parameter $reachdist_{thres}$ which represents the threshold at which the difference of neighboring reachability-distances of the ordering is considered to be a new cluster with different density.
-
-Find dense clusters using DBSCAN --> elaborate on bounding boxes around dense areas
+To receive a more suited clustering we preferred the use of \ac{OPTICS}, which is able to detect clusters with different densities (c.f.~\autoref{ssec:OPTICSindepth}). Since we do not want to prune any information away we can generally use a very high epsilon-distance $\epsilon$ to create a detailed ordering and therefore only rely on $MinPts$ as a parameter. From this ordering we can extract clusters with a new parameter $reachdist_{thres}$ which represents the threshold at which the difference of neighboring reachability-distances of the ordering is considered to be a new cluster with different density. We also assign a bounding box for each found cluster, which represents the local data space for further evaluation performed by \ac{CASH}. Up to this point we are merely partitioning the data into dense clusters with the added benefit of filtering out points $noise_{density-based}$ which are considered as noise points by a density-based view. We will reconsider those noise points later, since they still could be parts of the global correlation clustering despite not being dense. Figure x visualizes a data set after step 1 is performed. The relevant part of the data set is clustered by density and its boundaries are highlighted by the bounding boxes.
+\missingfigure[]{figure with bounding box}
 
 \subsection{Finding Linear Correlations}
+Based on the assumption that local linear correlations contained in a global linear correlation have similar orientations as their parents\todor{parent richtiger begriff?}, we extract all correlations of the dense clusters with a subspace clustering method and in a later step combine them and rebuild the global correlation clustering. The second step therefore is the extraction of all local linear correlations of all dense clusters within its respective bounding box in data space. Since we only consider the points of the locally dense subclusters without/less noise we can use a variety of methods to extract the linear correlations via global subspace clustering algorithms. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/PCAdifficulties.png}
+    \caption{Caption}
+    \label{fig:pcadifficulties}
+\end{figure}
+
+To be able to get accurate results, a \ac{PCA} would be sufficient if the dense subclusters had either only a single linear correlation or almost orthogonal ones. However the density-based clustering in step 1 cannot guarantee this property since it can detect arbitrary shapes. This means, that there could be constellations of points which would heavily skew the results of \ac{PCA} (c.f.~\autoref{fig:pcadifficulties})\cite{PCAshlens2014tutorial}. 
+
+Since \ac{4C} is basically looking for dense clusters first and then applying \ac{PCA} it has the same disadvantages as \ac{PCA} itself~\cite{4cbohm2004computing}. Our whole subcluster already is defined as dense by the previous step and therefore \ac{4C} would label the whole subcluster as dense too and just considers the whole subcluster as its target. Hence applying \ac{PCA} afterwards equals to the application of only \ac{PCA} onto the whole subcluster. 
+
+\ac{ORCLUS} is also not suited well. It performs a $k$-means like approach first to partition the subcluster~\cite{orclusaggarwal2000finding}, however since our density-based preprocessing step finds different arbitrary shapes, which implies a different number of correlations, in each clusterpartition choosing a meaningful $k$ is hard or impossible. \todor{soll der teil in related work? Moechte den als uebergang benutzen um die Verwendung von CASH zu begruenden}
+
+
+
+
+After finding all dense regions of interest, the subclusters are independently evaluated for their local correlations without considering the other points in data space. This is done by applying the \ac{CASH} algorithm onto the locally dense clusters. \ac{CASH} transforms each point of the cluster into the parameter space and splits it according to its parameters minimum Points $m$ and number of splits $s$. 
 Apply CASH onto dense Clusters [2]
 
 \subsection{Stitching}
