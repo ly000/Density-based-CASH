@@ -1,31 +1,51 @@
 \chapter{Synthetic Data Generation}
 \label{sec:datagen}
-For completeness sake and for testing purposes we created a random generator of data sets and noise creation.
-If someone is interested:
+For the sake of completeness and for testing purposes we created a generator of (random) data sets containing variable linear correlations and noisepercentages.
 
-Generation of n-dimensional linear correlations is done in three steps:
-First Generation of random normalvectors and distances: 
-$$ n: number of Dimensions$$
-$$normalvector: (a_0, \cdots, a_n )^T, a \in \mathbb{R}$$
-$$distance: d, d \in \mathbb{R}$$
-Second Create HNF and solve by last dependent dimension:
-$$HNF: a_0 * x_0 + \cdots + a_n * x_n = d, x_i \in Set of Dimensions$$
-
+The generation of n-dimensional linear correlations is done in four steps:
+\begin{enumerate}
+\item Generation of random unit normal vectors and distances for the \acrfull{hnf}: 
 \begin{align}
-    last Dim: x_n = f(x_0, \cdots, x_{n-1}) = \frac{a_0 * x_0 + \cdots + a_{n-1} * x_{n-1}}{a_n}
+\text{dimension }d&: \text{number of dimensions of data set}\\
+\text{unit normal vector } \vec{n}&: (n_0, \cdots, n_d )^T, n_i \in \mathbb{R} \text{ and } |\vec{n}| = 1\\
+\text{distance }\delta&: \delta \in \mathbb{R}
 \end{align}
-Last Generate numpts points with n-1 dimensions to calculate their lastDim according to HNF and stack them together
-\begin{align}
-    randomPts: tmp = (v_0, \cdots, v_{n-1}), tmp \in \mathbb{R}^{numpts} \times \mathbb{R}^{n-1}
-    \end{align}
-    
-\begin{align}
-    linCorrPts: corrPts =  (v_0, \cdots, v_{n-1}, f(tmp)), corrPts \in \mathbb{R}^{numpts} \times \mathbb{R}^{n}
-\end{align}
-Lincorr\_ds.shape = (numpts, dimensions)
+\end{enumerate}
 
-For noise Generation of noise and attaching it to working dataset:
-$$noisePts: noise = (w_0, \cdots, w_n), noise \in \mathbb{R}^{noisenum} \times \mathbb{R}^{n}$$
-$$noisyDS: ds = (p_0, \cdots, p_n), p_i = (v_i, w_i)^T, ds \in \mathbb{R}^{numpts+noisenum} \times \mathbb{R}^n$$
+These parameters define the orientation of the linear correlations and can be set randomly or manually.
+
+\begin{enumerate}[resume]
+
+\item Create HNF and solve by last dependent dimension:
+\begin{align}
+    \text{HNF}: \vec{n} \cdot \vec{x} = n_0 * &x_0 + \cdots + n_d * x_d = \delta, x_i \in \text{Set of Dimensions}\\
+    \begin{split}
+        \text{last Dim}: x_{lastDim} &= f(x_0, \cdots, x_{k}) \\
+        &= \frac{a_0 * x_0 + \cdots + a_{k} * x_{k}}{a_{lastDim}}, i \in \{1,\dotsc,d\}\setminus {lastDim}
+    \end{split}
+\end{align}
+\end{enumerate}
+
+Since we want to generate arbitrarily oriented linear correlations, we cannot simply expect dimension $d$ to be dependent on the dimensions $d_i, d_i < d$, since axis-parallel linear correlations have dimensions not dependent on others. Therefore we need to analyze the normal vector first and base our point generator on the vectors orientation.
+
+\begin{enumerate}[resume]
+
+\item Generate points with $k$ dimensions to calculate their lastDim according to the HNF and stack them together.
+\begin{align}
+    \text{randomPt}&: tmp = (v_0, \cdots, v_{k}), tmp \in \mathbb{R}^{k}\\
+    \text{linCorrPt}&: corrPts =  (v_0, \cdots, v_{k}, f(tmp)), corrPts \in \mathbb{R}^{d}
+\end{align}
+\end{enumerate}
+
+
+
+\begin{enumerate}[resume]
+\item Generate noise and attach it to working dataset:
+\begin{align}
+    \text{noisePts}: noise = (w_0, \cdots, w_d), noise \in \mathbb{R}^{d}
+\end{align}
+\end{enumerate}
+
+The generation of all points, be it linear correlated points or noise points can be drawn from a arbitrary distribution $X \sim pdf(x)$, e.g. normal distribution $X \sim \mathcal{N}(\mu,\sigma^2)$ or uniform distribution $X \sim \mathcal{U}(a,b)$.
 
 \chapter{Results}

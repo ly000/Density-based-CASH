@@ -15,6 +15,7 @@
 \NeedsTeXFormat{LaTeX2e}
 
 \ProvidesPackage{dbstmpl}[\filedate\space\fileversion]
+\RequirePackage[utf8]{inputenc}
 
 %%
 %% benoetigte Pakete
@@ -26,12 +27,12 @@
 \RequirePackage{german}
 \RequirePackage{amsmath,amsthm}
 \RequirePackage{amssymb}
-\RequirePackage{geometry}
+% \RequirePackage{geometry}
+\RequirePackage[showframe]{geometry}
 \RequirePackage{fancyhdr}
 \RequirePackage{float}
 \RequirePackage[nottoc]{tocbibind}
 \RequirePackage{graphicx}
-\RequirePackage{acronym}
 \RequirePackage{caption}
 \RequirePackage{enumitem}
 \RequirePackage{titlesec}
@@ -39,26 +40,37 @@
 
 \RequirePackage[stretch=10]{microtype}
 
+% Acronyms in acronymsstyle.sty
+% \RequirePackage{acronym}
 
+% Bibliography
 % \RequirePackage[square,sort,comma,numbers]{natbib}
+\RequirePackage[backend=biber, style=ieee-alphabetic]{biblatex}
+\RequirePackage{csquotes}
+\addbibresource{dbstmpl.bib}
+
+% Algorithm Package
 \RequirePackage[ruled,vlined,linesnumbered]{algorithm2e}
 \SetKwRepeat{Do}{do}{while}
 
-\RequirePackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+% Misc - todonotes
+% \RequirePackage[colorinlistoftodos,prependcaption,textsize=tiny,disable]{todonotes}
+\RequirePackage[colorinlistoftodos,prependcaption,textsize=tiny,disable]{todonotes}
+
+% Misc - spacing
 \RequirePackage{quoting}
 \quotingsetup{vskip=0pt, leftmargin=7pt, rightmargin=7pt}
 
-%MAYBE
+% MAYBE
 % \titleformat*{\subsubsection}{\scshape}
 % \newcommand{\ssubsection}[1]{%
 %   \subsection[#1]{\raggedright\normalfont\scshape #1}}
 
-\usepackage[utf8]{inputenc}
+% Figures
 \RequirePackage{subfigure}
-\RequirePackage[backend=biber, style=ieee-alphabetic]{biblatex}
-\RequirePackage{csquotes}
-\addbibresource{dbstmpl.bib}
-% \usepackage[square,sort,comma,numbers]{natbib}
+
+
+% Citation commands
 \newcommand*{\fullref}[1]{\hyperref[{#1}]{\autoref*{#1} \nameref*{#1}}} 
 \newcommand*{\secref}[1]{\hyperref[{#1}]{chapter \nameref*{#1}}}
 
@@ -75,7 +87,7 @@
 \newcommand{\PS}{\mathcal{P}}    % Parameter space
 
 %%
-%% Einstellungen
+%% Custom citation settings
 %%
 \DeclareCiteCommand{\citeauthor}
   {\boolfalse{citetracker}%
@@ -89,7 +101,7 @@
   {\usebibmacro{postnote}}
 
 %%
-%% Custom Settings
+%% Custom Hyperlink Settings
 %%
 \hypersetup{
     colorlinks,
@@ -98,6 +110,7 @@
     linkcolor=black,
     urlcolor=black
 }
+
 
 %% custom theorems
 \newtheoremstyle{propertystyle}% name of the style to be used
@@ -132,7 +145,7 @@
 \newcommand{\propertyautorefname}{Property.}
 
 
-%% todolistcommands
+% todolistcommands
 \newcommand{\insertref}[1]{\todo[color=blue!30]{insert ref #1}}
 \newcommand{\crit}[1]{\todo[color=red!70]{check!: #1}}
 \newcommand{\todor}[1]{\todo[color=red!70]{#1}}

@@ -1,0 +1,55 @@
+\def\fileversion{v0.1}
+\def\filedate{2019/06/21}
+
+\NeedsTeXFormat{LaTeX2e}
+
+\ProvidesPackage{acronymsstyle}[\filedate\space\fileversion]
+
+\RequirePackage[acronym, nonumberlist, toc]{glossaries}
+% \RequirePackage{glossary-superragged}
+\newglossarystyle{modsuper}{%
+  \glossarystyle{long}%
+  \renewcommand{\glsgroupskip}{}
+  \renewcommand*{\glossaryentryfield}[5]{%
+    \glsentryitem{##1}\glstarget{##1}{##2} & ##3\glspostdescription\space ##5\\[5pt]}%
+}
+% might cause errors in formatting
+\setlength\glsdescwidth{.75\textwidth}
+\makeglossaries
+\renewcommand*{\acronymname}{List of Acronyms and Abbreviations}
+\renewcommand*{\glspostdescription}{} % remove trailing dot
+\renewcommand{\glsnamefont}[1]{\textbf{#1}}
+
+% \newacronym{OPTICS}{OPTICS}{\textbf{O}rdering \textbf{P}oints \textbf{T}o \textbf{I}dentify the \textbf{C}lustering \textbf{S}tructure}
+% \newacronym{ELKI}{ELKI}{\textbf{E}nvironment for Deve\textbf{L}oping \textbf{K}DD-Applications Supported by \textbf{I}ndex-Structures}
+% \newacronym{DBSCAN}{DBSCAN}{\textbf{D}ensity-\textbf{B}ased \textbf{S}patial \textbf{C}lustering of \textbf{A}pplications with \textbf{N}oise}
+% \newacronym{ORCLUS}{ORCLUS}{Arbitrarily \textbf{OR}iented projected \textbf{CLUS}ter generation}
+% \newacronym{LMCLUS}{LMCLUS}{\textbf{L}inear \textbf{M}anifold \textbf{CLUS}tering}
+% \newacronym{4C}{4C}{\textbf{C}omputing \textbf{C}orrelation \textbf{C}onnected \textbf{C}lusters}
+% \newacronym{ERiC}{ERiC}{\textbf{E}xploring \textbf{R}elationships among \textbf{C}orrelation clusters}
+% \newacronym{HiCO}{HiCO}{\textbf{Hi}erarchical \textbf{C}orrelation \textbf{O}rdering}
+% \newacronym{CASH}{CASH}{\textbf{C}lustering in \textbf{A}rbitrary \textbf{S}ubspaces based on the \textbf{H}ough transform}
+% \newacronym{D-MASC}{D-MASC}{\textbf{D}ataspace \textbf{M}ean Shift \textbf{A}pplied \textbf{S}can for linear \textbf{C}orrelations}
+% \newacronym{ARI}{ARI}{Adjusted Rand Index}
+% \newacronym{NMI}{NMI}{Normalized Mutual Information}
+% \newacronym{hnf}{HNF}{Hesse Normal Form}
+% \newacronym{SUBCLU}{SUBCLU}{density-connected \textbf{SUB}space \textbf{CLU}stering}
+% \newacronym{CLIQUE}{CLIQUE}{\textbf{CL}ustering \textbf{I}n \textbf{QUE}st}
+% \newacronym{PCA}{PCA}{Principal Component Analysis}
+
+\newacronym{optics}{OPTICS}{\textbf{O}rdering \textbf{P}oints \textbf{T}o \textbf{I}dentify the \textbf{C}lustering \textbf{S}tructure}
+\newacronym{elki}{ELKI}{\textbf{E}nvironment for Deve\textbf{L}oping \textbf{K}DD-Applications Supported by \textbf{I}ndex-Structures}
+\newacronym{dbscan}{DBSCAN}{\textbf{D}ensity-\textbf{B}ased \textbf{S}patial \textbf{C}lustering of \textbf{A}pplications with \textbf{N}oise}
+\newacronym{orclus}{ORCLUS}{Arbitrarily \textbf{OR}iented projected \textbf{CLUS}ter generation}
+\newacronym{lmclus}{LMCLUS}{\textbf{L}inear \textbf{M}anifold \textbf{CLUS}tering}
+\newacronym{4c}{4C}{\textbf{C}omputing \textbf{C}orrelation \textbf{C}onnected \textbf{C}lusters}
+\newacronym{eric}{ERiC}{\textbf{E}xploring \textbf{R}elationships among \textbf{C}orrelation clusters}
+\newacronym{hico}{HiCO}{\textbf{Hi}erarchical \textbf{C}orrelation \textbf{O}rdering}
+\newacronym{cash}{CASH}{\textbf{C}lustering in \textbf{A}rbitrary \textbf{S}ubspaces based on the \textbf{H}ough transform}
+\newacronym{dmasc}{D-MASC}{\textbf{D}ataspace \textbf{M}ean Shift \textbf{A}pplied \textbf{S}can for linear \textbf{C}orrelations}
+\newacronym{ari}{ARI}{Adjusted Rand Index}
+\newacronym{nmi}{NMI}{Normalized Mutual Information}
+\newacronym{hnf}{HNF}{Hesse Normal Form}
+\newacronym{subclu}{SUBCLU}{density-connected \textbf{SUB}space \textbf{CLU}stering}
+\newacronym{clique}{CLIQUE}{\textbf{CL}ustering \textbf{I}n \textbf{QUE}st}
+\newacronym{pca}{PCA}{Principal Component Analysis}

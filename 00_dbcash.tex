@@ -1,5 +1,8 @@
 \documentclass[pdftex,12pt,a4paper]{report}
+% \documentclass[pdftex,12pt,a4paper,oneside]{scrbook}
+% \documentclass[pdftex,12pt,a4paper]{book}
 \usepackage{dbstmpl}
+\usepackage{acronymsstyle}
 
 % Hier die eigenen Daten eintragen
 \global\arbeit{Master's Thesis}
@@ -30,7 +33,8 @@ Informatik der LMU M"unchen.
 \tableofcontents
 
 % Hier beginnt der eigentliche Text
-\input{abbreviations.tex}
+% \input{abbreviations.tex}
+\printglossary[type=\acronymtype, style=modsuper, title=List of Acronyms and Abbreviations]
 \input{01_intro.tex}
 \input{01a_fundamentals.tex}
 \input{02_relatedwork.tex}
@@ -44,12 +48,12 @@ Informatik der LMU M"unchen.
 Results with Figures?
 
 % Abbildungsverzeichnis (kann auch nach dem Inhaltsverzeichnis kommen)
-\listoffigures
+% \listoffigures
 
-\listofalgorithms
-\addcontentsline{toc}{chapter}{List of Algorithms}
-% Tabellenverzeichnis (kann auch nach dem Inhaltsverzeichnis kommen)
-\listoftables
+% \listofalgorithms
+% \addcontentsline{toc}{chapter}{List of Algorithms}
+% % Tabellenverzeichnis (kann auch nach dem Inhaltsverzeichnis kommen)
+% \listoftables
 
 % Literaturverzeichnis
 % \bibliographystyle{plainnat}

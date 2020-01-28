@@ -1,7 +1,8 @@
 \chapter{Evaluation}
+To measure the performance of our algorithm, we evaluated \todor{werden tests evaluiert, oder algorithmen?} our algorithm on custom data sets, generated via the method mentioned in \autoref{sec:datagen}. Each of the data sets linear correlations are uniquely labeled and subsequently added noise points relabeled to a nearby linear correlation if the point was within a certain vicinity from the correlation away. We defined the threshold of the vicinity as $jitter_{thresh}$ which merges the noise points if the euclidean distance to a nearby linear correlation $distance_{point\rightarrow hyperplane} = \frac{\Vec{n}\cdot\Vec{x}+\delta}{|\Vec{n}|}$ is smaller than the threshold. These data sets are served as our \textit{groundtruth}. Based on these groundtruths we compared our local-global combining clustering approach's results with its ancestor \gls{cash}'s results in the accuracy of their labeling based on the \gls{ari} and \gls{nmi} score and its runtime performance. 
 
 \section{Setup}
-Initial tests were done on random data sets generated via the method mentioned in \autoref{sec:datagen}. 
+
 
 All following tests were executed in docker containers running on a Virtual Machine with an x86\_64 bit architecture, 48 CPUs and 246GB RAM. 
 

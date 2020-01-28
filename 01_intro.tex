@@ -5,10 +5,10 @@ To tackle this problem there has been lots of different approaches. Either via i
 
 In this work we focus on the unsupervised solution for this problem. Namely we try to create a new algorithm, which combines some approaches to get a more universal clustering of the data.
 
-Clustering in Arbitrary Subspaces based on the Hough transform (CASH) is cool, however its complexity is $\mathcal{O}(n^2)$.
+\acrfull{cash} is cool, however its complexity is $\mathcal{O}(n^2)$.
 We try to do it better via using a density based approach to prune away irrelevant points and noise..
 
 \section{Problem Statement}
-Our proposol is an algorithm, which builds upon existing local and global clustering approaches and combines those into a more exhaustive algorithm which can give even more insights onto the applied data. In particular we firstly are apply a density based approach onto the data sets to filter out relevant subintervals of the original space (not to be confused with subspaces) and evaluate those by applying a correlation clustering algorithm. Those local results are then stitched together and used to reevaluate every other previously pruned point, to get a complete evaluation of every point of the dataset. With this approach, we receive a labeling of a local view and also a global view of the points. 
+Our proposal is a subspace clustering algorithm, which builds upon an existing local classical clustering and global correlation clustering approach and combines those into a more exhaustive algorithm which can give a more comprehensive insight, notably a simultaneously local and global view, onto the applied data and additionally provide an improvement in performance compared to the global correlation clustering approach. In particular we firstly apply a density based approach onto the data sets to filter out relevant subintervals of the original data space (not to be confused with subspaces) and evaluate those by applying a correlation clustering algorithm based on the Hough Transform. Those local results are then stitched together and used to reevaluate previously (falsely) pruned points, to get a complete evaluation of every point of the data set. With this approach, we receive a labeling of a local view and also a global view of the points. 
 
 \section{Structure of the Thesis}
