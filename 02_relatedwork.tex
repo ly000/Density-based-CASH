@@ -2,12 +2,17 @@
 \label{sec:Related Work}
 This chapter introduces some foundational work on density-based and subspace/correlation clustering and hopes to give an intuitive insight into existing approaches to solve the problem of subspace clustering. We also elaborate, where these existing approaches lack in ability and capability and show some of the current optimization approaches.
 
-Since sections \nameref{sec:houghintro}, \nameref{sec:cashintro}, \nameref{sec:dbscanintro} and \nameref{sec:OPTICSintro} are essential to our work they will be elaborated in greater detail in the chapter \nameref{sec:Foundations}
+Since sections \nameref{sec:houghintro}, \nameref{sec:cashintro}, \nameref{sec:dbscanintro} and \nameref{sec:OPTICSintro} are essential components to our work they will be elaborated in greater detail in the chapter \nameref{sec:Foundations}
 
 \section{Existing Subspace Clustering Algorithms}
-There are many approaches to detecting relevant subspaces in data, generally grouped to either finding axis-parallel or arbitrarily oriented subspaces. Our work in particular focuses on the extraction of the second type of subspaces which obviously proves to be a more challenging task since it encompasses the problem of axis-parallel subspace clustering\todor{the first type}. In this section we Like \acrshort{orclus} and \acrshort{4c}, many of them are based on the application of the \gls{pca} to extract the correlations. This section introduces some existing subspace algorithms and explains, in which way those works would or would not be suited for our idea.
+There are many approaches for detecting relevant subspaces in data, generally grouped to either finding axis-parallel or arbitrarily oriented subspaces. Our work in particular focuses on the extraction of the second type of subspaces, which obviously proves to be a more challenging task since it encompasses the problem of axis-parallel subspace clustering\todor{the first type}. This task is also referred as \textit{Correlation Clustering}. 
+
+This section introduces some existing correlation clustering algorithms and demonstrates/analyzes/explains/illustrates/points out\todor{choose one} their advantages and disadvantages and elaborates on their suitability for our idea.
 
 \subsection{PCA}
+\acrfull{pca} is a statistical approach for finding \textit{Principal Components} in  \cite{pcawold1987principal}. 
+For further details to the algorithm \textcite{pcamljolliffe1986principal} offers a short and intuitive step-by-step explanation.
+badd\cite{PCAshlens2014tutorial}.
 
 \subsection{ORCLUS}
 
@@ -16,7 +21,7 @@ There are many approaches to detecting relevant subspaces in data, generally gro
 \subsection{HiCO and ERiC}
 (Global) Correlation Clustering, other algorithms so far (ORCLUS \cite{orclusaggarwal2000finding}, LMCLUS \cite{}, 4C, HiCO, ERiC)[1]
 
-Since many of the existing correlation clustering algorithms rely on \gls{PCA} they also come with its limitations.
+Since many of the existing correlation clustering algorithms rely on \gls{pca} they also come with its limitations.
 
 \section{Hough Transformation}\label{sec:houghintro}
 The Hough Transform originally was introduced by \textcite{houghOriginal1962method} and extended by \textcite{rosenfeld1969picture} in the field of computer vision for edge detection\cite{houghhistoryhart2009hough}. The initial purpose of the Hough transform was a technique to detect colinear points in an image space but has since then found various other applications in fields like image processing/analysis~\cite{rosenfeld1969picture,ballard1981generalizing}, computer vision~\cite{davies2004machine} and subspace clustering\cite{CASHachtert2008robust}.
