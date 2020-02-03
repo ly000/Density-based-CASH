@@ -103,23 +103,23 @@ Given the previous defined relations we can now define the notion of clusters an
 A dense cluster is the union of a set of density-connected core points $CP$ and the set of border points $BP$ which are density-reachable from $CP$.
 Formally \todo{cite style}\citeauthor{DBSCANEKSX96} defines a \gls{dbscan}-cluster as:
 
-A dense cluster in data set $DS$ is a non-empty subset $C$ of points $p$ and $q$ if the following two conditions are fulfilled:
+A dense cluster in data set $DS$ is a non-empty subset $C^{DB} \subseteq DS$ of points $p$ and $q$ if the following two conditions are fulfilled:
 \todor{verbatim definition!}
 % \begin{enumerate}
 %     \item $\forall p, q$: if $p \in C$ and $q$ is density-reachable from $p$, then $q \in C$ (Maximality)
 %     \item $\forall p, q \in C$: $p$ is density-connected to $q$ (Connectivity)
 % \end{enumerate}
 \begin{align}
-    &\forall p, q: \text{if } p \in C \text{ and } q \text{ is density-reachable from } p \text{, then } q \in C \\
-    &\forall p, q \in C: p \text{ is density-connected to }q
+    &\forall p, q: \text{if } p \in C^{DB} \text{ and } q \text{ is density-reachable from } p \text{, then } q \in C^{DB} \\
+    &\forall p, q \in C^{DB}: p \text{ is density-connected to }q
 \end{align}
 
 This definition of clustering therefore defines any cluster with \textit{at least} a density defined by the Epsilon-distance $\epsilon$ and the number of minimum points $MinPts$.
 
 \subsubsection*{Density-based Noise}
-Every point not belonging to any of the existing clusters $C_1, \dotsc, C_k$ in data set $DS$ are now considered as noise: 
+Every point not belonging to any of the existing clusters $C^{DB}_1, \dotsc, C^{DB}_k$ in data set $DS$ are now considered as noise: 
 \begin{align}
-    noise = \{p \in  DS | \forall i : p \notin C_i\}
+    noise^{DB} = \{p \in  DS | \forall i : p \notin C^{DB}_i\}
 \end{align}
 \todob{transition?}
 
@@ -138,8 +138,9 @@ If the seed list $L$ is empty the current cluster is done and the next not previ
 % \algsetup{linenosize=\tiny}
 % \scriptsize
 \SetAlgoLined
-\KwData{data set $DS$; seed list $L$; current Cluster $C_i$; Noise $N$; $MinPts$; $\epsilon$}
-\KwResult{A set $R$ of clusters $C_1,\dotsc,C_n$ and noise}
+% \DontPrintSemicolon
+\KwData{data set $DS$; seed list $L$; current Cluster $C^{DB}_i$; Noise $N^{DB}$; $MinPts$; $\epsilon$}
+\KwResult{A set $R$ of clusters $C^{DB}_1,\dotsc,C^{DB}_n$ and noise $N^{DB}$}
  o := first Point of $DS\setminus \{R \cup N\}$\;
  L := [o]\;
  i := 0\;
@@ -148,14 +149,14 @@ If the seed list $L$ is empty the current cluster is done and the next not previ
         currentPoint := L.pop(0)\;
         L.push($N_{\epsilon}(currentPoint)$)\;
         \eIf{$|N_{\epsilon}(currentPoint)| > MinPts$}{
-            $C_i$.add(currentPoint)\;
-            $C_i$.addAllNeighbors($N_{\epsilon}(currentPoint)$)\;
+            $C^{DB}_i$.add(currentPoint)\;
+            $C^{DB}_i$.addAllNeighbors($N_{\epsilon}(currentPoint)$)\;
             N.removeAllNeighbors($N_{\epsilon}(currentPoint)$)\;
         }{
             N.add(currentPoint)
         }
     }
-    R.add($C_i$)\;
+    R.add($C^{DB}_i$)\;
     o := first Point of $DS\setminus \{R \cup N\}$\;
     L := [o]\;
     i := i + 1\;
@@ -277,7 +278,7 @@ A point $p_i = (x_i, y_i)$ in data space is then characterized by each possible 
     \label{fig:houghmxt}
 \end{figure}
 
-However using the slope-intercept form $y = m \cdot x + t$ comes with a drawback, it can not show lines parallel to the y-axis. As a solution \citeauthor{duda1971use} propose the use of the \acrfull{hnf} for the concurrent lines instead. Their equations in data space change to the following form:
+However using the slope-intercept form $y = m \cdot x + t$ comes with a drawback, it can not show lines parallel to the y-axis. As a solution \citeauthor{duda1971use} propose the use of the \gls{hnf} for the concurrent lines instead. Their equations in data space change to the following form:
 \begin{align}\label{eq:hnfangles}
     \begin{split}
         \delta_{p_i}(\theta_{p_i}) &= x_i \cos{\theta_{p_i}} + y_i \sin{\theta_{p_i}}\\
@@ -342,15 +343,24 @@ Let $e_i, 1 \leq i \leq d$, be an orthonormal basis in a $d$-dimensional feature
 Similar to \autoref{ssec:houghindepth} any $d$-dimensional point $p \in \mathcal{D}$ can be explained by an infinite number of hyperplanes containing $p$. These hyperplanes can be uniquely defined by the $d-1$ angles $\alpha_1,\dotsc,\alpha_{d-1}$, with $\alpha_i \in [0,\pi)$ representing the normal vector of the hyperplanes, and a fix point $o$ on the hyperplane. To acquire a point independent representation \textcite{CASHachtert2008robust} maps the angles $\alpha_i$ and point $p$ with the following parametrization function to the shortest distance $\delta$ of the hyperplane to the origin (c.f. \ref{eq:hnfangles}).
 
 \subsubsection*{Parametrization Function}
-Let $p = (p_1,\dotsc,p_d)$ be a $d$-dimensional unit vector specified by $d-1$ angles $\alpha_1,\dotsc,\alpha_{d-1}$ according to the \hyperref[def:spherecord]{previous definition \textit{``Spherical Coordinates''}}. Then the parametrization function $f_p:\R^{d-1} \rightarrow \R$ of vector $p$ denotes the distance of the hyperplane defined by the point $p$ and the normal vector $n$ to the origin:
+Let $\vec{p} = (p_1,\dotsc,p_d)$ be a $d$-dimensional vector and $\vec{n_0} = (n_1,\dotsc,n_d)$ be a $d$-dimensional unit vector specified by $d-1$ angles $\alpha_1,\dotsc,\alpha_{d-1}$ according to the \hyperref[def:spherecord]{previous definition \textit{``Spherical Coordinates''}}. Then the parametrization function $f_{\vec{p}}:\R^{d-1} \rightarrow \R$ of vector $\vec{p}$ denotes the distance of the hyperplane defined by the point $p$ and the normal vector $\vec{n}$ to the origin:
 \begin{align}
     \begin{split}
-    f_p(\alpha_1,\dotsc,\alpha_{d-1}) &= \langle p,n \rangle \\
-    &= \sum_{i=1}^d p_i \cdot (\prod_{j=1}^{i-1} \sin{\alpha_j}) \cdot \cos{\alpha_i} = \delta
+            f_{\vec{p}}(\alpha_1,\dotsc,\alpha_{d-1}) &= \langle \vec{p},\vec{n_0} \rangle\\
+    &= \sum_{i=1}^d p_i \cdot (\prod_{j=1}^{i-1} \sin{\alpha_j}) \cdot \cos{\alpha_i}  = \delta
     \end{split}
 \end{align}
 
-Given $d-1$ angles $\alpha_1,\dotsc,\alpha_{d-1}$ and shortest distances $\delta$ obtained by the parametrization function for a point $p_i = (x_1,\dotsc,x_d)$ and its infinite hyperplanes, each point $p$ in data space $\mathcal{D}$ can be mapped to a $d$-dimensional parameter space $\mathcal{P} \subseteq \R^d$ spanned by the previously mentioned parameters.
+Given $d-1$ angles $\alpha_1,\dotsc,\alpha_{d-1}$ and shortest distance $\delta$ obtained by the parametrization function for a point $p_i = (x_1,\dotsc,x_d)$ and its infinite hyperplanes, each point $p$ in data space $\mathcal{D}$ can be mapped to a $d$-dimensional parameter space $\mathcal{P} \subseteq \R^d$ spanned by the previously mentioned parameters, again creating a function defining a hyperplane:
+\begin{align}
+    \begin{split}
+        \delta &= x_1 \cdot n_{0,1} + \dots + x_d \cdot n_{0,d}\\
+        &= \langle \vec{x},\vec{n_0} \rangle\label{eq:highhnf}
+    \end{split}
+\end{align}
+Similar to \autoref{ssec:houghindepth} the resulting hyperplane in parameter space can be transformed between  cartesian representation using a unit vector $\vec{n_0}$ and polar representation based on angles $\alpha_1,\dotsc,\alpha_{d-1}$. In the process of this thesis, we primarily use the cartesian form of the \gls{hnf} (c.f. \autoref{eq:highhnf}).
+
+
 By the means of the parametrization function \textcite{CASHachtert2008robust} extend the properties of the original Hough transformation (c.f. \autoref{ssec:properties}) to $d$-dimensional data spaces and its corresponding parameter spaces: \todor{verbatim}
 \begin{quoting}
 \begin{property}
@@ -378,10 +388,29 @@ Points lying on the same sinusoidal curve in parameter space represent $(d-1)$-d
 Boundaries of the parameter space $\mathcal{P}$ are extended to $\mathcal{P} = [\delta_{min}, \delta_{max}]\times [0,\pi)^{d-1}$ with $\delta_{min}$ and $\delta_{max}$ being the minimum and maximum of all functions $f_p$ for $\alpha \in [0,\pi)$ again: $[\delta_{min}, \delta_{max}] = [min_{p \in \mathcal{D}}(f_p(\alpha_p^{min})), max_{p \in \mathcal{D}}(f_p(\alpha_p^{max}))$, where $\alpha_p^{min}$ and $\alpha_p^{max}$ denote the minimum and maximum of function $f_p$. An in detail explanation is found in \textcite{CASHachtert2008robust}.
 Applying the same concept of \autoref{ssec:houghindepth} the goal of finding $d$-dimensional points lying on the same hyperplane requires finding intersections of the corresponding $d$-dimensional curves in parameter space. Since an analytical solution of the intersections in multi-dimensional space is infeasible, the parameter space is scanned for $d$-dimensional regions/hypercuboids of a certain amount $m$ of intersections instead which additionally copes for jitter. Regions which fulfill the number of intersections are called \textit{dense grid cells}.
 
-\subsubsection*{Correlation Cluster}
+\subsubsection*{Correlation Cluster}\todor{check definition with dk}
+Since we have to distinguish correlation clusters from density-based clusters, we hereby define a notion of correlation clusters.
+
+Correlation in a classical sense is a measure of relationship between two variables/features, but can also be extended to relations between multiple features. Commonly the relation refers to a linear relationship, but can also be non-linear. Since we want to cluster these correlations not only by orientation, but also by positioning, we define a specifically located correlation $r_{l,f,t}$, with $l$ being an unambiguous location as the source of the correlation, $f$ being a set of predictor features and $t$ being the target/correlating feature, as a hyperplane $h(t,f,l)$. In case of \gls{cash} a localized correlation/hyperplane is defined by the \gls{hnf}(c.f. \autoref{eq:highhnf}) with $f$ and $t$ being embedded in the orientation $n_{0,i} \in \{f,t\}$ and distance $\delta$ and $l$ only being embedded in the latter one. 
+\begin{align}
+    \delta(t,f,l) = \langle \vec{x},\vec{n_0}(f,t) \rangle
+\end{align}
+\textit{Correlation clusters} refer to the grouping of observations/data objects within a certain interval in data space which display similar correlations in a subset of the objects features. In other words a Correlation Cluster is a group of points which have a low distance $j$, which we will refer to as \textit{jitter}, to a hyperplane $h$ modeled by a correlation within an interval. We formalize it as following:
+
+A correlation cluster in data set $DS$ is a non-empty subset $C^{Corr} \subseteq DS$ of points $p$ which fullfill the following condition:
+\begin{align}
+    &\forall p: \text{if } \text{dist}(p,h) < j \text{, then } p \in C^{Corr}
+\end{align}
+
+where the function $dist(a,b)$ denotes the shortest distance between two geometric\todor{richtiger begriff dafuer?} objects, $h$ being the hyperplane modeling the localized correlation and $j$ the jitter representing the maximal threshold for fault tolerance.
+
 \todor{eigene definition, consistent with dbscan}
 
 \subsubsection*{Correlation Noise}
+Analogous to density-based noise in \autoref{ssec:DBSCANindepth}, every point not belonging to any of the existing clusters $C^{Corr}_1, \dotsc, C^{Corr}_k$ in data set $DS$ are now considered as noise: 
+\begin{align}
+    noise^{Corr} = \{p \in  DS | \forall i : p \notin C^{Corr}_i\}
+\end{align}
 
 \subsubsection*{The CASH-Algorithm}
 Given previously defined data representation in data and parameter space, the goal is finding dense grid cells in parameter space. However since the complexity of searching the parameter space with a predefined grid is exponential w.r.t.\ dimension $d$ it also quickly gets too computational expensive for higher dimensional spaces. \gls{cash} tackles this problem by smartly dividing the search space. \citeauthor{CASHachtert2008robust} proposed the following search strategy:
@@ -484,7 +513,7 @@ Based on the assumption that local linear correlations contained in a global lin
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/PCAdifficulties.png}
-    \caption{Caption}
+    \caption{Caption\cite{PCAshlens2014tutorial}}
     \label{fig:pcadifficulties}
 \end{figure}
 
