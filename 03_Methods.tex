@@ -540,7 +540,11 @@ After finding all dense regions of interest, the subclusters are independently e
 To combine the localized correlations to a global correlation clustering, we evaluate all the localized correlations without its bounding boxes. Since we can represent the localized correlations as hyperplanes with a unit normal vector $\vec{n}$ and a shortest distance to origin $\delta$ (c.f. \autoref{eq:highhnf}), we can easily compare different hyperplanes by variation in rotation(angles), using the cosine-similarity between the normal vectors, and translation(absolute positioning), using the euclidean-distance between the shortest distances. For adjustability we introduce two parameters $thres_{\Delta \text{cos-dist}}$ and $thres_{\Delta \text{eudl-dist}}$, which serves as thresholds for maximal allowed divergence of both measures. To formalize the requirements for a successful combination (\textit{stitching}) of local correlations we introduce following relations:
 
 \subsubsection*{Orientation-Similarity}
-Given a set of unique linear correlations $C$ in \gls{hnf}. Then two correlations $a \in C$ and $b \in C$ are \textit{orientation-similar}, if the absolute cosine-similarity between $a$ and $b$ is bigger than $1 - thres_{\Delta \text{cos-dist}}$.
+Given a set of unique linear correlations $C$ in \gls{hnf}. Then two correlations $a \in C$ and $b \in C$ are \textit{orientation-similar}, if the absolute cosine-similarity between the correlations normal vectors $\vec{n_a}$ and $\vec{n_b}$ is bigger than $1 - thres_{\Delta \text{cos-dist}}$.
+
 \begin{align}
-    cos-sim(a,b) = \frac{\sum_{i=1}^{n} a_{i} b_{i}}{\sqrt{\sum_{i=1}^{n} a_{i}^{2}} \sqrt{\sum_{i=1}^{n} b_{i}^{2}}} >
+    cos-sim(a,b) = \frac{\sum_{i=1}^{n} a_{i} b_{i}}{\sqrt{\sum_{i=1}^{n} a_{i}^{2}} \sqrt{\sum_{i=1}^{n} b_{i}^{2}}} > 1 - thres_{\Delta \text{cos-dist}}
 \end{align}
+
+\subsubsection*{Translation-Similarity}
+Given a set of unique linear correlations $C$ in \gls{hnf}. Then two correlations $a \in C$ and $b \in C$ are \textit{translation-similar}, if orientation-similarity holds and the absolute eudlidean-distance between the correlations distances $\delta_a$ and $\delta_b$ is smaller than $thres_{\Delta \text{eudl-dist}}$.
