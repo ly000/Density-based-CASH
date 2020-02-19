@@ -37,8 +37,10 @@
 \RequirePackage{caption}
 \RequirePackage{enumitem}
 \RequirePackage{titlesec}
-\RequirePackage{hyperref}
 \RequirePackage{booktabs}
+\RequirePackage{blindtext}
+
+\usepackage{tabularx}
 
 \newcommand{\tabitem}{~~\llap{\tiny\textbullet}~~}
 
@@ -73,6 +75,7 @@
 % Figures
 \RequirePackage{subfigure}
 
+\RequirePackage{hyperref}
 
 % Citation commands
 \newcommand*{\fullref}[1]{\hyperref[{#1}]{\autoref*{#1} \nameref*{#1}}} 
@@ -104,9 +107,9 @@
   {\multicitedelim}
   {\usebibmacro{postnote}}
 
-%%
-%% Custom Hyperlink Settings
-%%
+%
+% Custom Hyperlink Settings
+%
 \hypersetup{
     colorlinks,
     citecolor=black,

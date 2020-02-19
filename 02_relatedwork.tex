@@ -13,6 +13,7 @@ This section introduces some existing correlation clustering algorithms and illu
 \subsection{PCA}
 A common way to filter out relevant features/subspaces in high dimensional data is the application of feature selection/dimensionality reduction. One of the oldest and most widely used methods is the \gls{pca}. It is a statistical approach which uses an orthogonal transformation to transform the original basis of a $d$-dimensional data space $DS$ to a basis built upon $d$ so called \textit{Principal Components} $PC$, where the first Principal Components $PC_1$ is a vector which describes the largest percentage of explained variance in $DS$. Each Principal Component $PC_j$ next in order $j,\dotsc,d$ is orthogonal to the previous ones $PC_i, i<j$ and is ordered by the next highest explained variance. Mathematically finding the Principal Components in a data set $DS$ boils down to solving its eigendecomposition \todor{nicht ganz korrekt. eigendecomp von cov(x)}, where the eigenvector with the highest corresponding eigenvalue represents the first Principal Component and the second highest the second Principal Component, etc\cite{pcawold1987principal}. For further details to the calculation \textcite{pcamljolliffe1986principal} offers a short and intuitive step-by-step explanation.
 Unfortunately the extraction of relevant features via \gls{pca} is rarely of use for clustering problems. Unmodified \gls{pca} is global in nature and can only compute one subspace of the original data space and does not address the problem of \textit{local feature relevance} or \textit{local feature correlation}, which essentially states, that different clusters in data space can exist in different subspaces\cite{kriegel2009clustering} (c.f. \cite{PCAshlens2014tutorial}). \todor{PCA besser erklaeren}
+local pca
 
 \todob{PCA own fig}
 \begin{figure}
@@ -22,14 +23,14 @@ Unfortunately the extraction of relevant features via \gls{pca} is rarely of use
       \captionsetup{width=.9\linewidth}
       \includegraphics[width=.9\textwidth]{figures/pcalocalfeat1.png}
       \captionof*{figure}{a) First}
-      \label{fig:test1}
+      \label{fig:pca_dbscan}
     \end{minipage}%
     \begin{minipage}[t]{.5\textwidth}
       \centering
       \captionsetup{width=.9\linewidth}
       \includegraphics[width=.9\textwidth]{figures/pcalocalfeat2.png}
       \captionof*{figure}{b) Second}
-      \label{fig:test2}
+      \label{fig:dbscan_pca}
     \end{minipage}
     \caption{lazy}
     \label{fig:localfeatrelevance}
@@ -57,7 +58,7 @@ In contrast to \gls{orclus}, \gls{4c} enables the handling of noise and outliers
 
 Instead of determining each points dimensionality according to its dense neighborhood (c.f. \autoref{ssec:4c}), \gls{copac} first assigns each point its \textit{local correlation dimensionality} $\lambda$, which denotes the smallest amount of eigenvectors explaining at least $\alpha$ percent of the $k$-nearest neighbors variance, and partitions them based on $\lambda$. Secondly, clusters each partition is processed with a modified \acrshort{dbscan}. This modified \acrshort{dbscan} now only considers the $d-\lambda$ weakest eigenvectors of the k-nearest neighbors in the distance functions and therefore clusters each partition based on the distance to the strong eigenvectors/correlations.
 
-Due to the inital partitioning based on the local correlation dimensionality $\lambda$, \gls{copac} does not need a parameter to detect a specific dimensional correlation, but instead simultaneously finds correlation clusters of arbitrary dimensions. The difficulties here rely on the choice of the parameter $k$, which at least can be constraint to $k>d$
+Due to the inital partitioning based on the local correlation dimensionality $\lambda$, \gls{copac} does not need a parameter to detect a specific dimensional correlation, but instead simultaneously finds correlation clusters of arbitrary dimensions. The difficulties here rely on the choice of the parameter $k$, which at least can be constraint to $k>d$.
 \todor{moechte eigtl nicht sagen, dass das gut oder schlecht ist, vllt will man ja gezielt nach einer dimensionalitaet suchen?}\\
 
 
@@ -69,7 +70,7 @@ Due to the inital partitioning based on the local correlation dimensionality $\l
 \section{Hough Transformation}\label{sec:houghintro}
 The Hough Transform originally was introduced by \textcite{houghOriginal1962method} and extended by \textcite{rosenfeld1969picture} in the field of computer vision for edge detection\cite{houghhistoryhart2009hough}. The initial purpose of the Hough transform was a technique to detect colinear points in an image space but has since then found various other applications in fields like image processing/analysis~\cite{rosenfeld1969picture,ballard1981generalizing}, computer vision~\cite{davies2004machine} and subspace clustering\cite{CASHachtert2008robust}.
 
-The basic idea of the Hough transform is the transformation of all points $p_i = (x_i,y_i)$ in a 2-dimensional image space $\mathcal{D} \subseteq \R^2$ to functions $f_{p_i}$ in a 2-dimensional parameter space $\mathcal{P} \subseteq \R^2$, also known as Hough space\cite{illingworth1988survey}. This is can be done by e.g. taking a representation of a point $p$ as all of its concurrent lines $y_p = m \cdot x_p + t$ and rearranging it to $m_{p} = - \frac{1}{x_p} \cdot t_{p} + \frac{y_p}{x_p}$ which produces a straight with slope $m$ and y-intersect $t$ in a $(m,t)$-parameter space. Since each point in parameter space represents a particular $(m,t)$-setting, multiple functions close to each other implies that their respective points have similar $(m,t)$-settings as well. The correlation clustering objective therefore transforms to a density-based clustering objective in parameter space, with the added benefit of being able to detect correlating points regardless of their distance to each other in data space. This property is exploited by e.g. evaluating the whole parameter space in a grid with a voting scheme or by smartly splitting the parameter space in \autoref{sec:houghintro} to detect linear correlations. 
+The basic idea of the Hough transform is the transformation of all points $p_i = (x_i,y_i)$ in a 2-dimensional image space $\mathcal{D} \subseteq \R^2$ to functions $f_{p_i}$ in a 2-dimensional parameter space $\mathcal{P} \subseteq \R^2$, also known as Hough space\cite{illingworth1988survey}. This can be done by e.g. taking a representation of a point $p$ as all of its concurrent lines $y_p = m \cdot x_p + t$ and rearranging it to $m_{p} = - \frac{1}{x_p} \cdot t_{p} + \frac{y_p}{x_p}$ which produces a straight with slope $m$ and y-intersect $t$ in a $(m,t)$-parameter space. Since each point in parameter space represents a particular $(m,t)$-setting, multiple functions close to each other implies that their respective points have similar $(m,t)$-settings as well. The correlation clustering objective therefore transforms to a density-based clustering objective in parameter space, with the added benefit of being able to detect correlating points regardless of their distance to each other in data space. This property is exploited by e.g. evaluating the whole parameter space in a grid with a voting scheme or by smartly splitting the parameter space in \autoref{sec:houghintro} to detect linear correlations. 
 \todor{Ich plagiere mich selbst. 1zu1 aus unterem abschnitt}
 % \begin{figure}
 %     \centering
@@ -81,7 +82,7 @@ The basic idea of the Hough transform is the transformation of all points $p_i =
 \section{CASH}\label{sec:cashintro}
 The global correlation clustering algorithm \gls{cash} extends the use case of the Hough Transformation to the detection of arbitrary-dimensional subspaces by augmenting the initial rigid 2-dimensional definition to a multi-dimensional one. 
 
-Furthermore \gls{cash} introduces a improved search strategy for detecting regions of high intersections in parameter space to improve the efficiency compared to the basic grid search \cite{CASHachtert2008global}. Instead of doing an extensive count operation/accumulation of intersections over a fixed interval, \gls{cash} successively splits the whole parameter space by its axes and only further evaluates the split hypercuboids if they contain enough intersections. This is repeated until a certain count of splits is reached and only then hypercuboids with enough intersections are considered as linear correlations. 
+Furthermore \gls{cash} introduces an improved search strategy for detecting regions of high intersections in parameter space to improve the efficiency compared to the basic grid search \cite{CASHachtert2008global}. Instead of doing an extensive count operation/accumulation of intersections over a fixed interval, \gls{cash} successively splits the whole parameter space by its axes and only further evaluates the split hypercuboids if they contain enough intersections. This is repeated until a certain count of splits is reached and only then hypercuboids with enough intersections are considered as linear correlations. 
 
 Since our work focuses on ``\textit{Detecting Global Correlated Clusters using Hough Transform through Locally Dense Correlations}'', we use \gls{cash} to cope with multi-dimensional data and detect our locally dense correlations. Additionally we will use \gls{cash} as a performance baseline for our descendant algorithm to compare them in a global setting.
 A more profound explanation to the transformation and its usage in \gls{cash} will be given in \autoref{ssec:houghindepth}.
