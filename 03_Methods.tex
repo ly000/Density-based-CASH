@@ -166,6 +166,7 @@ If the seed list $L$ is empty the current cluster is done and the next not previ
 \vspace{5mm}
 
 This algorithm was the first approach to segmenting the original data space into subintervals of importance. However, there is a drawback with using \gls{dbscan} as the first segmentation. \gls{dbscan} relies on a global parameter setting which can only find clusters with approximately the same density or higher (c.f. \autoref{fig:DBSCANhierarchy}) and therefore would not be able to find the intrinsic clustering structure well if the underlying models of the global correlations created linear correlations with different densities. 
+Note however that in increasing-dimensional spaces, the volume of the space increases exponentially fast, which causes the data space to become sparse. This induces that our data space might not be clusterable by a density-based approach in high-dimensional spaces. This phenomenon is also called the \textit{Curse of Dimensionality}~\cite{bellman2015adaptive}.
 
 \begin{figure}
     \centering
@@ -252,7 +253,7 @@ To create this ordering, \gls{optics} first initializes the ordering $O$ with a 
 
 As an illustration \gls{optics} can visualize the hierarchy using a \textit{reachability plot} (c.f. \autoref{fig:reachabilityplot}).\\
 
-All in all \gls{optics} provides a more capable clustering tool for different densities, with an, in practice, only 1.6 higher runtime compared to its ancestor \gls{dbscan}. In theory the runtime complexity of \gls{optics} is heaviliy dominated by the runtime of the neighborhood query. Given a tree-based spatial index structure for the neighborhood query, the runtime becomes $\mathcal{O}(|DS| \log |DS|)$, in the worst case however the complexity raises to $\mathcal{O}(|DS|^2)$.
+All in all \gls{optics} provides a more capable clustering tool for different densities, with an, in practice, only 1.6 higher runtime compared to its ancestor \gls{dbscan}. In theory the runtime complexity of \gls{optics} is heaviliy dominated by the runtime of the neighborhood query. Given a tree-based spatial index structure for the neighborhood query, the runtime becomes $\mathcal{O}(|DS| \log |DS|)$, in the worst case however the complexity raises to $\mathcal{O}(|DS|^2)$. However similar to \autoref{ssec:DBSCANindepth}, \gls{optics} also suffers from the \textit{Curse of Dimensionality}.
 
 \begin{figure}
     \centering
@@ -509,7 +510,7 @@ With the previously mentioned algorithms we are already able to find arbitrarily
 
 \begin{figure}
     \centering
-    \includegraphics[width=.8\textwidth]{figures_method/Groundtruth.pdf}
+    \includegraphics[width=.6\textwidth]{figures_method/Groundtruth.pdf}
     \caption{Caption}
     \label{fig:localglobalproblem}
 \end{figure}
@@ -528,11 +529,11 @@ Since we want to find \textit{local} linear correlations within \textit{global} 
 We can therefore retrieve these local subclusters by searching the data for density-connected sets of points via a density-based clustering approach like \gls{dbscan} or \gls{optics}. This comes with an additional benefit by automatically removing noise. 
 
 However like mentioned in \autoref{ssec:DBSCANindepth} and \autoref{ssec:OPTICSindepth} \gls{dbscan} is not able to find clusters with different density and mixes multiple densities together into one cluster due to its global parameter setting only defining a minimum density. High variance in data densities can therefore strongly influence the result of \gls{dbscan}, either by making it harder to choose the appropriate parameters for a better clustering result or by having more variety in density in found clusters which would result in less conclusive detection of their linear correlations. 
-To receive a more suited clustering we preferred the use of \gls{optics}, which is able to detect clusters with different densities (c.f.~\autoref{ssec:OPTICSindepth}). Since we do not want to prune any information away we can generally use a very high epsilon-distance $\epsilon$ to create a detailed ordering and therefore only rely on $MinPts$ as a parameter. From this ordering we can extract clusters with a new parameter $reachdist_{thres}$ which represents the threshold at which the difference of neighboring reachability-distances of the ordering is considered to be a new cluster with different density. We also assign a bounding box for each found cluster, which represents the local data space for further evaluation performed by \gls{cash}. Up to this point we are merely partitioning the data into dense clusters with the added benefit of filtering out $noise^{DB}$ points (noise points in a density-based view). We will reconsider those noise points later, since they still could be parts of the global correlation clustering despite not being dense. \autoref{fig:boundingbox} visualizes a data set after step 1 is performed. The relevant part of the data set is clustered by density and its boundaries are highlighted by the bounding boxes.
+To receive a more suited clustering we preferred the use of \gls{optics}, which is able to detect clusters with different densities (c.f.~\autoref{ssec:OPTICSindepth}). Since we do not want to prune any information away we can generally use a very high epsilon-distance $\epsilon$ to create a detailed ordering and therefore only rely on $MinPts$ as a parameter. From this ordering we can extract clusters with a new parameter $reachdist_{\tau}$ which represents the threshold at which the difference of neighboring reachability-distances of the ordering is considered to be a new cluster with different density. We also assign a bounding box for each found cluster, which represents the local data space for further evaluation performed by \gls{cash}. Up to this point we are merely partitioning the data into dense clusters with the added benefit of filtering out $noise^{DB}$ points (noise points in a density-based view). We will reconsider those noise points later, since they still could be parts of the global correlation clustering despite not being dense. \autoref{fig:boundingbox} visualizes a data set after step 1 is performed. The relevant part of the data set is clustered by density and its boundaries are highlighted by the bounding boxes.
 
 \begin{figure}
     \centering
-    \includegraphics[width=.8\textwidth]{figures_method/DSwithBoundingBoxes.pdf}
+    \includegraphics[width=.6\textwidth]{figures_method/DSwithBoundingBoxes.pdf}
     \caption{Caption}
     \label{fig:boundingbox}
 \end{figure}
@@ -543,7 +544,7 @@ Based on the assumption that local linear correlations contained in a global lin
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/PCAdifficulties.png}
+    \includegraphics[width=0.6\textwidth]{figures/PCAdifficulties.png}
     \caption{Caption\cite{PCAshlens2014tutorial}}
     \label{fig:pcadifficulties}
 \end{figure}
@@ -560,32 +561,32 @@ After finding all dense regions of interest, the subclusters are independently e
 
 \begin{figure}
     \centering
-    \includegraphics[width=.8\textwidth]{figures_method/LocalLinearCorrelationsWithCorrs.pdf}
+    \includegraphics[width=.6\textwidth]{figures_method/LocalLinearCorrelationsWithCorrs.pdf}
     \caption{Caption}
     \label{fig:my_label}
 \end{figure}
 
 \subsection{Stitching}\label{ssec:stitching}
 
-To combine the found localized correlations to a global correlation clustering, we evaluate all the localized correlations without its bounding boxes. Since we can represent the localized correlations as hyperplanes with a unit normal vector $\vec{n}$ and a shortest distance to origin $\delta$ (c.f. \autoref{eq:highhnf}), we can easily compare different hyperplanes by variation in rotation(angles), using the cosine-similarity between the normal vectors, and translation(absolute positioning), using the euclidean-distance between the shortest distances. For adjustability we introduce two parameters $thres_{\Delta \text{cos-dist}}, thres_{\Delta \text{cos-dist}} \in [0,1]$ and $thres_{\Delta \text{eucl-dist}}, thres_{\Delta \text{eucl-dist}} \in \N$, which serves as thresholds for maximal allowed divergence of both measures. To formalize the requirements for a successful combination (\textit{stitching}) of local correlations we introduce following relations:\todor{definitionen einfuehren oder textuell einfach beschreiben?}
+To combine the found localized correlations to a global correlation clustering, we evaluate all the localized correlations without its bounding boxes. Since we can represent the localized correlations as hyperplanes with a unit normal vector $\vec{n}$ and a shortest distance to origin $\delta$ (c.f. \autoref{eq:highhnf}), we can easily compare different hyperplanes by variation in rotation(angles), using the cosine-similarity between the normal vectors, and translation(absolute positioning), using the euclidean-distance between the shortest distances. For adjustability we introduce two parameters $\tau_{\Delta \text{cos-dist}}, \tau_{\Delta \text{cos-dist}} \in [0,1]$ and $\tau_{\Delta \text{eucl-dist}}, \tau_{\Delta \text{eucl-dist}} \in \N$, which serves as thresholds for maximal allowed divergence of both measures. To formalize the requirements for a successful combination (\textit{stitching}) of local correlations we introduce following relations:\todor{definitionen einfuehren oder textuell einfach beschreiben?}
 
 \subsubsection*{Orientation-Similarity}
-Given a set of unique linear correlations $C$ in \gls{hnf}. Then two correlations $c_{a,\delta_a} \in C$ and $c_{b,\delta_b} \in C$ are \textit{orientation-similar}, if the absolute cosine-similarity between the correlations normal vectors $a$ and $b$ is bigger than $1 - thres_{\Delta \text{cos-dist}}$.
+Given a set of unique linear correlations $C$ in \gls{hnf}. Then two correlations $c_{a,\delta_a} \in C$ and $c_{b,\delta_b} \in C$ are \textit{orientation-similar}, if the absolute cosine-similarity between the correlations normal vectors $a$ and $b$ is bigger than $1 - \tau_{\Delta \text{cos-dist}}$.
 \begin{align}\label{eq:cosdist}
-    |\text{cos-sim}(a,b)| = \left|\frac{\sum_{i=1}^{n} a_{i} b_{i}}{\sqrt{\sum_{i=1}^{n} a_{i}^{2}} \sqrt{\sum_{i=1}^{n} b_{i}^{2}}}\right| > 1 - thres_{\Delta \text{cos-dist}}
+    |\text{cos-sim}(a,b)| = \left|\frac{\sum_{i=1}^{n} a_{i} b_{i}}{\sqrt{\sum_{i=1}^{n} a_{i}^{2}} \sqrt{\sum_{i=1}^{n} b_{i}^{2}}}\right| > 1 - \tau_{\Delta \text{cos-dist}}
 \end{align}
 
 \subsubsection*{Translation-Similarity}
-Given a set of unique linear correlations $C$ in \gls{hnf}. Then two correlations $c_{a,\delta_a} \in C$ and $c_{b,\delta_b} \in C$ are \textit{translation-similar}, the absolute euclidean-distance between the correlations distances $\delta_a$ and $\delta_b$ is smaller than $thres_{\Delta \text{eucl-dist}}$.
+Given a set of unique linear correlations $C$ in \gls{hnf}. Then two correlations $c_{a,\delta_a} \in C$ and $c_{b,\delta_b} \in C$ are \textit{translation-similar}, the absolute euclidean-distance between the correlations distances $\delta_a$ and $\delta_b$ is smaller than $\tau_{\Delta \text{eucl-dist}}$.
 %  if orientation-similarity (c.f. \autoref{eq:cosdist}) holds and
 \begin{align}\label{eq:eucldist}
-    |\text{eucl-dist}(\delta_a,\delta_b)| < thres_{\Delta \text{eucl-dist}}
+    |\text{eucl-dist}(\delta_a,\delta_b)| < \tau_{\Delta \text{eucl-dist}}
 \end{align}
 
 Given an indexed set of correlations $C=\{c_1,\dotsc,c_n\}$ we define the binary relations for orientation-similarity and translation-similarity as follows:
 \begin{align}
-    R^{o}=\{\{x,y\} \in C \times C\: \big|\: |\text{cos-sim}(x,y)| > 1-thres_{\Delta \text{cos-dist}}\}\\
-    R^{t}=\{\{x,y\} \in C \times C\: \big|\: |\text{eucl-dist}(x,y)| < thres_{\Delta \text{eucl-dist}}\}
+    R^{o}=\{\{x,y\} \in C \times C\: \big|\: |\text{cos-sim}(x,y)| > 1-\tau_{\Delta \text{cos-dist}}\}\\
+    R^{t}=\{\{x,y\} \in C \times C\: \big|\: |\text{eucl-dist}(x,y)| < \tau_{\Delta \text{eucl-dist}}\}
 \end{align}
 
 Using these relations, logical matrices, based on the indexed set of correlations, are created. These matrices serve as filters/masks to model the correlations and its pairwise relations as  undirected graphs. Both can therefore be interpreted as an adjacency matrix of the correlations.
@@ -619,7 +620,7 @@ where the function $f_{avg}(X)$ is a user-defined average function over set $X$.
 
 \begin{figure}
     \centering
-    \includegraphics[width=.8\textwidth]{figures_method/StitchedLinearCorrelationsWithCorrs.pdf}
+    \includegraphics[width=.6\textwidth]{figures_method/StitchedLinearCorrelationsWithCorrs.pdf}
     \caption{Caption}
     \label{fig:my_label}
 \end{figure}
@@ -631,7 +632,7 @@ Since we previously discarded $noise^{DB}$ and $noise^{Corr}$, which were labele
 $Noise^{Corr}$ could have been a member from a far away localized correlation cluster and $noise^{DB}$ was filtered out even before consideration of correlation cluster membership. Hence re-evaluating these points with a global view again complements the result for completeness. This is done by reassessing the distance of all noise points $noise^{DS \cup Corr}$ to all found correlations $C^{local \cup global}$ and relabeling them, if the threshhold condition $j$ is fulfilled (c.f. \autoref{eq:pointtohyplane}).\\
 \begin{figure}
     \centering
-    \includegraphics[width=.8\textwidth]{figures_method/RelabeledCorrelationsWithCorrsL.pdf}
+    \includegraphics[width=.6\textwidth]{figures_method/RelabeledCorrelationsWithCorrsL.pdf}
     \caption{Caption}
     \label{fig:my_label}
 \end{figure}
@@ -639,9 +640,9 @@ $Noise^{Corr}$ could have been a member from a far away localized correlation cl
 \subsection{Summary}
 To recap our algorithm consists of four steps: density-based clustering, local evaluation of dense clusters, stitching of found correlations to create global correlation clusters and finally the reevaluation of previously pruned points. Each of these components require different parameters, therefore our algorithm requires the user to specify several input parameters:
 \begin{itemize}[label={\tiny\raisebox{1ex}{\textbullet}},topsep=6pt,itemsep=-1ex,partopsep=2ex,parsep=2ex]
-    \item \text{Partitioning:} $MinPts$ and $\epsilon$-distance for \gls{optics} ordering and a $reachability-thres$ to split the ordering after significant jumps
+    \item \text{Partitioning:} $MinPts$ and $\epsilon$-distance for \gls{optics} ordering and a $reachability_{\tau}$ to split the ordering after significant jumps
     \item \text{Local Correlation Clustering:} $s$ splits, $m$ minimum points and $j$ jitter for \gls{cash}
-    \item \text{Stitching:} $thres_{\Delta cos-dist}$ and $thres_{\Delta eucl-dist}$ for similarity constraints
+    \item \text{Stitching:} $\tau_{\Delta cos-dist}$ and $\tau_{\Delta eucl-dist}$ for similarity constraints
     \item \text{Relabeling:} $j$ jitter of local Correlation Clustering aswell
 \end{itemize}
 \todor{selbe terminology?}
@@ -667,7 +668,7 @@ Therefore just looking at the complexity in theory our algorithm should perform 
 Step                         & Parameters                                         & Complexity \\ \midrule
 Partitioning                 & \begin{tabular}[c]{@{}l@{}}$\epsilon$ : Epsilon-distance\\ $MinPts$: min \# of pts in dense neighborhood\end{tabular} & $\mathcal{O}(|DS|^2)$          \\ \midrule
 Local Correlation Clustering & \begin{tabular}[c]{@{}l@{}}$s$: \# of splits\\ $m$: min \# of pts in ROI of parameter space\\ $j$: jitter\end{tabular}  & $\mathcal{O}(2^d)$          \\ \midrule
-Stitching                    & \begin{tabular}[c]{@{}l@{}}$thres_{\Delta cos-dist}$: orientation threshold\\ $thres_{\Delta eucl-dist}$: distance threshold\end{tabular}  & $\mathcal{O}(c^2)$          \\ \midrule
+Stitching                    & \begin{tabular}[c]{@{}l@{}}$\tau_{\Delta cos-dist}$: orientation threshold\\ $\tau_{\Delta eucl-dist}$: distance threshold\end{tabular}  & $\mathcal{O}(c^2)$          \\ \midrule
 Relabeling                   & $j$: jitter                                                  & $\mathcal{O}(|DS| \cdot c)$          \\ \bottomrule
 \end{tabular}%
 }

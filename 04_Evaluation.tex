@@ -9,7 +9,7 @@ The algorithms and evaluation are implemented in \textit{python v3.7.4}. Each of
 
 \section{Setup}\label{sec:setup}
 
-Our test setups were conducted on $d$-dimensional synthetic data sets with four characteristic jittery $d-1$-dimensional correlations, i.e. partial, intersecting and/or parallel correlations. The tests consisted of the evaluation of the algorithms different behaviours w.r.t runtime, \gls{ari} and \gls{nmi} scoring for different amount of points/objects, different dimensionalities and seven different levels of noise (0, 1, 5, 10, 25, 40, 80).
+Our test setups were conducted on $d$-dimensional synthetic data sets with four characteristic jittery $d-1$-dimensional correlations, i.e. partial, intersecting and/or parallel correlations. The tests consisted of the evaluation of the algorithms different behaviours w.r.t runtime, \gls{ari} and \gls{nmi} scoring for six different amounts of points/objects (1000, 2000, 4000, 8000, 16000, 32000), five different dimensionalities (2, 3, 4, 8, 16) and seven different levels of noise (0, 1, 5, 10, 25, 40, 80).
 
 All following tests were executed in docker containers running on a Virtual Machine with an x86\_64 bit architecture, 48 CPUs (2 GHz) and 246GB RAM. 
 
@@ -35,9 +35,9 @@ All following tests were executed in docker containers running on a Virtual Mach
 
 % (which data sets have been used? How many data objects? How many clusters? Which programming language and libraries? On which hardware?) [0.5]
 \section{Performance}
- To evaluate the performance of our algorithm compared to \gls{cash} we performed up to 500 iterations of random parameter search on each data set while tracking runtime for a measure of efficiency and scoring the effectivity based on the \gls{ari} and \gls{nmi} score compared to our prelabeled groundtruth. However due to time constraints we bounded the maximal time for all iterations to a maximum of 24 hours. \todor{unsicher ob das rein soll}
+ To evaluate the performance of our algorithm compared to \gls{cash} we performed up to 500 iterations of random parameter search on each data set while tracking runtime for a measure of efficiency and scoring the effectivity based on the \gls{ari} and \gls{nmi} score compared to our prelabeled groundtruth. However due to time constraints we bounded the maximal time for all iterations to a maximum of 24 hours. \todor{unsicher ob das rein soll}We’d like to note at this point that the current implementation may not satisfy the need to deliver a high performance with regards to the runtime, since we rely on \gls{elki}, which temporarily stores our necessary intermediate results to disk and therefore bottlenecks on I/O. For future work, we recommend to further research and elaborate on strategies to accelerate the execution time of our approach. 
  
-\begin{table}[]
+\begin{table}[b]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}llll@{}}
@@ -53,7 +53,12 @@ Increasing noise      & 3D         & -           & 10000         \\ \bottomrule
 \end{table}
  
 \subsection{Efficiency}
- The evaluation of runtime performance measures the average runtime of the three different settings for both local (our algorithm) and global (default \gls{cash}) approaches. 
+In context of efficiency we investigate the runtime performance of both local (our algorithm) and global (default \gls{cash}) by three different indications, namely number of objects, number of dimensions and amount of noise.
+
+For the first aspect, we increase the data sets with regards to the number of objects. Here, we ask deliberately: what is the impact regarding the runtime if we modify the data set size?
+And further: do we observe any differences between the original \gls{cash} algorithm and our approach? In theory we expect that our method yields the same quality/results as CASH.
+
+%  The evaluation of runtime performance measures the average runtime of the three different settings for both local (our algorithm) and global (default \gls{cash}) approaches. 
  
 % \begin{figure}[ht]
 %     \centering
@@ -85,42 +90,86 @@ Increasing noise      & 3D         & -           & 10000         \\ \bottomrule
 %       \label{fig:eval_per_noise}
 %     \end{minipage}
 % \end{figure}
-\begin{figure}
+\begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{evaluation/Avg_Runtime_3D_N5_pobjects_bar.pdf}
+    \includegraphics[width=0.8\textwidth]{evaluation/per_objects/Avg_Runtime_3D_N5_pobjects_bar.pdf}
     \caption{Caption}
-    \label{fig:eval_per_objects}    \includegraphics[width=0.8\textwidth]{evaluation/Avg_Runtime_3D_O10000_pnoise_bar.pdf}
+    \label{fig:eval_per_objects}   
+\end{figure}
+
+\autoref{fig:eval_per_objects} shows the average runtime of both algorithms w.r.t. the \textit{number of objects} in 3-dimensional clusters of the data set. The data sets had a variable size of 1000, 2000, 4000, 8000, 16000 and 32000 number of objects with 5 percent noise respective to the data set size. Here our algorithm scales comparably to \gls{cash} and does not deteriorate in runtime performance even with higher numbers of objects even though the overhead of the partitioning, stitching and relabeling increases. This can be explained due to the shorter runtimes of the localized \gls{cash} processes, since the partitioning step reduces the amount of regions of interest in the parameter space of the Hough transform.\\
+
+For the second point we compared the average runtimes of both algorithms with respect to the amount of noise in the data space. Instead of modifying the total number of points of the whole data set, we now just evaluate the impact of different levels of noise percentage and compare the results of our approach with \gls{cash}s.
+
+% of the average runtime w.r.t the different dimensionalities of the data space is depicted in \autoref{fig:eval_per_dim}.
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=0.8\textwidth]{evaluation/per_noise/Avg_Runtime_3D_O10000_pnoise_bar.pdf}
     \caption{Caption}
     \label{fig:eval_per_noise}
 \end{figure}
 
-\autoref{fig:eval_per_objects} shows the average runtime of both algorithms w.r.t. the \textit{number of objects} in the 3-dimensional clusters of the data set with 5 percent noise respective to the data set size. Here our algorithm scales comparably to \gls{cash} even improves in runtime performance with a higher number of objects. 
+\autoref{fig:eval_per_noise} shows the average runtime of our algorithm with respect to the noise percentage of the data sets compared to the global approach. In this experiment our algorithms were evaluated on a 3-dimensional data set with 10000 points distributed among all clusters and seven different levels of noise percentage (0,1,5,10,25,40,80) on top of the initial data set. Note that noise points close enough to existing correlation clusters are relabeled to the respective cluster before evaluation which slightly skews the actual noise percentage in each data set.
+As in the previous runtime measurements with regards to number of objects, the runtime with respect to different levels of noise also remain stable on multiple levels compared to the global \gls{cash}. The overhead of the other components again is compensated by the quicker runtime of the partitioned \gls{cash}. At higher levels of noise (40 and 80 percent) it is even noticeable, that our approach gets a slight speed up compared to the global approach, since at these levels of noise the global cash will need to process more candidates in parameter space. In comparison our approach prunes away density-based noise first due to the partitioning step and leaves each localized \gls{cash} with comparably less candidates.
+% At very low levels of noise both algorithms runtime remain stable. However increasing the noise further creates a gap in runtime results in favor of the global approach. This might be due to the overhead of the components increasing faster compared to the reduction in runtime of \gls{cash}, and second 
 
-% \begin{figure}[h]
-%     \centering
+Our last runtime evaluation was conducted with regards to the dimensionality of the data set. Unlike in previous experiments, the data sets now change in \textit{space} instead of number of data objects. To keep a consistent comparable setting between the dimensionalities, we enforce our data set to be composed of similar four characteristic correlations, building a data space with partially split, intersecting and parallel $d-1$-dimensional hyperplanes. 
+Note that runtimes dependent on dimensionality scale in $\mathcal{O}(2^d)$. Therefore the runtime figure with respect to the dimensionality scales logarithmically on the y-axis. Due to time constraints we set an upper bound for the runtime and restricted each run to a maximum of two hours. \todor{soll das rein?}
 
-% \end{figure}
-The results of the average runtime w.r.t the different dimensionalities of the data space is depicted in \autoref{fig:eval_per_dim}.
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=0.8\textwidth]{evaluation/per_dims/Avg_Runtime_O10000_N5_pdims_log.pdf}
+    \caption{Caption}
+    \label{fig:eval_per_dims}
+\end{figure}
 
-\autoref{fig:eval_per_noise} shows the average runtime of our algorithm w.r.t. the noise percentage of the data sets.
+\autoref{fig:eval_per_dims} shows a comparison of local and global algorithms average runtime performances with regards to expanding dimensionalities. This experiment was ran on data sets with 10000 objects and 5 percent noise with 2,3,4,8 and 16 dimensions. As expected the average runtime corresponding to the increasing dimensionality increases exponentially for both approaches, considering the runtime complexity of \gls{cash} and our algorithms complexity, which is also dominated by the complexity of \gls{cash}s $\mathcal{O}(2^d)$. Therefore it is sensible that both algorithms again perform comparably.
+Since we capped the maximum runtime of each parameter search iteration to 2 hours we observe a stagnation of the runtime at 16 dimensions.\\
+
+Summarized the experiments have demonstrated that the average runtime of our local approach is closely comparable with respect to number of points, amount of noise and dimensionalities. Therefore as assumed the overhead produced by the preprocessing component \gls{optics} and the postprocessing components \textit{Stitching} and \textit{Relabeling} are compensated by the faster runtime of the localized \gls{cash} ran on the partitioned subinterval of the data space. 
  
 \subsection{Effectiveness}
-For clustering performance measures we took the best parameter sets of previous efficiency evaluation for both local and global approach and stacked their \gls{ari} and \gls{nmi} scores up against each other.
+To measure the clustering performance measures we took the best parameter sets of the previous efficiency evaluation for both local and global approach and stacked their \gls{ari} and \gls{nmi} scores up against each other. 
+
+In our first setting we compared \gls{cash} and our algorithm according to the best \gls{ari} and \gls{nmi} scorings achieved during the parameter search with regards to the variable number of objects in data space. 
+\begin{figure}[h]
+    \centering
+    \begin{minipage}[t]{.5\textwidth}
+      \centering  
+      \captionsetup{width=.9\linewidth}
+      \includegraphics[width=\textwidth]{evaluation/per_objects/Best_ARI_3D_N5_pobjects_bar.pdf}
+      \captionsetup{labelformat=empty}
+      \caption{\gls{ari} score}
+      \label{fig:ariperpts}
+    \end{minipage}%
+    \begin{minipage}[t]{.5\textwidth}
+      \centering
+      \captionsetup{width=.9\linewidth}
+      \includegraphics[width=\textwidth]{evaluation/per_objects/Best_NMI_3D_N5_pobjects_bar.pdf}
+      \captionsetup{labelformat=empty}
+      \caption{\gls{nmi} score}
+      \label{fig:nmiperpts}
+    \end{minipage}
+    \caption{Scoring w.r.t the number of objects}
+    \label{fig:scoreperpts}
+\end{figure}
+\autoref{fig:scoreperpts} shows the clustering scores 
 
 \begin{figure}[h]
     \centering
     \begin{minipage}[t]{.5\textwidth}
       \centering  
       \captionsetup{width=.9\linewidth}
-      \includegraphics[width=\textwidth]{evaluation/Best_ARI_3D_N5_pobjects_bar.pdf}
-      \captionof{figure}{a) First}
+      \includegraphics[width=\textwidth]{evaluation/per_noise/Best_ARI_3D_O10000_pnoise_bar.pdf}
+      \captionof{figure}{\gls{ari} score w.r.t. amount of noise}
       \label{fig:ariperpts}
     \end{minipage}%
     \begin{minipage}[t]{.5\textwidth}
       \centering
       \captionsetup{width=.9\linewidth}
-      \includegraphics[width=\textwidth]{evaluation/Best_NMI_3D_N5_pobjects_bar.pdf}
-      \captionof{figure}{b) Second}
+      \includegraphics[width=\textwidth]{evaluation/per_noise/Best_NMI_3D_O10000_pnoise_bar.pdf}
+      \captionof{figure}{\gls{nmi} score w.r.t. amount of noise}
       \label{fig:nmiperpts}
     \end{minipage}
 \end{figure}
@@ -129,15 +178,15 @@ For clustering performance measures we took the best parameter sets of previous 
     \begin{minipage}[t]{.5\textwidth}
       \centering  
       \captionsetup{width=.9\linewidth}
-      \includegraphics[width=\textwidth]{evaluation/Best_ARI_3D_O10000_pnoise_bar.pdf}
-      \captionof{figure}{a) First}
+      \includegraphics[width=\textwidth]{evaluation/per_dims/Best_ARI_O10000_N5_pdims_bar.pdf}
+      \captionof{figure}{\gls{ari} score w.r.t. dimensionality}
       \label{fig:ariperpts}
     \end{minipage}%
     \begin{minipage}[t]{.5\textwidth}
       \centering
       \captionsetup{width=.9\linewidth}
-      \includegraphics[width=\textwidth]{evaluation/Best_NMI_3D_O10000_pnoise_bar.pdf}
-      \captionof{figure}{b) Second}
+      \includegraphics[width=\textwidth]{evaluation/per_dims/Best_NMI_O10000_N5_pdims_bar.pdf}
+      \captionof{figure}{\gls{nmi} score w.r.t. dimensionality}
       \label{fig:nmiperpts}
     \end{minipage}
 \end{figure}
