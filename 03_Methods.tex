@@ -1,6 +1,6 @@
 \chapter{Methods}\label{ch:Methods}
 % In this chapter we first introduce necessary mathematical and algorithmic foundations to provide an in-depth view of our algorithm's core components and explain their relevance in the new approach. 
-In this chapter we propose a novel approach/concept to create a universal clustering result w.r.t. combining a local correlation clustering approach with global one. For this purpose we first introduce necessary mathematical and algorithmic foundations to provide an in-depth view of our algorithm's core components and then specifically elaborate on them further by giving a detailed explanation to its functionality and explaining their relevance to our concept. With this knowledge/expertise we offer a first\todor{bin mir nich sicher ob first tho} approach by combining mentioned components and visualizing the single steps to present a more intuitive view of the procedure. \todor{v2 in comments}
+In this chapter, we propose a novel approach/concept to create a universal clustering result w.r.t.\ combining a local correlation clustering approach with a global one. For this purpose, we first introduce necessary mathematical and algorithmic foundations to provide an in-depth view of our algorithm's core components and then specifically elaborate on them further by giving a detailed explanation to its functionality and explaining their relevance to our concept. With this knowledge/expertise, we offer a first\todor{bin mir nich sicher ob first tho} approach by combining mentioned components and visualizing the single steps to present a more intuitive view of the procedure. \todor{v2 in comments}
 
 % In this chapter we propose a novel approach/concept to create a universal clustering result by combining a local correlation clustering approach with global one. For this purpose we first introduce necessary mathematical and algorithmic foundations to provide an in-depth view of our algorithm's core components. We then specifically elaborate on them further by giving a detailed explanation to its functionality and explaining their relevance to our concept and offer a first approach by combining mentioned components and visualizing the single steps to present a more intuitive view of the procedure. 
 
@@ -11,7 +11,7 @@ In this chapter we propose a novel approach/concept to create a universal cluste
 
 \section{Mathematical and Algorithmic Foundations}
 \label{sec:Foundations}
-Our Algorithm builds on top of two algorithms which both were build on two other well-known algorithms: \gls{optics}, which is closely related to \gls{dbscan}, and \gls{cash}, which is inherently based on the Hough Transform.
+Our Algorithm builds on top of two algorithms which both were built on two other well-known algorithms: \gls{optics}, which is closely related to \gls{dbscan}, and \gls{cash}, which is inherently based on the Hough Transform.
 \subsection{DBSCAN - In Depth}
 \label{ssec:DBSCANindepth}
 \begin{figure}
@@ -29,22 +29,22 @@ Our Algorithm builds on top of two algorithms which both were build on two other
       \label{fig:noisydbscan}
     \end{minipage}
 \end{figure}
-To begin with we voted for the use of \gls{dbscan} to retrieve the dense intervals of the original data set. 
-As mentioned before the algorithm \gls{dbscan} is categorized into the density-based approach of clustering. This means, that it considers a set of points connected through low proximity in a restricted area/space into similar clusters and thus can, in contrast to partitioning based approaches, create clusters of arbitrary shape (cf. \autoref{fig:kmeansdbscan}). Hence these clusters also can retain information more accurate information about the correlation of the data. Additionally it also directly eliminates noise and can therefore lower the computational cost of the future steps. Its basic principle is as follows:
-A group of points is considered as a dense cluster when for each point of the cluster there are sufficiently other points in its neighborhood~\cite{DBSCANEKSX96}.
+To begin with, we voted for the use of \gls{dbscan} to retrieve the dense intervals of the original data set. 
+As mentioned before the algorithm \gls{dbscan} is categorized into the density-based approach of clustering. This means that it considers a set of points connected through low proximity in a restricted area/space into similar clusters and thus can, in contrast to partitioning based approaches, create clusters of arbitrary shape (cf. \autoref{fig:kmeansdbscan}). Hence these clusters also can retain information more accurate information about the correlation of the data. Additionally, it also directly eliminates noise and can, therefore, lower the computational cost of the future steps. Its basic principle is as follows:
+A group of points is considered as a dense cluster when for each point of the cluster, there are sufficiently other points in its neighbourhood~\cite{DBSCANEKSX96}.
 
-To understand, how this algorithm works we first have to introduce some terminology.
+To understand how this algorithm works we first have to introduce some terminology.
 Given a data set $DS$ of data objects $o$ with a dimensionality of $N$, a distance measure $dist(p_1,p_2))$ and two new parameters, the Epsilon distance $\epsilon$ and the minimum number of points to be a cluster $MinPts$, \citeauthor{DBSCANEKSX96} defines:
 
-\subsubsection*{$\epsilon$-Neighborhood}
+\subsubsection*{$\epsilon$-Neighbourhood}
 % \begin{defn}
-The $\epsilon$-Neighborhood $N_{\epsilon}(p)$ of a point $p$ is defined by the set of points $q$ which have a smaller distance $dist(p,q)$ than the threshold $\epsilon$. Formally: 
+The $\epsilon$-Neighbourhood $N_{\epsilon}(p)$ of a point $p$ is defined by the set of points $q$ which have a smaller distance $dist(p,q)$ than the threshold $\epsilon$. Formally: 
 % \[N_{\epsilon}(p)=\{q \in DS \mid dist(p,q) \leq \epsilon\}\]
 \begin{align}
     N_{\epsilon}(p)=\{q \in DS \mid dist(p,q) \leq \epsilon\}
 \end{align}
 
-This measure alone however is not enough to fully cluster dense groups, since it would only register points inside the cluster (core points) and omit those at the border of the clusters (border points), since they have less points in their neighborhood. To include those border points too, \citeauthor{DBSCANEKSX96} introduce three more properties/relationships between points.
+This measure alone, however, is not enough to fully cluster dense groups, since it would only register points inside the cluster (core points) and omit those at the border of the clusters (border points) since they have fewer points in their neighbourhood. To include those border points too, \citeauthor{DBSCANEKSX96} introduce three more properties/relationships between points.
 % \end{defn}
 
 \subsubsection*{(Direct) Density-Reachability}
@@ -61,10 +61,10 @@ The direct density-reachability of a point $p$ from another point $q$ is fulfill
     p \in N_{\epsilon}(q)\label{eq:pinN}\\
     |N_{\epsilon}(q)|\geq MinPts\label{eq:minptsreq}
 \end{align}
-where \autoref{eq:minptsreq} represents the condition for point \(q\) to be a core point. If a point \(p\) is in the $\epsilon$-Neighborhood of a core point $q$, but itself is not a core point, then point $p$ is labeled as a border point. 
+where \autoref{eq:minptsreq} represents the condition for point \(q\) to be a core point. If a point \(p\) is in the $\epsilon$-Neighbourhood of a core point $q$, but itself is not a core point, then point $p$ is labelled as a border point. 
 
 \todor{original sounds way better}
-A target point $p$ is density-reachable from origin point $q$, if there is a sequence of connecting points $p, c_1, \dotsc, c_n, q$ in between $p$ and $q$ which are directly density-reachable to its predecessor, e.g. $c_1$ is directly density-reachable from point $q$, $c_2$ is directly density-reachable from point $c_1$, \dots\todor{format} until $p$ is directly density-reachable from point $c_n$. This relation is obviously transitive, but only symmetric if both points of the relation are core points. In case of a border point as the origin there are not enough points in its neighborhood and therefore it does not have any density-reachable neighbor as a target to start with.
+A target point $p$ is density-reachable from origin point $q$, if there exists a sequence of connecting points $p, c_1, \dotsc, c_n, q$ in between $p$ and $q$ which are directly density-reachable to its predecessor, e.g. $c_1$ is directly density-reachable from point $q$, $c_2$ is directly density-reachable from point $c_1$, \dots\todor{format} until $p$ is directly density-reachable from point $c_n$. This relation is obviously transitive, but only symmetric if both points of the relation are core points. In case of a border point as the origin there are not enough points in its neighbourhood and therefore it does not have any density-reachable neighbor as a target to start with.
 
 \todog{own fig}
 \begin{figure}
@@ -97,7 +97,7 @@ The last relation between points is the density-connectedness. Two points $p$ an
 
 \vspace{5mm}
 
-Given the previous defined relations we can now define the notion of clusters and noise in \gls{dbscan}:
+Given the previously defined relations, we can now define the notion of clusters and noise in \gls{dbscan}:
 
 \subsubsection*{Density-based Clusters}
 A dense cluster is the union of a set of density-connected core points $CP$ and the set of border points $BP$ which are density-reachable from $CP$.
@@ -126,12 +126,12 @@ Every point not belonging to any of the existing clusters $C^{DB}_1, \dotsc, C^{
 \subsubsection*{The DBSCAN-Algorithm}
 One way to calculate the clusters using \gls{dbscan} is as follows:
 
-First select the first point $p$ of data set $DS$ and check its $\epsilon$-neighborhood. Save every neighbor into a seed list/queue $L$ for further evaluation and check if the neighborhood $N_{\epsilon}(p)$ has enough points to satisfy the $MinPts$-property. 
+First, select the first point $p$ of data set $DS$ and check its $\epsilon$-neighbourhood. Save every neighbor into a seed list/queue $L$ for further evaluation and check if the neighbourhood $N_{\epsilon}(p)$ has enough points to satisfy the $MinPts$-property. 
 If it satisfies the property, then point $p$ is a core point and creates a new dense cluster. As long as the seed list is not empty every next point in the list is then classified as either part of the current cluster or noise.
-However if $N_{\epsilon}(p)$ does not satisfy the $MinPts$-property, then point $p$ is prematurely labeled as noise. This status will be changed, if another point $q$ has $p$ in its $\epsilon$-neighborhood and itself is a core point, then it is relabeled as a border point of the current cluster.
+However, if $N_{\epsilon}(p)$ does not satisfy the $MinPts$-property, then point $p$ is prematurely labelled as noise. This status will be changed, if another point $q$ has $p$ in its $\epsilon$-neighbourhood and itself is a core point, then it is relabelled as a border point of the current cluster.
 
 Then the next point from the seed list $L$ is selected and the same procedure is applied again.
-If the seed list $L$ is empty the current cluster is done and the next not previously observed point from $DS$ is evaluated and the whole cycle repeats again until there is no point in the data set $DS$ left.
+If the seed list $L$ is empty, the current cluster is done, the next not previously observed point from $DS$ is evaluated and the whole cycle repeats again until there is no point in the data set $DS$ left.
 
 \vspace{5mm}
 \begin{algorithm}[H]
@@ -166,7 +166,7 @@ If the seed list $L$ is empty the current cluster is done and the next not previ
 \vspace{5mm}
 
 This algorithm was the first approach to segmenting the original data space into subintervals of importance. However, there is a drawback with using \gls{dbscan} as the first segmentation. \gls{dbscan} relies on a global parameter setting which can only find clusters with approximately the same density or higher (c.f. \autoref{fig:DBSCANhierarchy}) and therefore would not be able to find the intrinsic clustering structure well if the underlying models of the global correlations created linear correlations with different densities. 
-Note however that in increasing-dimensional spaces, the volume of the space increases exponentially fast, which causes the data space to become sparse. This induces that our data space might not be clusterable by a density-based approach in high-dimensional spaces. This phenomenon is also called the \textit{Curse of Dimensionality}~\cite{bellman2015adaptive}.
+Note however, that in increasing-dimensional spaces, the volume of the space increases exponentially fast, which causes the data space to become sparse. This induces that our data space might not be clusterable by a density-based approach in high-dimensional spaces. This phenomenon is also called the \textit{Curse of Dimensionality}~\cite{bellman2015adaptive}.
 
 \begin{figure}
     \centering
@@ -176,11 +176,12 @@ Note however that in increasing-dimensional spaces, the volume of the space incr
 \end{figure}
 
 \subsection{OPTICS - In Depth}\label{ssec:OPTICSindepth} \todob{check comment}%OPTICS ONLY wide range of epsranges, not different minpts, since reachability is dependent on minpts, it extends epsilon, if minpts is not satisfied
-To tackle the detection of different densities, we replaced \gls{dbscan} with a more versatile algorithm/extension called \textit{\acrfull{optics}}, which had the capabilities to not only detect clusters of varying densities more accurately, but also opens more possibilities for different further approaches for future work, e.g. a more extensive (bottom-up/hierarchical) approach by evaluating more density-settings at once based on different $\epsilon$-ranges.
+To tackle the detection of different densities, we replaced \gls{dbscan} with a more versatile algorithm/extension called \textit{\acrfull{optics}}. This algorithm had the capabilities to not only detect clusters of varying densities more accurately, but also to keep open more possibilities for different further approaches for future work, e.g. a more extensive (bottom-up/hierarchical) approach by evaluating more density-settings at once based on different $\epsilon$-ranges.
+
 Although \gls{optics} itself is not a clustering algorithm, it does create an ordering of the points in a database, which represents the density-based clustering structure of a wide range of $\epsilon$-parameter settings, with which it is possible to automatically create a more accurate clustering with different densities compared to \gls{dbscan}~\cite{opticsankerst1999optics}. To create such a consistent ordering \todo{cite style} \citeauthor{opticsankerst1999optics} defines the following two distances on top of the previously mentioned definitions of \autoref{ssec:DBSCANindepth}:
 \vspace{5mm}
 
-Given a point $p$ from the data set $DS$, an epsilon-distance $\epsilon$, the \todor{format} $\epsilon$-neighborhood of $p$ $N_{\epsilon}(p)$, the minimum number of points to be a cluster $MinPts$ and the distance measure from $p$ to its $MinPts$-nearest neighbors $MinPts$-$dist(p)$. Then:
+Given a point $p$ from the data set $DS$, an epsilon-distance $\epsilon$, the \todor{format} $\epsilon$-neighbourhood of $p$ $N_{\epsilon}(p)$, the minimum number of points to be a cluster $MinPts$ and the distance measure from $p$ to its $MinPts$-nearest neighbors $MinPts$-$dist(p)$. Then:
 \todo{DBSCAN with one whole cluster instead of 2 separate}
 \todor{Figure without bounding box}
 \begin{figure}
@@ -222,7 +223,7 @@ Formally the reachability-distance of $p$ w.r.t.\ $q$ is defined as:
 
 \subsubsection*{The OPTICS-Algorithm} %This first processed point sound weird
 The \gls{optics}-algorithm maintains two data structures to create the ordering, one seed list $L$, which contains (point, reach-dist)-tuples and is ordered by the reach-dist, and the cluster ordering list $O$. 
-To create this ordering, \gls{optics} first initializes the ordering $O$ with a random point $o_{proc}$ of $DS$ and a reach-dist of $\infty$. A reachability-distance of $\infty$ from point $a$ w.r.t.\ point $b$ describes that $a$  is simply not contained in the $\epsilon$-neighborhood of $b$ and therefore connected to the dense cluster. Since $o_{proc}$ is the first point of the ordering it does not have a previous cluster to connect to and will never be in the reachability-distance of another point in the ordering. This first point in processing $o_{proc}$ now populates the ordered seed list $L$ with points $o_i$, belonging to the $\epsilon$-neighborhood $N_\epsilon(o_{proc})$, and its reachability-distance w.r.t.\ $o_{proc}$, i.e.\ $reach$-$dist(o_i, o_{proc})$. The further iterations now depend on the state of the seed list $L$. Whenever $L$ is not empty, each next point $o_{proc}$ chosen for processing is taken from the ordered seed list and inserted into the cluster ordering list $O$ with its respective reachability-distance. If $L$ is empty, there is no candidate left to be density-connected and a new $o_{proc}$ is randomly chosen from $DS$ and inserted into $O$ with a reachability-distance of $\infty$ again. The point in process $o_{proc}$ is then used again to populate the seed list. This loop continues until there are no unprocessed points in $DS$ left.
+To create this ordering, \gls{optics} first initializes the ordering $O$ with the first point $o_{proc}$ of $DS$ and a reach-dist of $\infty$. A reachability-distance of $\infty$ from point $a$ w.r.t.\ point $b$ describes, that point $a$ is not contained in the $\epsilon$-neighbourhood of $b$ and therefore connected to the dense cluster. Since $o_{proc}$ is the first point of the ordering, it does not have a previous cluster to connect to and will never be in the reachability-distance of another point in the ordering. This first point in processing $o_{proc}$ now populates the ordered seed list $L$ with points $o_i$, belonging to the $\epsilon$-neighbourhood $N_\epsilon(o_{proc})$, and its reachability-distance w.r.t.\ $o_{proc}$, i.e.\ $reach$-$dist(o_i, o_{proc})$. The further iterations now depend on the state of the seed list $L$. Whenever $L$ is not empty, each next point $o_{proc}$ chosen for processing is taken from the ordered seed list and inserted into the cluster ordering list $O$ with its respective reachability-distance. If $L$ is empty, there is no candidate left to be density-connected and the next unprocessed point is chosen from $DS$ as a new $o_{proc}$ and inserted into $O$ with a reachability-distance of $\infty$ again. The point in process $o_{proc}$ is then used again to populate the seed list. This loop continues until there are no unprocessed points in $DS$ left.
 
 \vspace{5mm}
 
@@ -235,7 +236,7 @@ To create this ordering, \gls{optics} first initializes the ordering $O$ with a 
  L := $\emptyset$\;
  \While{$DS\setminus \{L \cup O\}$ is not empty}{
     \eIf{$L$ is empty}{
-        o := random Point of $DS\setminus \{L \cup O\}$\;
+        o := next unprocessed Point of $DS\setminus \{L \cup O\}$\;
         $reach$-$dist$ := $\infty$\;
         $O$.append((o,$reach$-$dist$))\;
     }{
@@ -253,7 +254,7 @@ To create this ordering, \gls{optics} first initializes the ordering $O$ with a 
 
 As an illustration \gls{optics} can visualize the hierarchy using a \textit{reachability plot} (c.f. \autoref{fig:reachabilityplot}).\\
 
-All in all \gls{optics} provides a more capable clustering tool for different densities, with an, in practice, only 1.6 higher runtime compared to its ancestor \gls{dbscan}. In theory the runtime complexity of \gls{optics} is heaviliy dominated by the runtime of the neighborhood query. Given a tree-based spatial index structure for the neighborhood query, the runtime becomes $\mathcal{O}(|DS| \log |DS|)$, in the worst case however the complexity raises to $\mathcal{O}(|DS|^2)$. However similar to \autoref{ssec:DBSCANindepth}, \gls{optics} also suffers from the \textit{Curse of Dimensionality}.
+All in all, \gls{optics} provides a more capable clustering tool for different densities, with an, in practice, only 1.6 higher runtime compared to its ancestor \gls{dbscan}. In theory, the runtime complexity of \gls{optics} is heavily dominated by the runtime of the neighbourhood query. Given a tree-based spatial index structure for the neighbourhood query, the runtime becomes $\mathcal{O}(|DS| \log |DS|)$, in the worst-case however the complexity raises to $\mathcal{O}(|DS|^2)$. Nonetheless, similar to \autoref{ssec:DBSCANindepth}, \gls{optics} also suffers from the \textit{Curse of Dimensionality}.
 
 \begin{figure}
     \centering
@@ -290,7 +291,7 @@ A point $p_i = (x_i, y_i)$ in data space is then characterized by each possible 
     \label{fig:houghmxt}
 \end{figure}
 
-However using the slope-intercept form $y = m \cdot x + t$ comes with a drawback, it can not show lines parallel to the y-axis. As a solution \citeauthor{duda1971use} propose the use of the \gls{hnf} for the concurrent lines instead. Their equations in data space change to the following form:
+However using the slope-intercept form $y = m \cdot x + t$ comes with a drawback, it can not show lines parallel to the y-axis. As a solution, \citeauthor{duda1971use} propose the use of the \gls{hnf} for the concurrent lines instead. Their equations in data space change to the following form:
 \begin{align}\label{eq:hnfangles}
     \begin{split}
         \delta_{p_i}(\theta_{p_i}) &= x_i \cos{\theta_{p_i}} + y_i \sin{\theta_{p_i}}\\
@@ -414,7 +415,7 @@ Correlation in a classical sense is a measure of relationship between two variab
     \delta(t,f,l) = \langle \vec{x},\vec{n_0}(f,t) \rangle
 \end{align}
 
-\textit{Correlation clusters} refer to the grouping of observations/data objects within a certain interval in data space which display similar correlations in a subset of the objects features. In other words a Correlation Cluster is a group of points which have a low distance $j$, which we will refer to as \textit{jitter}, to a hyperplane $h$ modeled by a correlation within an interval. We formalize it as following:
+\textit{Correlation clusters} refer to the grouping of observations/data objects within a certain interval in data space which display similar correlations in a subset of the objects features. In other words a Correlation Cluster is a group of points which have a low distance $j$, which we will refer to as \textit{jitter}, to a hyperplane $h$ modelled by a correlation within an interval. We formalize it as following:
 
 A correlation cluster in data set $DS$ is a non-empty subset $C^{Corr} \subseteq DS$ of points $p$ which fullfill the following condition:
 \begin{align}\label{eq:pointtohyplane}
@@ -529,7 +530,7 @@ Since we want to find \textit{local} linear correlations within \textit{global} 
 We can therefore retrieve these local subclusters by searching the data for density-connected sets of points via a density-based clustering approach like \gls{dbscan} or \gls{optics}. This comes with an additional benefit by automatically removing noise. 
 
 However like mentioned in \autoref{ssec:DBSCANindepth} and \autoref{ssec:OPTICSindepth} \gls{dbscan} is not able to find clusters with different density and mixes multiple densities together into one cluster due to its global parameter setting only defining a minimum density. High variance in data densities can therefore strongly influence the result of \gls{dbscan}, either by making it harder to choose the appropriate parameters for a better clustering result or by having more variety in density in found clusters which would result in less conclusive detection of their linear correlations. 
-To receive a more suited clustering we preferred the use of \gls{optics}, which is able to detect clusters with different densities (c.f.~\autoref{ssec:OPTICSindepth}). Since we do not want to prune any information away we can generally use a very high epsilon-distance $\epsilon$ to create a detailed ordering and therefore only rely on $MinPts$ as a parameter. From this ordering we can extract clusters with a new parameter $reachdist_{\tau}$ which represents the threshold at which the difference of neighboring reachability-distances of the ordering is considered to be a new cluster with different density. We also assign a bounding box for each found cluster, which represents the local data space for further evaluation performed by \gls{cash}. As previously mentioned, our density-based methods suffer from the \textit{Curse of Dimensionality}. However this property at least should not greatly impact the global correlation clustering result, since, should it happen that every point has a too sparse neighborhood, every point would simply be considered as noise and a default \gls{cash} would be applied onto the whole data set. Up to this point we are merely partitioning the data into dense clusters with the added benefit of filtering out $noise^{DB}$ points (noise points in a density-based view). We will reconsider those noise points later, since they still could be parts of the global correlation clustering despite not being dense. \autoref{fig:boundingbox} visualizes a data set after step 1 is performed. The relevant part of the data set is clustered by density and its boundaries are highlighted by the bounding boxes.
+To receive a more suited clustering we preferred the use of \gls{optics}, which is able to detect clusters with different densities (c.f.~\autoref{ssec:OPTICSindepth}). Since we do not want to prune any information away we can generally use a very high epsilon-distance $\epsilon$ to create a detailed ordering and therefore only rely on $MinPts$ as a parameter. From this ordering we can extract clusters with a new parameter $reachdist_{\tau}$ which represents the threshold at which the difference of neighboring reachability-distances of the ordering is considered to be a new cluster with different density. We also assign a bounding box for each found cluster, which represents the local data space for further evaluation performed by \gls{cash}. As previously mentioned, our density-based methods suffer from the \textit{Curse of Dimensionality}. However this property at least should not greatly impact the global correlation clustering result, since, should it happen that every point has a too sparse neighbourhood, every point would simply be considered as noise and a default \gls{cash} would be applied onto the whole data set. Up to this point we are merely partitioning the data into dense clusters with the added benefit of filtering out $noise^{DB}$ points (noise points in a density-based view). We will reconsider those noise points later, since they still could be parts of the global correlation clustering despite not being dense. \autoref{fig:boundingbox} visualizes a data set after step 1 is performed. The relevant part of the data set is clustered by density and its boundaries are highlighted by the bounding boxes.
 
 \begin{figure}
     \centering
@@ -616,7 +617,7 @@ The connected components of $A$ now represent the set of localized correlations 
     \nonumber\\
     \text{hyperplane $g$: } \delta_g = \langle \vec{n}_g, \vec{x}\rangle
 \end{gather}
-where the function $f_{avg}(X)$ is a user-defined average function over set $X$. Each point previously assigned to one of the components correlation now additionally is labeled with its superordinate global correlation cluster $g_i \in C^{global}$.
+where the function $f_{avg}(X)$ is a user-defined average function over set $X$. Each point previously assigned to one of the components correlation now additionally is labelled with its superordinate global correlation cluster $g_i \in C^{global}$.
 
 \begin{figure}
     \centering
@@ -627,7 +628,7 @@ where the function $f_{avg}(X)$ is a user-defined average function over set $X$.
 
 \subsection{Relabeling}
 
-Since we previously discarded $noise^{DB}$ and $noise^{Corr}$, which were labeled as noise points in a localized view, we now focus on/re-evaluate the membership of those points with regards to the newly created global correlation clusters. 
+Since we previously discarded $noise^{DB}$ and $noise^{Corr}$, which were labelled as noise points in a localized view, we now focus on/re-evaluate the membership of those points with regards to the newly created global correlation clusters. 
 
 $Noise^{Corr}$ could have been a member from a far away localized correlation cluster and $noise^{DB}$ was filtered out even before consideration of correlation cluster membership. Hence re-evaluating these points with a global view again complements the result for completeness. This is done by reassessing the distance of all noise points $noise^{DS \cup Corr}$ to all found correlations $C^{local \cup global}$ and relabeling them, if the threshhold condition $j$ is fulfilled (c.f. \autoref{eq:pointtohyplane}).\\
 \begin{figure}
@@ -666,7 +667,7 @@ Therefore just looking at the complexity in theory our algorithm should perform 
 \begin{tabular}{@{}|l|l|l|@{}}
 \toprule
 Step                         & Parameters                                         & Complexity \\ \midrule
-Partitioning                 & \begin{tabular}[c]{@{}l@{}}$\epsilon$ : Epsilon-distance\\ $MinPts$: min \# of pts in dense neighborhood\end{tabular} & $\mathcal{O}(|DS|^2)$          \\ \midrule
+Partitioning                 & \begin{tabular}[c]{@{}l@{}}$\epsilon$ : Epsilon-distance\\ $MinPts$: min \# of pts in dense neighbourhood\end{tabular} & $\mathcal{O}(|DS|^2)$          \\ \midrule
 Local Correlation Clustering & \begin{tabular}[c]{@{}l@{}}$s$: \# of splits\\ $m$: min \# of pts in ROI of parameter space\\ $j$: jitter\end{tabular}  & $\mathcal{O}(2^d)$          \\ \midrule
 Stitching                    & \begin{tabular}[c]{@{}l@{}}$\tau_{\Delta cos-dist}$: orientation threshold\\ $\tau_{\Delta eucl-dist}$: distance threshold\end{tabular}  & $\mathcal{O}(c^2)$          \\ \midrule
 Relabeling                   & $j$: jitter                                                  & $\mathcal{O}(|DS| \cdot c)$          \\ \bottomrule
