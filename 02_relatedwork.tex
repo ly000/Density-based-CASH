@@ -3,7 +3,7 @@
 % This chapter introduces some foundational work on density-based and subspace/correlation clustering and aims to give an intuitive insight into existing approaches to solve the problem of subspace clustering. We also elaborate, where these existing approaches lack in ability and capability and show some of the current optimization approaches.
 This chapter introduces some foundational work on subspace/correlation clustering and aims to give an intuitive insight into existing approaches to solve the problem of subspace clustering. In particular, the elaboration on the related work is twofold: we introduce subspace/correlation extraction/clustering methods such as basic \acrshort{pca} and \acrshort{orclus}, and additionally expand on algorithms which augment the subspace clustering method such as \acrshort{dbscan} in \acrshort{4c}. We also elaborate, where these existing approaches lack in ability and capability and show some of the current optimization approaches.
 
-Since sections \nameref{sec:houghintro}, \nameref{sec:cashintro}, \nameref{sec:dbscanintro} and \nameref{sec:OPTICSintro} are essential components to our work, they will be elaborated in greater detail in the chapter \nameref{sec:Foundations}
+Since sections \nameref{sec:houghintro}, \nameref{sec:cashintro}, \nameref{sec:dbscanintro} and \nameref{sec:OPTICSintro} are essential components of our work, they will be elaborated in greater detail in the \autoref{sec:Foundations} \nameref{sec:Foundations}
 
 \section{Existing Subspace Clustering Algorithms}
 There are many approaches for detecting relevant subspaces in data, generally grouped to either finding axis-parallel or arbitrarily oriented subspaces. Our work, in particular, focuses on the extraction of the second type of subspaces, which obviously proves to be a more challenging task since it encompasses the problem of axis-parallel subspace clustering\todor{the first type}. This task is also referred to as \textit{Correlation Clustering}. 
@@ -11,7 +11,7 @@ There are many approaches for detecting relevant subspaces in data, generally gr
 This section introduces some existing correlation clustering algorithms and illustrates \todor{choose one: demonstrates/analyzes/explains/illustrates/points out} their advantages and disadvantages and elaborates on their suitability for our idea.
 
 \subsection{PCA}
-A common way to filter out relevant features/subspaces in high dimensional data is the application of feature selection/dimensionality reduction. One of the oldest and most widely used methods is the \gls{pca}. It is a statistical approach which uses an orthogonal transformation to transform the original basis of a $d$-dimensional data space $DS$ to a basis built upon $d$ so-called \textit{Principal Components} $PC$, where the first Principal Components $PC_1$ is a vector which describes the largest percentage of explained variance in $DS$. Each Principal Component $PC_j$ next in order $j,\dotsc,d$ is orthogonal to the previous ones $PC_i, i<j$ and is ordered by the next highest explained variance. Mathematically finding the Principal Components in a data set $DS$ boils down to solving its eigendecomposition\todor{nicht ganz korrekt. eigendecomp von cov(x)}, where the eigenvector with the highest corresponding eigenvalue represents the first Principal Component and the second-highest the second Principal Component, etc\cite{pcawold1987principal}. For further details to the calculation \textcite{pcamljolliffe1986principal} offers a short and intuitive step-by-step explanation.
+A common way to filter out relevant features/subspaces in high dimensional data is the application of feature selection/dimensionality reduction. One of the oldest and most widely used methods is the \gls{pca}. It is a statistical approach which uses an orthogonal transformation to transform the original basis of a $d$-dimensional data space $DS$ to a basis built upon $d$ so-called \textit{Principal Components} $PC$, where the first Principal Component $PC_1$ is a vector which describes the largest percentage of explained variance in $DS$. Each Principal Component $PC_j$ next in order $j,\dotsc,d$ is orthogonal to the previous ones $PC_i, i<j$ and is ordered by the next highest explained variance. Mathematically finding the Principal Components in a data set $DS$ boils down to solving its eigendecomposition\todor{nicht ganz korrekt. eigendecomp von cov(x)}, where the eigenvector with the highest corresponding eigenvalue represents the first Principal Component and the second-highest the second Principal Component, etc\cite{pcawold1987principal}. For further details to the calculation \textcite{pcamljolliffe1986principal} offers a short and intuitive step-by-step explanation.
 Unfortunately, the extraction of relevant features via \gls{pca} is rarely of use for clustering problems. Unmodified \gls{pca} is global in nature and can only compute one subspace of the original data space and does not address the problem of \textit{local feature relevance} or \textit{local feature correlation}, which essentially states, that different clusters in data space can exist in different subspaces\cite{kriegel2009clustering} (c.f. \cite{PCAshlens2014tutorial}). \todor{PCA besser erklaeren}
 \todor{local pca}
 
@@ -22,26 +22,28 @@ Unfortunately, the extraction of relevant features via \gls{pca} is rarely of us
       \centering  
       \captionsetup{width=.9\linewidth}
       \includegraphics[width=.9\textwidth]{figures/pcalocalfeat1.png}
-      \captionof*{figure}{a) First}
+      \captionof*{figure}{a) Applying \acrshort{pca} first, then \acrshort{dbscan}.}
       \label{fig:pca_dbscan}
     \end{minipage}%
     \begin{minipage}[t]{.5\textwidth}
       \centering
       \captionsetup{width=.9\linewidth}
       \includegraphics[width=.9\textwidth]{figures/pcalocalfeat2.png}
-      \captionof*{figure}{b) Second}
+      \captionof*{figure}{b) Applying \acrshort{dbscan} first, then \acrshort{pca}.}
       \label{fig:dbscan_pca}
     \end{minipage}
-    \caption{lazy}
+    \caption{Scenarios showing the incapabilities of \acrshort{pca} with \acrshort{dbscan}.}
     \label{fig:localfeatrelevance}
 \end{figure}
 
 \subsection{ORCLUS}
 Since \gls{pca} only provides a global view of the correlations in data space and does not address the local feature relevance, \gls{orclus} attempts to enforce \gls{pca} to only consider local segments of the data space via a $k$-Means-like approach. 
 
-To find $k$ many $l$-dimensional subspace clusters in a $d$-dimensional data space, \gls{orclus} first initializes $k_c, k_c > k$ seeds $s_i$ as centroids and applies the default (euclidean) $k$-Means to partition the data space into $k_c$ clusters $C_i$ with $i \in \{1,\dotsc,k_c\}$. After that iteratively all points are reassigned to the new cluster centroids via a modified distance function based on a subset of $l_c, l\leq l_c \leq d$ weak eigenvectors/principal components $\varepsilon_i$ of each cluster $c_i$. This subset of $l_c$ eigenvectors represents the current dimensionality of the cluster in each iteration and is adapted such that at the end of all iterations $l_c=l$ holds. Additionally, at the end of each iteration, the closest pair (in terms of average modified distance) of clusters are merged together resulting in $k_c = k_c-1$ clusters afterwards. This reassigning-merging process is repeated until $k_c = k$ holds. Due to the localized view on the single partitions, \gls{orclus} is considered as a local correlation clustering algorithm\cite{orclusaggarwal2000finding}.
+To find $k$ many $l$-dimensional subspace clusters in a $d$-dimensional data space, \gls{orclus} first initializes $k_c, k_c > k$ seeds $s_i$ as centroids and applies the default (euclidean) $k$-Means to partition the data space into $k_c$ clusters $C_i$ with $i \in \{1,\dotsc,k_c\}$. 
+After that iteratively all points are reassigned to the new cluster centroids via a modified distance function based on a subset of $l_c, l\leq l_c \leq d$ weak eigenvectors/principal components $\varepsilon_i$ of each cluster $c_i$. This subset of $l_c$ eigenvectors represents the current dimensionality of the cluster in each iteration and is adapted such that at the end of all iterations $l_c=l$ holds. Additionally, at the end of each iteration, the closest pair (in terms of average modified distance) of clusters is merged together resulting in $k_c = k_c-1$ clusters afterwards. 
+This reassigning-merging process is repeated until $k_c = k$ holds. Due to the localized view on the single partitions, \gls{orclus} is considered as a local correlation clustering algorithm\cite{orclusaggarwal2000finding}.
 
-As an adopter of $k$-Means and \gls{pca}, \gls{orclus} however also comes with its components disadvantages. It relies on $k$, which is difficult to determine, does not handle noise and outliers, and extracts the subspaces based on the clusters eigenvectors, which are not necessarily a good representation of the members' distribution (c.f. \autoref{fig:localfeatrelevance}).
+As an adopter of $k$-Means and \gls{pca}, \gls{orclus} however also comes with its components disadvantages. It relies on $k$, which is difficult to determine, does not handle noise and outliers, and extracts the subspaces based on the clusters' eigenvectors, which are not necessarily a good representation of the members' distribution (c.f. \autoref{fig:localfeatrelevance}).
 
 
 \subsection{4C}\label{ssec:4c}
@@ -49,14 +51,14 @@ Analogous to \gls{orclus}, \gls{4c} also aims to construct a localized view of t
 
 To find $\lambda$-dimensional subspace clusters in a $d$-dimensional space, \gls{4c} employs a customized/an extended \acrshort{dbscan} by modifying parts of the density criterion. 
 % After clustering the data space into usual dense clusters, each cluster is reevaluated according to its variance. This is done by applying \gls{pca} to the locally dense cluster. If the $d-\lambda$ smallest eigenvectors of the cluster are not close enough to threshold $\delta \approx 0$
-Instead of uniformly assessing the neighbourhood in all directions, the modified density criterion biases the neighbourhood query according to the neighbourhoods variance. First, only dense candidates/core points, that have a maximum of $\lambda$ eigenvalues $\varepsilon_i > \delta$ in its neighbourhood, are considered. $\delta$ denotes a threshold for a variance in unrelated dimensions. Secondly, these points are grouped together based on their membership in each other's modified neighbourhood. These resulting clusters are, much like \gls{orclus}, also based on a localized view (this time dense clusters) and therefore also only able to create a local correlation clustering\cite{4cbohm2004computing}. A detailed explanation to the original \acrshort{dbscan} is found in \autoref{ssec:DBSCANindepth}.
+Instead of uniformly assessing the neighbourhood in all directions, the modified density criterion biases the neighbourhood query according to the neighbourhoods' variance. First, only dense candidates/core points, that have a maximum of $\lambda$ eigenvalues $\varepsilon_i > \delta$ in their neighbourhoods, are considered. $\delta$ denotes a threshold for a variance in unrelated dimensions. Secondly, these points are grouped together based on their membership in each other's modified neighbourhood. These resulting clusters are, much like \gls{orclus}, also based on a localized view (this time dense clusters) and therefore also only able to create a local correlation clustering\cite{4cbohm2004computing}. A detailed explanation to the original \acrshort{dbscan} is found in \autoref{ssec:DBSCANindepth}.
 
 In contrast to \gls{orclus}, \gls{4c} enables the handling of noise and outliers. The modification of the density criterion essentially promotes a density-based propagation of the cluster biased towards the found local correlations, but due to the loose constraint of a maximum amount of eigenvalues, \gls{4c} only finds close to $\lambda$-dimensional clusters.
 
 \subsection{COPAC}
 \gls{copac}, like \gls{4c}, also uses an approach based on \acrshort{dbscan}, however this time the modified \acrshort{dbscan} artificially only considers distances related to the correlating (global) hyperplane and thus creates a global correlation clustering. 
 
-Instead of determining each points dimensionality according to its dense neighbourhood (c.f. \autoref{ssec:4c}), \gls{copac} first assigns each point its \textit{local correlation dimensionality} $\lambda$, which denotes the smallest amount of eigenvectors explaining at least $\alpha$ percent of the $k$-nearest neighbours' variance, and partitions them based on $\lambda$. Secondly, clusters each partition is processed with a modified \acrshort{dbscan}. This modified \acrshort{dbscan} now only considers the $d-\lambda$ weakest eigenvectors of the k-nearest neighbours in the distance functions and therefore clusters each partition based on the distance to the strong eigenvectors/correlations.
+Instead of determining each points' dimensionality according to its dense neighbourhood (c.f. \autoref{ssec:4c}), \gls{copac} first assigns each point its \textit{local correlation dimensionality} $\lambda$, which denotes the smallest amount of eigenvectors explaining at least $\alpha$ percent of the $k$-nearest neighbours' variance, and partitions them based on $\lambda$. Secondly, each cluster partition is processed with a modified \acrshort{dbscan}. This modified \acrshort{dbscan} now only considers the $d-\lambda$ weakest eigenvectors of the k-nearest neighbours in the distance functions and therefore clusters each partition based on the distance to the strong eigenvectors/correlations.
 
 Due to the initial partitioning based on the local correlation dimensionality $\lambda$, \gls{copac} does not need a parameter to detect a specific dimensional correlation, but instead simultaneously finds correlation clusters of arbitrary dimensions. The difficulties here rely on the choice of the parameter $k$, which at least can be constrained to $k>d$.
 \todor{moechte eigtl nicht sagen, dass das gut oder schlecht ist, vllt will man ja gezielt nach einer dimensionalitaet suchen?}\\
@@ -84,7 +86,7 @@ The global correlation clustering algorithm \gls{cash} extends the use case of t
 
 Furthermore, \gls{cash} introduces an improved search strategy for detecting regions of high intersections in parameter space to improve the efficiency compared to the basic grid search \cite{CASHachtert2008global}. Instead of doing an extensive count operation/accumulation of intersections over a fixed interval, \gls{cash} successively splits the whole parameter space by its axes and only further evaluates the split hypercuboids if they contain enough intersections. This is repeated until a certain count of splits is reached, and only then hypercuboids with enough intersections are considered as linear correlations. 
 
-Since our work focuses on ``\textit{Detecting Global Correlated Clusters using Hough Transform through Locally Dense Correlations}'', we use \gls{cash} to cope with multi-dimensional data and detect our locally dense correlations. Additionally, we will use \gls{cash} as a performance baseline for our descendant algorithm to compare them in a global setting.
+Since our work focuses on ``\textit{Detecting Global Correlated Clusters using Hough Transform through Locally Dense Correlations}'', we use \gls{cash} to cope with multi-dimensional data and detect our locally dense correlations. Additionally, we use \gls{cash} as a performance baseline for our descendant algorithm to compare them in a global setting.
 A more profound explanation of the transformation and its usage in \gls{cash} will be given in \autoref{ssec:houghindepth}.
 
 % Please add the following required packages to your document preamble:
@@ -95,17 +97,19 @@ A more profound explanation of the transformation and its usage in \gls{cash} wi
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}|l|c|c|c|l|@{}}
 \toprule
-\textbf{Algorithm}                 & \textbf{\begin{tabular}[c]{@{}c@{}}Local \\ Subspaces\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Global \\ Subspaces\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Global \\ Subspaces\end{tabular}} & \textbf{Notes}                                                                                                                                                                                                   \\ \midrule
+\textbf{Algorithm}                 & \textbf{\begin{tabular}[c]{@{}c@{}}Local \\ Subspaces\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Global \\ Subspaces\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Hierarchical \\ Subspaces\end{tabular}} & \textbf{Notes}                                                                                                                                                                                                   \\ \midrule
 \acrshort{pca}    & \xmark    & \cmark     & \xmark      & \tabitem Only handles single or orthogonal correlations well                                                                                                                                                              \\ \midrule
 \acrshort{orclus} & \cmark    & \xmark     & \xmark      & \tabitem Combines \acrshort{pca} with a $k$-Means-like approach                                                                                                                                          \\ \midrule
 \acrshort{4c}     & \cmark    & \xmark     & \xmark      & \tabitem Combines \acrshort{pca} with a density-based approach                                                                                                                                           \\ \midrule
 \acrshort{copac}  & \xmark    & \cmark     & \xmark      & \begin{tabular}[c]{@{}l@{}}\tabitem Similar to \acrshort{4c}\\ \tabitem Combines \acrshort{pca} with a density-based approach\end{tabular}                                                       \\ \midrule
 \acrshort{hico}   & \xmark    & \cmark     & \cmark      & \begin{tabular}[c]{@{}l@{}}\tabitem Creates a Correlation distance ordering similar to \acrshort{optics},\\ \tabitem creates a tree-like hierarchy\end{tabular}                                                   \\ \midrule
 \acrshort{eric}   & \xmark    & \cmark     & \cmark      & \begin{tabular}[c]{@{}l@{}}\tabitem Similar to \acrshort{hico}\\ \tabitem Creates a Correlation distance ordering similar to \acrshort{optics}, \\ \quad \ but creates a graph-like hierarchy\end{tabular} \\ \midrule
-\acrshort{cash}   & \xmark    & \cmark     & \cmark      & \tabitem Uses the Hough-Transform to                                                                                                                                                                                      \\ \bottomrule
+\acrshort{cash}   & \xmark    & \cmark     & \cmark      &
+\begin{tabular}[c]{@{}l@{}}\tabitem Uses the Hough-Transform to detect Correlations\\ \tabitem No locality assumption\end{tabular}
+\\ \bottomrule
 \end{tabular}%
 }
-\caption{}
+\caption{Different scopes/capabilities of several Correlation Clustering methods.}
 \label{tab:corrcluchar}
 \end{table}
 

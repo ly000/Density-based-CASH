@@ -67,7 +67,7 @@ Furthermore: do we observe any differences between the original \gls{cash} algor
     \label{fig:eval_per_objects}   
 \end{figure}
 
-\autoref{fig:eval_per_objects} shows the average runtime of both algorithms w.r.t. the \textit{number of objects} in 3-dimensional clusters of the data set. The data sets had a variable size of 1000, 2000, 4000, 8000, 16000 and 32000 number of objects with 5 percent noise respective to the data set size. Here our algorithm scales comparably to \gls{cash} and does not deteriorate in runtime performance even with higher numbers of objects even though the overhead of the partitioning, stitching and relabeling increases. This can be explained due to the shorter runtimes of the localized \gls{cash} processes since the partitioning step reduces the number of regions of interest in the parameter space of the Hough transform.\\
+\autoref{fig:eval_per_objects} shows the average runtime of both algorithms w.r.t.\ the \textit{number of objects} in 3-dimensional clusters of the data set. The data sets had a variable size of 1000, 2000, 4000, 8000, 16000 and 32000 number of objects with 5 percent noise respective to the data set size. Here our algorithm scales comparably to \gls{cash} and does not deteriorate in runtime performance even with higher numbers of objects even though the overhead of the partitioning, stitching and relabelling increases. This can be explained due to the shorter runtimes of the localized \gls{cash} processes since the partitioning step reduces the number of regions of interest in the parameter space of the Hough transform.\\
 
 The second question regarding efficiency is: How fast does our algorithm perform at different levels of noise? Is it comparable to the original \gls{cash}?. To assess the robustness of our algorithms' efficiency against noise, we compared the average runtimes of 500 iterations of both algorithms with regards to the amount of noise in the data space. Instead of modifying the total number of points of the whole data set, we now only evaluate the impact of different levels of noise percentage and compare the results of our approach with \gls{cash}s.
 
@@ -76,7 +76,7 @@ The second question regarding efficiency is: How fast does our algorithm perform
 \begin{figure}[h]
     \centering
         \includegraphics[width=0.8\textwidth]{evaluation/per_noise/Avg_Runtime_3D_O10000_pnoise_bar.pdf}
-    \caption{Runtime in seconds w.r.t. the noise percentage}
+    \caption{Runtime in seconds w.r.t.\ the noise percentage}
     \label{fig:eval_per_noise}
 \end{figure}
 
@@ -90,14 +90,14 @@ Note that runtimes dependent on dimensionality scale in $\mathcal{O}(2^d)$. Ther
 \begin{figure}[h]
     \centering
         \includegraphics[width=0.8\textwidth]{evaluation/per_dims/Avg_Runtime_O10000_N5_pdims_log.pdf}
-    \caption{Runtime in seconds w.r.t. the dimensionality of the whole data set - lower is better}
+    \caption{Runtime in seconds w.r.t.\ the dimensionality of the whole data set - lower is better}
     \label{fig:eval_per_dims}
 \end{figure}
 
 \autoref{fig:eval_per_dims} shows a comparison of local and global algorithms average runtime performances with regards to expanding dimensionalities. This experiment was run on data sets with 10000 objects and 5 percent noise with 2,3,4,8 and 16 dimensions. As expected the average runtime corresponding to the increasing dimensionality increases exponentially for both approaches, considering the runtime complexity of \gls{cash} and our algorithms complexity, which is also dominated by the complexity of \gls{cash}s $\mathcal{O}(2^d)$. Therefore it is sensible that both algorithms again perform comparably.
 Since we capped the maximum runtime of each parameter search iteration to 2 hours, we observe a stagnation of the runtime at 16 dimensions.\\
 
-Summarized the experiments have demonstrated that the average runtime of our local approach is closely comparable to the default \gls{cash} with respect to the number of points, amount of noise and dimensionalities. Therefore as assumed the overhead produced by the preprocessing component \gls{optics} and the postprocessing components \textit{Stitching} and \textit{Relabeling} are compensated by the faster runtime of the localized \gls{cash} ran on the partitioned subinterval of the data space. 
+Summarized the experiments have demonstrated that the average runtime of our local approach is closely comparable to the default \gls{cash} with respect to the number of points, amount of noise and dimensionalities. Therefore as assumed the overhead produced by the preprocessing component \gls{optics} and the postprocessing components \textit{Stitching} and \textit{Relabelling} are compensated by the faster runtime of the localized \gls{cash} ran on the partitioned subinterval of the data space. 
  
 \subsection{Effectiveness}
 To measure the clustering performance measures we picked the best parameter sets of the previous 500 iterations of parameter search of the efficiency evaluation for both local and global approach and stacked their \gls{ari} and \gls{nmi} scores up against each other. 
@@ -134,14 +134,14 @@ To assess the robustness of our clustering algorithm against noise, the second c
       \centering  
       \captionsetup{width=.9\linewidth}
       \includegraphics[width=\textwidth]{evaluation/per_noise/Best_ARI_3D_O10000_pnoise_bar.pdf}
-      \captionof{figure}{\gls{ari} score w.r.t. amount of noise}
+      \captionof{figure}{\gls{ari} score w.r.t.\ amount of noise}
       \label{fig:ariperpts}
     \end{minipage}%
     \begin{minipage}[t]{.5\textwidth}
       \centering
       \captionsetup{width=.9\linewidth}
       \includegraphics[width=\textwidth]{evaluation/per_noise/Best_NMI_3D_O10000_pnoise_bar.pdf}
-      \captionof{figure}{\gls{nmi} score w.r.t. amount of noise}
+      \captionof{figure}{\gls{nmi} score w.r.t.\ amount of noise}
       \label{fig:nmiperpts}
     \end{minipage}    
     \caption{Scoring w.r.t the noise percentage - higher is better}
@@ -157,14 +157,14 @@ Our last clustering performance evaluation was targeted at the impact of the dim
       \centering  
       \captionsetup{width=.9\linewidth}
       \includegraphics[width=\textwidth]{evaluation/per_dims/Best_ARI_O10000_N5_pdims_bar.pdf}
-      \captionof{figure}{\gls{ari} score w.r.t. dimensionality}
+      \captionof{figure}{\gls{ari} score w.r.t.\ dimensionality}
       \label{fig:ariperpts}
     \end{minipage}%
     \begin{minipage}[t]{.5\textwidth}
       \centering
       \captionsetup{width=.9\linewidth}
       \includegraphics[width=\textwidth]{evaluation/per_dims/Best_NMI_O10000_N5_pdims_bar.pdf}
-      \captionof{figure}{\gls{nmi} score w.r.t. dimensionality}
+      \captionof{figure}{\gls{nmi} score w.r.t.\ dimensionality}
       \label{fig:nmiperpts}
     \end{minipage}
     \caption{Scoring w.r.t the dimensionality - higher is better}
@@ -175,21 +175,43 @@ Our last clustering performance evaluation was targeted at the impact of the dim
 Note that since the evaluation of the runtime performance with regards to 8 and 16-dimensional data sets were stopped early due to time constraints, the optimal scorings of both 8 and 16-dimensional data sets are not representative for the optimal scores and will not be considered. 
 The results of dimensions 2,3 and 4 show similar clustering results compared to both algorithms, however, as the direction over these dimensions \gls{ari} and \gls{nmi} scores suggest, both \gls{cash} and our algorithm have a downward trend in terms of clustering score with regards to dimensionality. This might be due to the fact that the search space for \gls{cash} increases exponentially with respect to the dimensions, which increases the possible regions of interest (c.f. \autoref{fig:cash3d}). Instead of a single intersection in a point as a region of interest in 2-dimensional space, a 3-dimensional space for comparison has a complex curve as intersection which increases the number of regions of interest considerably. This increased complexity might be the reason for the deteriorating performance in increasing dimensions. \todor{erwaehnt orginal cash das deswegen nicht?}\\
 
-Summarized our experiments show, that our local approach yields similar results in various settings in terms of runtime as well as in terms of clustering performance compared to the original \gls{cash}, with an additional benefit of detecting locally dense correlations. \autoref{fig:clusterexample} shows an example of our algorithm with the local correlations clustering as an intermediate result and the relabelled global view of the correlation clustering. \autoref{fig:gclusterexample} shows the equivalent clustering performed by the default \gls{cash}. \todor{kann laenger sein}
+Summarized our experiments show, that our local approach yields similar results in various settings in terms of runtime as well as in terms of clustering performance compared to the original \gls{cash}, with an additional benefit of detecting locally dense correlations. \autoref{fig:evalLocal} and \autoref{fig:evalRelabeled} show an example of our algorithm with the local correlations clustering as an intermediate result and the relabelled global view of the correlation clustering. \autoref{fig:gclusterexample} shows the equivalent clustering performed by the default \gls{cash}. \todor{kann laenger sein}
 
-\begin{figure}
+\begin{figure}[h]
     \centering
-    \includegraphics{}
-    \caption{Caption}
-    \label{fig:clusterexample}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics{}
-    \caption{Caption}
+    \begin{minipage}[t]{.5\textwidth}
+      \centering  
+      \captionsetup{width=.9\linewidth}
+      \includegraphics[width=\textwidth]{figure_method_grid/LocalLinearCorrelationsWithColoredCorrs.pdf}
+      \captionof{figure}{Local Eval}
+      \label{fig:evalLocal}
+    \end{minipage}%
+    \begin{minipage}[t]{.5\textwidth}
+      \centering
+      \captionsetup{width=.9\linewidth}
+      \includegraphics[width=\textwidth]{figure_method_grid/RelabeledCorrelationsWithColoredCorrs.pdf}
+      \captionof{figure}{Relabeled global}
+      \label{fig:evalRelabeled}
+    \end{minipage}
+    \vspace{2mm}
+    \includegraphics[width=.5\textwidth]{figure_method_grid/GlobalLinearCorrelationsWithCorrs.pdf}
+    \captionof{figure}{Global Correlation Clustering Result}
     \label{fig:gclusterexample}
 \end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics{figure_method_grid/RelabeledCorrelationsWithColoredCorrs.pdf}
+%     \caption{Caption}
+%     \label{fig:clusterexample}
+% \end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics{figure_method_grid/GlobalLinearCorrelationsWithCorrs.pdf}
+%     \caption{Global Correlation Clustering Result}
+%     \label{fig:gclusterexample}
+% \end{figure}
 
 % \section{Parameters available and their impacts}
 % As our algorithm depends on many components such as \gls{optics} and \gls{cash} which come with several parameters themselves. In this section we discuss their meaning and their impact for the clustering results.
