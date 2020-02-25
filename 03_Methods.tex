@@ -11,7 +11,7 @@ In this chapter, we propose a novel approach/concept to create a universal clust
 
 \section{Mathematical and Algorithmic Foundations}
 \label{sec:Foundations}
-Our Algorithm builds on top of two algorithms which both were built on two other well-known algorithms: \gls{optics}, which is closely related to \gls{dbscan}, and \gls{cash}, which is inherently based on the Hough Transform.
+Our Algorithm builds on top of two algorithms which both were built on two other well-known algorithms: \gls{optics}, which is closely related to \gls{dbscan}, and \gls{cash}, which is inherently based on the Hough transform.
 
 \subsection{DBSCAN - In Depth}
 \label{ssec:DBSCANindepth}
@@ -20,13 +20,15 @@ Our Algorithm builds on top of two algorithms which both were built on two other
     \begin{minipage}{.47\textwidth}
       \centering
       \includegraphics[width=.8\textwidth]{figures/DSwithDBSCANBoundingBoxes.pdf}
-      \captionof{figure}{Density-based Clustering without Noise}
+      \captionsetup{width=0.8\linewidth}
+      \captionof{figure}{Density-based clustering without Noise}
       \label{fig:cleandbscan}
     \end{minipage}%
     \begin{minipage}{.53 \textwidth}
       \centering
       \includegraphics[width=.8\textwidth]{figures/DBSCANwithNoise.pdf}
-      \captionof{figure}{Density-based Clustering with Noise}
+      \captionsetup{width=0.8\linewidth}
+      \captionof{figure}{Density-based clustering with Noise}
       \label{fig:noisydbscan}
     \end{minipage}
 \end{figure}
@@ -35,7 +37,7 @@ As mentioned before the algorithm \gls{dbscan} is categorized into the density-b
 This means that it considers a set of points connected through low proximity in a restricted area/space into similar clusters and thus can, in contrast to traditional partitioning based approaches, create clusters of arbitrary shape (cf. \autoref{fig:kmeansdbscan}). 
 Hence these clusters can retain more accurate information about the correlation of the data. Additionally, it also directly eliminates noise and can, therefore, lower the computational cost of the future steps. 
 Its basic principle is as follows:
-A group of points is considered as a dense cluster when for each point of the cluster, there are sufficient other points in its neighbourhood~\cite{DBSCANEKSX96}.
+A group of points is considered a dense cluster when for each point of the cluster, there are sufficient other points in its neighbourhood~\cite{DBSCANEKSX96}.
 
 To understand how this algorithm works, we first have to introduce some terminology.
 Given a data set $DS$ of data objects $o$ with a dimensionality of $N$, a distance measure $dist(p_1,p_2)$ and two new parameters, the Epsilon distance $\epsilon$ and the minimum number of points to be a cluster $MinPts$, \citeauthor{DBSCANEKSX96} defines:
@@ -70,23 +72,23 @@ where \autoref{eq:minptsreq} represents the condition for point \(q\) to be a co
 \todor{original sounds way better}
 A target point $p$ is density-reachable from origin point $q$, if there exists a sequence of connecting points $p, c_1, \dotsc, c_n, q$ in between $p$ and $q$ which are directly density-reachable to its predecessor, e.g. $c_1$ is directly density-reachable from point $q$, $c_2$ is directly density-reachable from point $c_1$, \dots\todor{format} until $p$ is directly density-reachable from point $c_n$. This relation is obviously transitive, but only symmetric if both points of the relation are core points. In case of a border point as the origin, there are not enough points in its neighbourhood and therefore it does not have any density-reachable neighbour as a target to start with.
 
-\todog{own fig}
+\todor{own fig}
 \begin{figure}
     \centering
-    \begin{minipage}[t]{.5\textwidth}
+    \begin{subfigure}[t]{.5\textwidth}
       \centering  
       \captionsetup{width=.9\linewidth}
       \includegraphics[width=.8\textwidth]{figures/directlydensityreachable.png}
-      \captionof*{figure}{Border point p is directly density-reachable from core point q.}
+      \caption{Border point p is directly density-reachable from core point q.}
       \label{fig:directdensityreachable}
-    \end{minipage}%
-    \begin{minipage}[t]{.5\textwidth}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.5\textwidth}
       \centering
       \captionsetup{width=.9\linewidth}
       \includegraphics[width=.8\textwidth]{figures/density-reachable.png}
-      \captionof*{figure}{p is not directly density-reachable, but density-reachable from q.}
+      \caption{p is not directly density-reachable, but density-reachable from q.}
       \label{fig:densityreachable}
-    \end{minipage}
+    \end{subfigure}
     \caption{Illustration of reachabilities wrt. $\epsilon$ and $MinPts = 3$, src: KDD-VL.}
 \end{figure}
 
@@ -95,7 +97,7 @@ The last relation between points is the density-connectedness. Two points $p$ an
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/KMeansVSDBSCAN.pdf}
-    \caption{Density-based Clustering compared to Partitioning Clustering.}
+    \caption{Density-based clustering compared to partitioning clustering.}
     \label{fig:kmeansdbscan}
 \end{figure}
 
@@ -121,7 +123,7 @@ A dense cluster in data set $DS$ is a non-empty subset $C^{DB} \subseteq DS$ of 
 This definition of clustering therefore defines any cluster with \textit{at least} a density defined by the Epsilon-distance $\epsilon$ and the number of minimum points $MinPts$.
 
 \subsubsection*{Density-based Noise}
-Every point not belonging to any of the existing clusters $C^{DB}_1, \dotsc, C^{DB}_k$ in data set $DS$ are now considered as noise: 
+Every point not belonging to any of the existing clusters $C^{DB}_1, \dotsc, C^{DB}_k$ in data set $DS$ are now considered noise: 
 \begin{align}
     noise^{DB} = \{p \in  DS | \forall i : p \notin C^{DB}_i\}
 \end{align}
@@ -143,7 +145,7 @@ If the seed list $L$ is empty, the current cluster is done, the next not previou
 % \scriptsize
 \SetAlgoLined
 % \DontPrintSemicolon
-\KwData{data set $DS$; seed list $L$; current Cluster $C^{DB}_i$; Noise $N^{DB}$; $MinPts$; $\epsilon$}
+\KwData{data set $DS$; seed list $L$; current cluster $C^{DB}_i$; Noise $N^{DB}$; $MinPts$; $\epsilon$}
 \KwResult{A set $R$ of clusters $C^{DB}_1,\dotsc,C^{DB}_n$ and noise $N^{DB}$}
  o := first Point of $DS\setminus \{R \cup N\}$\;
  L := [o]\;
@@ -193,12 +195,14 @@ Given a point $p$ from the data set $DS$, an epsilon-distance $\epsilon$, the \t
     \begin{minipage}{.54\textwidth}
       \centering
       \includegraphics[width=.95\textwidth]{figures/DSwithDBSCANbadBoundingBoxes.pdf}
+      \captionsetup{width=0.8\linewidth}
       \captionof{figure}{\acrshort{dbscan} detects sparser cluster as noise.}
       \label{fig:baddbscan}
     \end{minipage}%
     \begin{minipage}{.46\textwidth}
       \centering
       \includegraphics[width=.95\textwidth]{figures/DSwithOPTICSBoundingBoxes.pdf}
+      \captionsetup{width=0.9\linewidth}
       \captionof{figure}{Separation of different dense clusters by using \acrshort{optics}.}
       \label{fig:goodoptics}
     \end{minipage}
@@ -324,7 +328,7 @@ Since the settings $(\theta,\delta)$ and $(\theta+k\pi,-2\delta)$ represent the 
 \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{figures/TODOHOUGHTHETADIST.png}
-    \caption{Hough Transform into a $(\alpha,\delta)$-parameter space\cite{CASHachtert2008global}.}
+    \caption{Hough transform into a $(\alpha,\delta)$-parameter space\cite{CASHachtert2008global}.}
     \label{fig:TODOHOUGH}
 \end{figure}
 
@@ -353,7 +357,7 @@ An in-depth explanation of one approach, namely \acrfull{cash}, will be given in
 
 \subsection{CASH - In Depth}\label{ssec:CASHindepth}
 \todo{check n-dim Hough transform explanation with DK}
-\acrfull{cash} is a subspace clustering algorithm based on the principle of the Hough Transform which, in contrast to the axis-parallel algorithms \acrshort{subclu}\cite{sublcukailing2004density} and \acrshort{clique}\cite{cliqueagrawal1998automatic}, can detect arbitrarily oriented subspaces (c.f.~\autoref{ssec:houghindepth}. \todor{sounds awful}
+\acrfull{cash} is a subspace clustering algorithm based on the principle of the Hough transform which, in contrast to the axis-parallel algorithms \acrshort{subclu}\cite{sublcukailing2004density} and \acrshort{clique}\cite{cliqueagrawal1998automatic}, can detect arbitrarily oriented subspaces (c.f.~\autoref{ssec:houghindepth}. \todor{sounds awful}
 For arbitrary-dimensional data spaces $\mathcal{D} \subseteq \R^d$ \textcite{CASHachtert2008robust} reformulates the Hough transformation via a generalized description of spherical coordinates. A $d$-dimensional point/vector $x=(x_1,\dotsc,x_d)$ w.r.t.\ the given orthonormal basis $e_1,\dotsc,e_d$, can be described with $d-1$ independent angles $\alpha_1,\dotsc,\alpha_{d-1}$ and the norm/distance to origin of vector/point $x$. The following definitions are taken from \cite{CASHachtert2008robust}:
 
 \subsubsection*{Spherical Coordinates}\label{def:spherecord}
@@ -415,7 +419,13 @@ Points lying on the same sinusoidal curve in parameter space represent $(d-1)$-d
     \label{fig:cash3d}
 \end{figure}
 
-Boundaries of the parameter space $\mathcal{P}$ are extended to $\mathcal{P} = [\delta_{min}, \delta_{max}]\times [0,\pi)^{d-1}$ with $\delta_{min}$ and $\delta_{max}$ being the minimum and maximum of all functions $f_p$ for $\alpha \in [0,\pi)$ again: $[\delta_{min}, \delta_{max}] = [min_{p \in \mathcal{D}}(f_p(\alpha_p^{min})), max_{p \in \mathcal{D}}(f_p(\alpha_p^{max}))$, where $\alpha_p^{min}$ and $\alpha_p^{max}$ denote the minimum and maximum of function $f_p$. An in detail explanation is found in \textcite{CASHachtert2008robust}.
+The boundaries of the parameter space $\mathcal{P}$ are extended to \begin{align}
+    \mathcal{P} = [\delta_{min}, \delta_{max}]\times [0,\pi)^{d-1}
+\end{align} with $\delta_{min}$ and $\delta_{max}$ being the minimum and maximum of all functions $f_p$ for $\alpha \in [0,\pi)$ again: 
+\begin{align}
+    [\delta_{min}, \delta_{max}] = [min_{p \in \mathcal{D}}(f_p(\alpha_p^{min})), max_{p \in \mathcal{D}}(f_p(\alpha_p^{max}))]
+\end{align} 
+where $\alpha_p^{min}$ and $\alpha_p^{max}$ denote the minimum and maximum of function $f_p$. An in detail explanation is found in \textcite{CASHachtert2008robust}.
 Applying the same concept of \autoref{ssec:houghindepth} the goal of finding $d$-dimensional points lying on the same hyperplane requires finding intersections of the corresponding $d$-dimensional curves in parameter space. Since an analytical solution of the intersections in multi-dimensional space is infeasible, the parameter space is scanned for $d$-dimensional regions/hypercuboids of a certain amount $m$ of intersections instead which additionally copes with jitter. Regions which fulfil the number of intersections are called \textit{dense grid cells}.
 
 \subsubsection*{Correlation Cluster}\todor{check definition with dk}
@@ -426,7 +436,7 @@ Correlation in a classical sense is a measure of relationship between two variab
     \delta(t,f,l) = \langle \vec{x},\vec{n_0}(f,t) \rangle
 \end{align}
 
-\textit{Correlation clusters} refer to the grouping of observations/data objects within a certain interval in data space which display similar correlations in a subset of the object's features. In other words, a Correlation Cluster is a group of points which have a low distance $j$, which we will refer to as \textit{jitter}, to a hyperplane $h$ modelled by a correlation within an interval. We formalize it as following:
+\textit{Correlation clusters} refer to the grouping of observations/data objects within a certain interval in data space which display similar correlations in a subset of the object's features. In other words, a Correlation cluster is a group of points which have a low distance $j$, which we will refer to as \textit{jitter}, to a hyperplane $h$ modelled by a correlation within an interval. We formalize it as following:
 
 A correlation cluster in data set $DS$ is a non-empty subset $C^{Corr} \subseteq DS$ of points $p$ which fulfil the following condition:
 \begin{align}\label{eq:pointtohyplane}
@@ -437,7 +447,7 @@ where the function $dist(a,b)$ denotes the shortest distance between two geometr
 \todor{eigene definition, consistent with dbscan}
 
 \subsubsection*{Correlation Noise}
-Analogous to density-based noise in \autoref{ssec:DBSCANindepth}, every point not belonging to any of the existing clusters $C^{Corr}_1, \dotsc, C^{Corr}_k$ in data set $DS$ are now considered as noise: 
+Analogous to density-based noise in \autoref{ssec:DBSCANindepth}, every point not belonging to any of the existing clusters $C^{Corr}_1, \dotsc, C^{Corr}_k$ in data set $DS$ are now considered noise: 
 \begin{align}
     noise^{Corr} = \{p \in  DS | \forall i : p \notin C^{Corr}_i\}
 \end{align}
@@ -446,7 +456,7 @@ Analogous to density-based noise in \autoref{ssec:DBSCANindepth}, every point no
 Given previously defined data representation in data and parameter space, the goal is finding dense grid cells in parameter space. However, since the complexity of searching the parameter space with a predefined grid is exponential w.r.t.\ dimension $d$, it also quickly gets too computationally expensive for higher dimensional spaces. \gls{cash} tackles this problem by smartly dividing the search space. \citeauthor{CASHachtert2008robust} proposed the following search strategy:
 \vspace{5mm}
 
-The parameter space is successively divided by the axes in the static order given by $\delta,\alpha_1,\dotsc,\alpha_{d-1}$. After each split, the hypercuboid with more intersections is divided at the next axis of the order. If both hypercuboids have the same amount of intersections, the first hypercuboid is selected (arbitrarily). The other hypercuboid is kept in a queue, which is ordered descendingly by the number of its intersecting curves/points. If regions in the queue have an equal amount of intersections, the smaller region is preferred. These splits and additions to the queue are done until both split hypercuboids have less than a minimum number of intersections $m$ to be considered as dense or a predefined depth $s$ has been reached. If and only if a hypercuboid at split $s$ fulfils $m$, the hypercuboid is considered as a valid subspace cluster.
+The parameter space is successively divided by the axes in the static order given by $\delta,\alpha_1,\dotsc,\alpha_{d-1}$. After each split, the hypercuboid with more intersections is divided at the next axis of the order. If both hypercuboids have the same amount of intersections, the first hypercuboid is selected (arbitrarily). The other hypercuboid is kept in a queue, which is ordered descendingly by the number of its intersecting curves/points. If regions in the queue have an equal amount of intersections, the smaller region is preferred. These splits and additions to the queue are done until both split hypercuboids have less than a minimum number of intersections $m$ to be considered dense or a predefined depth $s$ has been reached. If and only if a hypercuboid at split $s$ fulfils $m$, the hypercuboid is considered a valid subspace cluster.
 All valid $(d-1)$-dimensional subspace clusters are then recursively re-evaluated by \gls{cash} until the resulting found subspace clusters have a minimum dimensionality of $minDims$. If a subspace cluster is found, its intersecting curves are removed from any other hypercuboid in the queue, which is then updated and sorted according to its new status. If the number of intersections drops below $m$, the hypercuboid is removed from the queue. This procedure is done until the queue is empty.
 
 \vspace{5mm}
@@ -489,28 +499,51 @@ h := $\PS$\tcp*{working hypercuboid}
 All things considered, the average time complexity of \gls{cash} condenses to $\mathcal{O}(s \cdot c \cdot |DS| \cdot d^3)$, where $s$, $DS$ and $d$ are as previously mentioned and $c$ denotes the number of clusters in $DS$, however in the worst case scenario, where every point is in the deepest cell, the complexity rises to $\mathcal{O}(2^d)$. The resulting set $C$ contains all $n$-dimensional subspace clusters with $n < d$ found within the constraints of minimum points in correlation $m$ and maximum splits $s$.\\
 \todor{Check recursive CASH}
 
-We now possess the means to find density-based clusters and global subspace clusters in an original data set $DS$. The density-based approach \gls{optics} requires two parameters, a minimum number of points $minPts$ and a maximum epsilon distance $\epsilon$, which essentially specify the minimum density allowed, to acquire a hierarchical view of density-connected clusters in $DS$. The subspace clustering approach \gls{cash} also requires another two parameters, a minimum number of points/intersections $m$ and a number of splits $s$ to be considered as a subspace cluster.
+We now possess the means to find density-based clusters and global subspace clusters in an original data set $DS$. The density-based approach \gls{optics} requires two parameters, a minimum number of points $minPts$ and a maximum epsilon distance $\epsilon$, which essentially specify the minimum density allowed, to acquire a hierarchical view of density-connected clusters in $DS$. The subspace clustering approach \gls{cash} also requires another two parameters, a minimum number of points/intersections $m$ and a number of splits $s$ to be considered a subspace cluster.
 
 \section{The Algorithm}
 With the previously mentioned algorithms, we are already able to find arbitrarily shaped clusters with a density-based approach, and arbitrarily oriented subspace clusters with, e.g. \gls{4c} or \gls{cash}, however, all of them are restricted to finding those clusters in a purely local or purely global fashion. E.g. none of the previously mentioned algorithms can handle both scenarios, as shown in \autoref{fig:badscenario}.
 
+% \begin{figure}
+%     \centering
+%     \begin{minipage}{.47\textwidth}
+%       \centering
+%       \includegraphics[width=.8\textwidth]{figures_method/piecewisecorrs.pdf}
+%       \captionsetup{width=0.8\linewidth}
+%       \captionof{figure}{Separated locally dense clusters following a Correlation.}
+%       \label{fig:scenario1}
+%     \end{minipage}%
+%     \begin{minipage}{.47\textwidth}
+%       \centering
+%       \includegraphics[width=.8\textwidth]{figures_method/xcorrs.pdf}
+%       \captionsetup{width=0.8\linewidth}
+%       \captionof{figure}{Connected dense clusters following two different Correlations.}
+%       \label{fig:scenario2}
+%     \end{minipage}
+%     \caption{Problemsettings for methods with fixated scope: purely local or purely global.}
+%     \label{fig:badscenario}
+% \end{figure}
+
 \begin{figure}
     \centering
-    \begin{minipage}{.47\textwidth}
+    \begin{subfigure}[t]{0.47\textwidth}
       \centering
       \includegraphics[width=.8\textwidth]{figures_method/piecewisecorrs.pdf}
-      \captionof{figure}{Separated locally dense clusters following a Correlation.}
+      \captionsetup{width=0.8\linewidth}
+      \caption{Separated locally dense clusters following a Correlation.}
       \label{fig:scenario1}
-    \end{minipage}%
-    \begin{minipage}{.47\textwidth}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.47\textwidth}
       \centering
       \includegraphics[width=.8\textwidth]{figures_method/xcorrs.pdf}
-      \captionof{figure}{Connected dense clusters following two different Correlations.}
+      \captionsetup{width=0.8\linewidth}
+      \caption{Connected dense clusters following two different Correlations.}
       \label{fig:scenario2}
-    \end{minipage}
-    \caption{Problemsettings for methods with fixated scope: purely local or purely global.}
+    \end{subfigure}
+    \caption{Problem settings for methods with fixated scope: purely local or purely global.}
     \label{fig:badscenario}
 \end{figure}
+
 % \begin{figure}
 %     \centering
 %     \includegraphics{}
@@ -525,14 +558,14 @@ The extension \gls{4c} is able to detect the local correlations, however can get
 
 \begin{figure}
     \centering
-    \includegraphics[width=.6\textwidth]{figures_method/Groundtruth.pdf}
-    \caption{Caption}
+    \includegraphics[width=.7\textwidth]{figures_method/Groundtruth.pdf}
+    \caption{Example data set $DS$}
     \label{fig:localglobalproblem}
 \end{figure}
 
 \autoref{fig:localglobalproblem} \todor{figure} shows multiple local settings of different correlations which neither of the aforementioned methods can solve in a satisfactory manner. \gls{4c} is able to find the accurate local correlations, however, can not categorize those local correlations as one global correlation. 
 On the other hand, \gls{cash} can only find the global correlation while omitting the information of the gaps in data. Hierarchical subspace clustering methods like \acrshort{hico} and \acrshort{eric} do not address the problem either, since their hierarchy is also based on global lower-dimensional subspaces contained in the original space and not spaces composed of same dimensional subintervals of the same space. 
-These subintervals of a space further will be referred to as \textit{subclusters} or \textit{clusterpartitions}\todor{2 begriffe oder lieber consistent einen benutzen?}.
+These subintervals of a space further will be referred to as \textit{subclusters} or \textit{cluster partitions}\todor{2 begriffe oder lieber consistent einen benutzen?}.
 So either the subspace clustering method detects local correlations while missing the big picture or they do find global correlations while losing structural information of its particular correlation. This thesis proposes an algorithm that unifies local and global correlation clustering by evaluating \textit{locally dense} regions of interest with a correlation clustering method, e.g. \gls{cash}, and combining those local intermediate correlations into a global correlation clustering to get a universal subspace clustering result. 
 
 %Additionally it does not categorize both horizontal local correlations as one, even though they arguably could be interpreted that way.
@@ -545,12 +578,12 @@ Since we want to find \textit{local} linear correlations within \textit{global} 
 We can, therefore, retrieve these local subclusters by searching the data for density-connected sets of points via a density-based clustering approach like \gls{dbscan} or \gls{optics}. This comes with an additional benefit by automatically removing noise. 
 
 However like mentioned in \autoref{ssec:DBSCANindepth} and \autoref{ssec:OPTICSindepth} \gls{dbscan} is not able to find clusters with different density and mixes multiple densities together into one cluster due to its global parameter setting only defining a minimum density. High variance in data densities can therefore strongly influence the result of \gls{dbscan}, either by making it harder to choose the appropriate parameters for a better clustering result or by having more variety in density in found clusters which would result in less conclusive detection of their linear correlations. 
-To receive a more suited clustering, we preferred the use of \gls{optics}, which is able to detect clusters with different densities (c.f.~\autoref{ssec:OPTICSindepth}). Since we do not want to prune any information away, we can generally use a very high epsilon-distance $\epsilon$ to create a detailed ordering and therefore only rely on $MinPts$ as a parameter. From this ordering, we can extract clusters with a new parameter $reachdist_{\tau}$ which represents the threshold at which the difference of neighbouring reachability-distances of the ordering is considered to be a new cluster with different density. We also assign a bounding box for each found cluster, which represents the local data space for further evaluation performed by \gls{cash}. As previously mentioned, our density-based methods suffer from the \textit{Curse of Dimensionality}. However, this property at least should not greatly impact the global correlation clustering result, since, if every point has a too sparse neighbourhood, every point would be considered as noise and a default \gls{cash} would be applied onto the whole data set. Up to this point, we are merely partitioning the data into dense clusters with the added benefit of filtering out $noise^{DB}$ points (noise points in a density-based view). We will reconsider those noise points later since they still could be parts of the global correlation clustering despite not being dense. \autoref{fig:boundingbox} visualizes a data set after step 1 is performed. The relevant part of the data set is clustered by density, and the bounding boxes highlight its boundaries.
+To receive a more suited clustering, we preferred the use of \gls{optics}, which is able to detect clusters with different densities (c.f.~\autoref{ssec:OPTICSindepth}). Since we do not want to prune any information away, we can generally use a very high epsilon-distance $\epsilon$ to create a detailed ordering and therefore only rely on $MinPts$ as a parameter. From this ordering, we can extract clusters with a new parameter $reachdist_{\tau}$ which represents the threshold at which the difference of neighbouring reachability-distances of the ordering is considered to be a new cluster with different density. We also assign a bounding box for each found cluster, which represents the local data space for further evaluation performed by \gls{cash}. As previously mentioned, our density-based methods suffer from the \textit{Curse of Dimensionality}. However, this property at least should not greatly impact the global correlation clustering result, since, if every point has a too sparse neighbourhood, every point would be considered noise and a default \gls{cash} would be applied onto the whole data set. Up to this point, we are merely partitioning the data into dense clusters with the added benefit of filtering out $noise^{DB}$ points (noise points in a density-based view). We will reconsider those noise points later since they still could be parts of the global correlation clustering despite not being dense. \autoref{fig:boundingbox} visualizes a data set after step 1 is performed. The relevant part of the data set is clustered by density, and the bounding boxes highlight its boundaries.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=.8\textwidth]{figure_method_grid/DSwithBoundingBoxes.pdf}
-    \caption{Caption}
+    \includegraphics[width=.7\textwidth]{figure_method_grid/DSwithBoundingBoxes.pdf}
+    \caption{$DS$ processed by \acrshort{dbscan}, red boxes denote the intervals of the locally dense cluster.}
     \label{fig:boundingbox}
 \end{figure}
 
@@ -561,7 +594,7 @@ The second step, therefore, is the extraction of all local linear correlations o
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/PCAdifficulties.png}
-    \caption{Caption\cite{PCAshlens2014tutorial}}
+    \caption{Difficulties for pure \acrshort{pca} to detect all intrinsic Correlations~\cite{PCAshlens2014tutorial}.}
     \label{fig:pcadifficulties}
 \end{figure}
 
@@ -571,7 +604,7 @@ Since \gls{4c} is basically looking for dense clusters with a biased distance fu
 \gls{orclus} is also not suited well. It performs a $k$-means like approach first to partition the subcluster~\cite{orclusaggarwal2000finding}, however since our density-based preprocessing step finds different arbitrary shapes, which implies a different number of correlations, in each cluster partition, choosing a meaningful $k$ is difficult or impossible. \todor{soll der teil in related work? Moechte den als uebergang benutzen um die Verwendung von CASH zu begruenden}
 Compared to \gls{orclus} and \gls{4c}, \gls{copac} has better capabilities of finding correlation clusters but lacks in the ability to find a generalized view, e.g. it would not identify two intersecting lines in a 3-dimensional space as a possible hyperplane, but as two lines. 
 
-To cover this scenario as well, we choose to adopt \gls{cash}, which does not rely on the clusters eigenvectors, is resistant to noise and outliers, and creates an accurate view of a subspace with a requested dimensionality.
+To cover this scenario as well, we choose to adopt \gls{cash}, which does not rely on the clusters' eigenvectors, is resistant to noise and outliers, and creates an accurate view of a subspace with a requested dimensionality.
 
 After finding all dense regions of interest, the subclusters are independently evaluated for their local correlations without considering the other points in data space. 
 The extraction of the correlation is realized by applying the \gls{cash} algorithm onto the locally dense clusters. 
@@ -580,14 +613,21 @@ The resulting correlations $l_i \in C^{local}$ and their points are then bounded
 
 \begin{figure}
     \centering
-    \includegraphics[width=.8\textwidth]{figure_method_grid/LocalLinearCorrelationsWithColoredCorrs.pdf}
-    \caption{Caption}
+    \includegraphics[width=.7\textwidth]{figure_method_grid/LocalLinearCorrelationsWithColoredCorrs.pdf}
+    \caption{Intermediate result of the evaluation for Correlations within each locally dense cluster. This represents the local correlation clustering.}
     \label{fig:local_lincorr}
 \end{figure}
 
 \subsection{Stitching}\label{ssec:stitching}
 
-To combine the found localized correlations to a global correlation clustering, we evaluate all the localized correlations without their bounding boxes. Since we can represent the localized correlations as hyperplanes with a unit normal vector $\vec{n}$ and a shortest distance to origin $\delta$ (c.f. \autoref{eq:highhnf}), we can easily compare different hyperplanes by variation in rotation (angles), using the cosine-similarity between the normal vectors, and translation (absolute positioning), using the euclidean-distance between the shortest distances. For adjustability we introduce two parameters $\tau_{\Delta \text{cos-dist}}, \tau_{\Delta \text{cos-dist}} \in [0,1]$ and $\tau_{\Delta \text{eucl-dist}}, \tau_{\Delta \text{eucl-dist}} \in \N$, which serve as thresholds for maximal allowed divergence of both measures. To formalize the requirements for a successful combination (\textit{stitching}) of local correlations we introduce the following relations:\todor{definitionen einfuehren oder textuell einfach beschreiben?}
+To combine the found localized correlations to a global correlation clustering, we evaluate all the localized correlations without their bounding boxes. Since we can represent the localized correlations as hyperplanes with a unit normal vector $\vec{n}$ and a shortest distance to origin $\delta$ (c.f. \autoref{eq:highhnf}), we can easily compare different hyperplanes by variation in rotation (angles), using the cosine-similarity between the normal vectors, and translation (absolute positioning), using the euclidean-distance between the shortest distances. For adjustability we introduce two parameters
+$
+% \tau_{\Delta \text{cos-dist}}, 
+\tau_{\Delta \text{cos-dist}} \in [0,1]$ 
+and 
+$
+% \tau_{\Delta \text{eucl-dist}}, 
+\tau_{\Delta \text{eucl-dist}} \in \N$, which serve as thresholds for maximal allowed divergence of both measures. To formalize the requirements for a successful combination (\textit{stitching}) of local correlations we introduce the following relations:\todor{definitionen einfuehren oder textuell einfach beschreiben?}
 
 \subsubsection*{Orientation-Similarity}
 Given a set of unique linear correlations $C$ in \gls{hnf}. Then two correlations $c_{a,\delta_a} \in C$ and $c_{b,\delta_b} \in C$ are \textit{orientation-similar}, if the absolute cosine-similarity between the correlations' normal vectors $a$ and $b$ is bigger than $1 - \tau_{\Delta \text{cos-dist}}$.
@@ -639,8 +679,8 @@ where the function $f_{avg}(X)$ is a user-defined average function over set $X$.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=.8\textwidth]{figure_method_grid/StitchedLinearCorrelationsWithColoredCorrs.pdf}
-    \caption{Caption}
+    \includegraphics[width=.7\textwidth]{figure_method_grid/StitchedLinearCorrelationsWithColoredCorrs.pdf}
+    \caption{Stitching: Similar Correlations are grouped together to form a pseudo-global view.}
     \label{fig:stitchedcorr}
 \end{figure}
 
@@ -651,8 +691,8 @@ Since we previously discarded $noise^{DB}$ and $noise^{Corr}$, which were labell
 $Noise^{Corr}$ could have been a member from a far away localized correlation cluster and $noise^{DB}$ was filtered out even before consideration of correlation cluster membership. Hence re-evaluating these points with a global view again complements the result for completeness. This is done by reassessing the distance of all noise points $noise^{DS \cup Corr}$ to all found correlations $C^{local \cup global}$ and relabelling them, if the threshold condition $j$ is fulfilled (c.f. \autoref{eq:pointtohyplane}).\\
 \begin{figure}[h]
     \centering
-    \includegraphics[width=.8\textwidth]{figure_method_grid/RelabeledCorrelationsWithColoredCorrs.pdf}
-    \caption{Caption}
+    \includegraphics[width=.7\textwidth]{figure_method_grid/RelabeledCorrelationsWithColoredCorrs.pdf}
+    \caption{Relabelled $DS$, which reassigns all previously pruned points close to Correlations found in \autoref{fig:stitchedcorr}. This represents the global correlation clustering.}
     \label{fig:relabelledcorr}
 \end{figure}
 
@@ -662,10 +702,10 @@ To recap, our algorithm consists of four steps: density-based clustering, local 
     \item \text{Partitioning:} $MinPts$ and $\epsilon$-distance for \gls{optics} ordering and a $reachability_{\tau}$ to split the ordering after significant jumps
     \item \text{Local Correlation Clustering:} $s$ splits, $m$ minimum points and $j$ jitter for \gls{cash}
     \item \text{Stitching:} $\tau_{\Delta cos-dist}$ and $\tau_{\Delta eucl-dist}$ for similarity constraints
-    \item \text{Relabelling:} $j$ jitter of local Correlation Clustering aswell
+    \item \text{Relabelling:} $j$ jitter of local Correlation clustering (same as above)
 \end{itemize}
 \todor{selbe terminology?}
-Given our algorithms components', the worst case runtime complexity consists of the following:
+Given our algorithm's components, the worst case runtime complexity consists of the following:
 \begin{itemize}[label={\tiny\raisebox{1ex}{\textbullet}},topsep=6pt,itemsep=-1ex,partopsep=2ex,parsep=2ex]
     \item \gls{optics}: $\mathcal{O}(|DS|^2)$
     \item \gls{cash}: $\mathcal{O}(2^d)$
@@ -673,7 +713,7 @@ Given our algorithms components', the worst case runtime complexity consists of 
     \item relabelling: $\mathcal{O}(|DS| \cdot c)$
 \end{itemize}
 
-Summarized our agglomerated algorithms' complexity results in the sum of its components complexities, $\mathcal{O}(|DS|^2+2^d+c^2+|DS|\cdot c)$, where \gls{cash} marks the dominant factor.
+Summarized our agglomerated algorithm's complexity results in the sum of its components complexities, $\mathcal{O}(|DS|^2+2^d+c^2+|DS|\cdot c)$, where \gls{cash} marks the dominant factor.
 Therefore just looking at the complexity, in theory, our algorithm should perform slower than the original, free of overhead \gls{cash}. However, due to the previous partitioning of the data space, we expect that the algorithm does not perform an additional $|DS|^2+c^2+|DS|\cdot c$ time slower than the original \gls{cash} considering the independent evaluation of each separate local \gls{cash} performs faster than the evaluation of the whole data space. This is due to the irrelevant candidates in \gls{cash}s parameter space, e.g. noise or points belonging to other correlations far way, being considered less often.
 
 % Please add the following required packages to your document preamble:
@@ -691,6 +731,6 @@ Stitching                    & \begin{tabular}[c]{@{}l@{}}$\tau_{\Delta cos-dist
 Relabelling                   & $j$: jitter                                                  & $\mathcal{O}(|DS| \cdot c)$          \\ \bottomrule
 \end{tabular}%
 }
-\caption{Summary of our algorithms steps, their individual parameters and complexities}
+\caption{Summary of our algorithm's steps, their individual parameters and complexities}
 \label{tab:componentsummary}
 \end{table}

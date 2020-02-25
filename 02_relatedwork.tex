@@ -6,12 +6,16 @@ This chapter introduces some foundational work on subspace/correlation clusterin
 Since sections \nameref{sec:houghintro}, \nameref{sec:cashintro}, \nameref{sec:dbscanintro} and \nameref{sec:OPTICSintro} are essential components of our work, they will be elaborated in greater detail in the \autoref{sec:Foundations} \nameref{sec:Foundations}
 
 \section{Existing Subspace Clustering Algorithms}
-There are many approaches for detecting relevant subspaces in data, generally grouped to either finding axis-parallel or arbitrarily oriented subspaces. Our work, in particular, focuses on the extraction of the second type of subspaces, which obviously proves to be a more challenging task since it encompasses the problem of axis-parallel subspace clustering\todor{the first type}. This task is also referred to as \textit{Correlation Clustering}. 
+There are many approaches for detecting relevant subspaces in data, generally grouped to either finding axis-parallel or arbitrarily oriented subspaces. Our work, in particular, focuses on the extraction of the second type of subspaces, which obviously proves to be a more challenging task since it encompasses the problem of axis-parallel subspace clustering. This task is also referred to as \textit{Correlation clustering}. 
+% \todor{the first type}
 
-This section introduces some existing correlation clustering algorithms and illustrates \todor{choose one: demonstrates/analyzes/explains/illustrates/points out} their advantages and disadvantages and elaborates on their suitability for our idea.
+This section introduces various existing correlation clustering algorithms, illustrates their advantages and disadvantages, and elaborates on their suitability for our idea.
+% \todor{choose one: demonstrates/analyzes/explains/illustrates/points out}
 
 \subsection{PCA}
-A common way to filter out relevant features/subspaces in high dimensional data is the application of feature selection/dimensionality reduction. One of the oldest and most widely used methods is the \gls{pca}. It is a statistical approach which uses an orthogonal transformation to transform the original basis of a $d$-dimensional data space $DS$ to a basis built upon $d$ so-called \textit{Principal Components} $PC$, where the first Principal Component $PC_1$ is a vector which describes the largest percentage of explained variance in $DS$. Each Principal Component $PC_j$ next in order $j,\dotsc,d$ is orthogonal to the previous ones $PC_i, i<j$ and is ordered by the next highest explained variance. Mathematically finding the Principal Components in a data set $DS$ boils down to solving its eigendecomposition\todor{nicht ganz korrekt. eigendecomp von cov(x)}, where the eigenvector with the highest corresponding eigenvalue represents the first Principal Component and the second-highest the second Principal Component, etc\cite{pcawold1987principal}. For further details to the calculation \textcite{pcamljolliffe1986principal} offers a short and intuitive step-by-step explanation.
+A common way to filter out relevant features/subspaces in high dimensional data is the application of feature selection/dimensionality reduction. One of the oldest and most widely used methods is the \gls{pca}. It is a statistical approach which uses an orthogonal transformation to transform the original basis of a $d$-dimensional data space $DS$ to a basis built upon $d$ so-called \textit{Principal Components} $PC$, where the first Principal Component $PC_1$ is a vector which describes the largest percentage of explained variance in $DS$. Each Principal Component $PC_j$ next in order $j,\dotsc,d$ is orthogonal to the previous ones $PC_i, i<j$ and is ordered by the next highest explained variance. Mathematically finding the Principal Components in a data set $DS$ boils down to solving its eigendecomposition, 
+% \todor{nicht ganz korrekt. eigendecomp von cov(x)}
+where the eigenvector with the highest corresponding eigenvalue represents the first Principal Component and the second-highest the second Principal Component, etc\cite{pcawold1987principal}. For further details to the calculation \textcite{pcamljolliffe1986principal} offers a short and intuitive step-by-step explanation.
 Unfortunately, the extraction of relevant features via \gls{pca} is rarely of use for clustering problems. Unmodified \gls{pca} is global in nature and can only compute one subspace of the original data space and does not address the problem of \textit{local feature relevance} or \textit{local feature correlation}, which essentially states, that different clusters in data space can exist in different subspaces\cite{kriegel2009clustering} (c.f. \cite{PCAshlens2014tutorial}). \todor{PCA besser erklaeren}
 \todor{local pca}
 
@@ -41,7 +45,7 @@ Since \gls{pca} only provides a global view of the correlations in data space an
 
 To find $k$ many $l$-dimensional subspace clusters in a $d$-dimensional data space, \gls{orclus} first initializes $k_c, k_c > k$ seeds $s_i$ as centroids and applies the default (euclidean) $k$-Means to partition the data space into $k_c$ clusters $C_i$ with $i \in \{1,\dotsc,k_c\}$. 
 After that iteratively all points are reassigned to the new cluster centroids via a modified distance function based on a subset of $l_c, l\leq l_c \leq d$ weak eigenvectors/principal components $\varepsilon_i$ of each cluster $c_i$. This subset of $l_c$ eigenvectors represents the current dimensionality of the cluster in each iteration and is adapted such that at the end of all iterations $l_c=l$ holds. Additionally, at the end of each iteration, the closest pair (in terms of average modified distance) of clusters is merged together resulting in $k_c = k_c-1$ clusters afterwards. 
-This reassigning-merging process is repeated until $k_c = k$ holds. Due to the localized view on the single partitions, \gls{orclus} is considered as a local correlation clustering algorithm\cite{orclusaggarwal2000finding}.
+This reassigning-merging process is repeated until $k_c = k$ holds. Due to the localized view on the single partitions, \gls{orclus} is considered a local correlation clustering algorithm\cite{orclusaggarwal2000finding}.
 
 As an adopter of $k$-Means and \gls{pca}, \gls{orclus} however also comes with its components disadvantages. It relies on $k$, which is difficult to determine, does not handle noise and outliers, and extracts the subspaces based on the clusters' eigenvectors, which are not necessarily a good representation of the members' distribution (c.f. \autoref{fig:localfeatrelevance}).
 
@@ -65,12 +69,12 @@ Due to the initial partitioning based on the local correlation dimensionality $\
 
 
 % \subsection{HiCO and ERiC} \todor{passt so halb rein, bau ja n fulldim hierarchy}
-% (Global) Correlation Clustering, other algorithms so far (ORCLUS \cite{orclusaggarwal2000finding}, LMCLUS \cite{}, 4C, HiCO, ERiC)[1]
+% (Global) Correlation clustering, other algorithms so far (ORCLUS \cite{orclusaggarwal2000finding}, LMCLUS \cite{}, 4C, HiCO, ERiC)[1]
 
 % Since many of the existing correlation clustering algorithms rely on \gls{pca} they also come with its limitations. 
 
 \section{Hough Transformation}\label{sec:houghintro}
-The Hough Transform originally was introduced by \textcite{houghOriginal1962method} and extended by \textcite{rosenfeld1969picture} in the field of computer vision for edge detection\cite{houghhistoryhart2009hough}. The initial purpose of the Hough transform was a technique to detect colinear points in an image space but has since then found various other applications in fields like image processing/analysis~\cite{rosenfeld1969picture,ballard1981generalizing}, computer vision~\cite{davies2004machine} and subspace clustering\cite{CASHachtert2008robust}.
+The Hough transform originally was introduced by \textcite{houghOriginal1962method} and extended by \textcite{rosenfeld1969picture} in the field of computer vision for edge detection\cite{houghhistoryhart2009hough}. The initial purpose of the Hough transform was a technique to detect colinear points in an image space but has since then found various other applications in fields like image processing/analysis~\cite{rosenfeld1969picture,ballard1981generalizing}, computer vision~\cite{davies2004machine} and subspace clustering\cite{CASHachtert2008robust}.
 
 The basic idea of the Hough transform is the transformation of all points $p_i = (x_i,y_i)$ in a 2-dimensional image space $\mathcal{D} \subseteq \R^2$ to functions $f_{p_i}$ in a 2-dimensional parameter space $\mathcal{P} \subseteq \R^2$, also known as Hough space\cite{illingworth1988survey}. This can be done by e.g. taking a representation of a point $p$ as all of its concurrent lines $y_p = m \cdot x_p + t$ and rearranging it to $m_{p} = - \frac{1}{x_p} \cdot t_{p} + \frac{y_p}{x_p}$, which produces a straight with slope $m$ and y-intersect $t$ in an $(m,t)$-parameter space. Since each point in parameter space represents a particular $(m,t)$-setting, multiple functions close to each other implies that their respective points have similar $(m,t)$-settings as well. The correlation clustering objective, therefore, transforms to a density-based clustering objective in parameter space, with the added benefit of being able to detect correlating points regardless of their distance to each other in data space. This property is exploited by e.g. evaluating the whole parameter space in a grid with a voting scheme or by smartly splitting the parameter space in \autoref{sec:houghintro} to detect linear correlations. 
 \todor{Ich plagiere mich selbst. 1zu1 aus unterem abschnitt}
@@ -84,7 +88,7 @@ The basic idea of the Hough transform is the transformation of all points $p_i =
 \section{CASH}\label{sec:cashintro}
 The global correlation clustering algorithm \gls{cash} extends the use case of the Hough Transformation to the detection of arbitrary-dimensional subspaces by augmenting the initial rigid 2-dimensional definition to a multi-dimensional one. 
 
-Furthermore, \gls{cash} introduces an improved search strategy for detecting regions of high intersections in parameter space to improve the efficiency compared to the basic grid search \cite{CASHachtert2008global}. Instead of doing an extensive count operation/accumulation of intersections over a fixed interval, \gls{cash} successively splits the whole parameter space by its axes and only further evaluates the split hypercuboids if they contain enough intersections. This is repeated until a certain count of splits is reached, and only then hypercuboids with enough intersections are considered as linear correlations. 
+Furthermore, \gls{cash} introduces an improved search strategy for detecting regions of high intersections in parameter space to improve the efficiency compared to the basic grid search \cite{CASHachtert2008global}. Instead of doing an extensive count operation/accumulation of intersections over a fixed interval, \gls{cash} successively splits the whole parameter space by its axes and only further evaluates the split hypercuboids if they contain enough intersections. This is repeated until a certain count of splits is reached, and only then hypercuboids with enough intersections are considered linear correlations. 
 
 Since our work focuses on ``\textit{Detecting Global Correlated Clusters using Hough Transform through Locally Dense Correlations}'', we use \gls{cash} to cope with multi-dimensional data and detect our locally dense correlations. Additionally, we use \gls{cash} as a performance baseline for our descendant algorithm to compare them in a global setting.
 A more profound explanation of the transformation and its usage in \gls{cash} will be given in \autoref{ssec:houghindepth}.
@@ -109,7 +113,7 @@ A more profound explanation of the transformation and its usage in \gls{cash} wi
 \\ \bottomrule
 \end{tabular}%
 }
-\caption{Different scopes/capabilities of several Correlation Clustering methods.}
+\caption{Different scopes/capabilities of several Correlation clustering methods.}
 \label{tab:corrcluchar}
 \end{table}
 

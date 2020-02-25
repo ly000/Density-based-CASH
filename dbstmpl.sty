@@ -39,6 +39,8 @@
 \RequirePackage{titlesec}
 \RequirePackage{booktabs}
 \RequirePackage{blindtext}
+% \RequirePackage{subfig}
+\RequirePackage{subcaption}
 
 \usepackage{tabularx}
 
@@ -52,6 +54,7 @@
 % Bibliography
 % \RequirePackage[square,sort,comma,numbers]{natbib}
 \RequirePackage[backend=biber, style=ieee-alphabetic]{biblatex}
+% \RequirePackage[backend=biber, style=numeric]{biblatex}
 \RequirePackage{csquotes}
 \addbibresource{dbstmpl.bib}
 
@@ -60,8 +63,8 @@
 \SetKwRepeat{Do}{do}{while}
 
 % Misc - todonotes
-\RequirePackage[colorinlistoftodos,prependcaption,textsize=tiny,disable]{todonotes}
-% \RequirePackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+% \RequirePackage[colorinlistoftodos,prependcaption,textsize=tiny,disable]{todonotes}
+\RequirePackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 
 % Misc - spacing
 \RequirePackage{quoting}
@@ -73,9 +76,19 @@
 %   \subsection[#1]{\raggedright\normalfont\scshape #1}}
 
 % Figures
-\RequirePackage{subfigure}
+% \RequirePackage{subfigure}
 
 \RequirePackage{hyperref}
+\addto\extrasenglish{
+    \def\chapterautorefname{Chapter}
+}
+\addto\extrasenglish{
+    \def\sectionautorefname{Section}
+}
+\addto\extrasenglish{
+    \def\subsectionautorefname{Subsection}
+}
+
 
 % Citation commands
 \newcommand*{\fullref}[1]{\hyperref[{#1}]{\autoref*{#1} \nameref*{#1}}} 
