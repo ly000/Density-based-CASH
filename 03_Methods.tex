@@ -1,6 +1,6 @@
 \chapter{Methods}\label{ch:Methods}
 % In this chapter, we first introduce necessary mathematical and algorithmic foundations to provide an in-depth view of our algorithm's core components and explain their relevance in the new approach. 
-In this chapter, we propose a novel approach/concept to create a universal clustering result w.r.t.\ combining a local density-based clustering approach with a global correlation clustering one. For this purpose, we first introduce the necessary mathematical and algorithmic foundations to provide an in-depth view of our algorithm's core components, specifically elaborate on them further by giving a detailed explanation to their functionalities and explain their relevance to our concept. With this knowledge/expertise, we offer a, to the best of our knowledge, the first approach by combining mentioned components and visualizing the single steps to present a more thorough view, with regards to the underlying clustering structure, of the procedure. \todor{v2 in comments}
+In this chapter, we propose a novel approach to create a universal clustering result w.r.t.\ combining a local density-based clustering approach with a global correlation clustering one. For this purpose, we first introduce the necessary mathematical and algorithmic foundations to provide an in-depth view of our algorithm's core components, specifically elaborate on them further by giving a detailed explanation to their functionalities and explain their relevance to our concept. With this knowledge, we offer a, to the best of our knowledge, first approach by combining mentioned components and visualizing the single steps to present a more thorough view, with regards to the underlying clustering structure, of the procedure. \todor{v2 in comments}
 \todor{bin mir nich sicher ob first tho}
 % In this chapter, we propose a novel approach/concept to create a universal clustering result by combining a local correlation clustering approach with a global one. For this purpose, we first introduce necessary mathematical and algorithmic foundations to provide an in-depth view of our algorithm's core components. We then specifically elaborate on them further by giving a detailed explanation to its functionality and explaining their relevance to our concept and offer a first approach by combining mentioned components and visualizing the single steps to present a more intuitive view of the procedure. 
 
@@ -11,7 +11,7 @@ In this chapter, we propose a novel approach/concept to create a universal clust
 
 \section{Mathematical and Algorithmic Foundations}
 \label{sec:Foundations}
-Our Algorithm builds on top of two algorithms which both were built on two other well-known algorithms: \gls{optics}, which is closely related to \gls{dbscan}, and \gls{cash}, which is inherently based on the Hough transform.
+Our algorithm builds on top of two algorithms which both, in turn, were built on two other well-known algorithms: \gls{optics}, which is closely related to \gls{dbscan}, and \gls{cash}, which is inherently based on the Hough transform.
 
 \subsection{DBSCAN - In Depth}
 \label{ssec:DBSCANindepth}
@@ -33,14 +33,14 @@ Our Algorithm builds on top of two algorithms which both were built on two other
     \end{minipage}
 \end{figure}
 To begin with, we decided to utilize \gls{dbscan} to retrieve the dense intervals of the original data set. 
-As mentioned before the algorithm \gls{dbscan} is categorized into the density-based approach of clustering. 
+As mentioned before, the algorithm \gls{dbscan} is categorized into the density-based approach of clustering. 
 This means that it considers a set of points connected through low proximity in a restricted area/space into similar clusters and thus can, in contrast to traditional partitioning based approaches, create clusters of arbitrary shape (cf. \autoref{fig:kmeansdbscan}). 
-Hence these clusters can retain more accurate information about the correlation of the data. Additionally, it also directly eliminates noise and can, therefore, lower the computational cost of the future steps. 
+Hence, these clusters can retain more accurate information about the correlation of the data. Additionally, \gls{dbscan} also directly eliminates noise and can, therefore, lower the computational cost and improve robustness of the future steps. 
 Its basic principle is as follows:
 A group of points is considered a dense cluster when for each point of the cluster, there are sufficient other points in its neighbourhood~\cite{DBSCANEKSX96}.
 
 To understand how this algorithm works, we first have to introduce some terminology.
-Given a data set $DS$ of data objects $o$ with a dimensionality of $N$, a distance measure $dist(p_1,p_2)$ and two new parameters, the Epsilon distance $\epsilon$ and the minimum number of points to be a cluster $MinPts$, \citeauthor{DBSCANEKSX96} defines:
+Given a data set $DS$ of data objects $o$ with a dimensionality of $N$, a distance measure $dist(p_1,p_2)$ and two new parameters, the epsilon-distance $\epsilon$ and the minimum number of points to be a cluster $MinPts$, \citeauthor{DBSCANEKSX96} defines:
 
 \subsubsection*{$\epsilon$-Neighbourhood}
 % \begin{defn}
@@ -70,7 +70,8 @@ The direct density-reachability of a point $p$ from another point $q$ is fulfill
 where \autoref{eq:minptsreq} represents the condition for point \(q\) to be a core point. If a point \(p\) is in the $\epsilon$-Neighbourhood of a core point $q$, but itself is not a core point, then point $p$ is labelled as a border point. 
 
 \todor{original sounds way better}
-A target point $p$ is density-reachable from origin point $q$, if there exists a sequence of connecting points $p, c_1, \dotsc, c_n, q$ in between $p$ and $q$ which are directly density-reachable to its predecessor, e.g. $c_1$ is directly density-reachable from point $q$, $c_2$ is directly density-reachable from point $c_1$, \dots\todor{format} until $p$ is directly density-reachable from point $c_n$. This relation is obviously transitive, but only symmetric if both points of the relation are core points. In case of a border point as the origin, there are not enough points in its neighbourhood and therefore it does not have any density-reachable neighbour as a target to start with.
+A target point $p$ is density-reachable from origin point $q$, if there exists a sequence of connecting points $p, c_1, \dotsc, c_n, q$ in between $p$ and $q$ which are directly density-reachable to its predecessor, e.g. $c_1$ is directly density-reachable from point $q$, $c_2$ is directly density-reachable from point $c_1$, \dots\todor{format} until $p$ is directly density-reachable from point $c_n$. 
+This relation is obviously transitive, but only symmetric if both points of the relation are core points. In case of a border point as the origin, there are not enough points in its neighbourhood and therefore it does not have any density-reachable neighbour as a target to start with.
 
 \todor{own fig}
 \begin{figure}
@@ -78,22 +79,21 @@ A target point $p$ is density-reachable from origin point $q$, if there exists a
     \begin{subfigure}[t]{.5\textwidth}
       \centering  
       \captionsetup{width=.9\linewidth}
-      \includegraphics[width=.8\textwidth]{figures/directlydensityreachable.png}
+      \includegraphics[width=.8\textwidth]{figures_method/dbscan_direct_dreach.pdf}
       \caption{Border point p is directly density-reachable from core point q.}
-      \label{fig:directdensityreachable}
     \end{subfigure}%
     \begin{subfigure}[t]{.5\textwidth}
       \centering
       \captionsetup{width=.9\linewidth}
-      \includegraphics[width=.8\textwidth]{figures/density-reachable.png}
+      \includegraphics[width=.8\textwidth]{figures_method/dbscan_dreach.pdf}
       \caption{p is not directly density-reachable, but density-reachable from q.}
-      \label{fig:densityreachable}
     \end{subfigure}
-    \caption{Illustration of reachabilities wrt. $\epsilon$ and $MinPts = 3$, src: KDD-VL.}
+    \caption{Illustration of reachabilities wrt. $\epsilon$ and $MinPts = 3$.}
+    \label{fig:directdensityreachable}
 \end{figure}
 
 \subsubsection*{Density-Connectedness}
-The last relation between points is the density-connectedness. Two points $p$ and $q$ are density-connected, if there exists a point $c$, where both points $p$ and $q$ are density-reachable from point $c$. In contrast to the (direct) density-reachability, this relation is symmetric and even reflexive if both points $p$ and $q$ are density-reachable from each other. \todo{generate wider figure saving some space}
+The last relation between points is the density-connectedness. Two points $p$ and $q$ are density-connected if there exists a point $c$, where both points $p$ and $q$ are density-reachable from point $c$. In contrast to the (direct) density-reachability, this relation is symmetric and even reflexive if both points $p$ and $q$ are density-reachable from each other. \todo{generate wider figure saving some space}
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/KMeansVSDBSCAN.pdf}
@@ -107,7 +107,7 @@ Given the previously defined relations, we can now define the notion of clusters
 
 \subsubsection*{Density-based Clusters}
 A dense cluster is the union of a set of density-connected core points $CP$ and the set of border points $BP$ which are density-reachable from $CP$.
-Formally \citeauthor{DBSCANEKSX96} defines a \gls{dbscan}-cluster as:
+Formally, \citeauthor{DBSCANEKSX96} defines a \gls{dbscan}-cluster as:
 
 A dense cluster in data set $DS$ is a non-empty subset $C^{DB} \subseteq DS$ of points $p$ and $q$ if the following two conditions are fulfilled:
 \todor{verbatim definition!}
@@ -120,7 +120,7 @@ A dense cluster in data set $DS$ is a non-empty subset $C^{DB} \subseteq DS$ of 
     &\forall p, q \in C^{DB}: p \text{ is density-connected to }q
 \end{align}
 
-This definition of clustering therefore defines any cluster with \textit{at least} a density defined by the Epsilon-distance $\epsilon$ and the number of minimum points $MinPts$.
+This definition of clustering therefore defines any cluster with \textit{at least} a density defined by the epsilon-distance $\epsilon$ and the number of minimum points $MinPts$.
 
 \subsubsection*{Density-based Noise}
 Every point not belonging to any of the existing clusters $C^{DB}_1, \dotsc, C^{DB}_k$ in data set $DS$ are now considered noise: 
@@ -134,10 +134,10 @@ One way to calculate the clusters using \gls{dbscan} is as follows:
 
 First, select the first point $p$ of data set $DS$ and check its $\epsilon$-neighbourhood. Save every neighbour into a seed list/queue $L$ for further evaluation and check if the neighbourhood $N_{\epsilon}(p)$ has enough points to satisfy the $MinPts$-property. 
 If it satisfies the property, then point $p$ is a core point and creates a new dense cluster. As long as the seed list is not empty every next point in the list is then classified as either part of the current cluster or noise.
-However, if $N_{\epsilon}(p)$ does not satisfy the $MinPts$-property, then point $p$ is prematurely labelled as noise. This status will be changed, if another point $q$ has $p$ in its $\epsilon$-neighbourhood and itself is a core point, then it is relabelled as a border point of the current cluster.
+However, if $N_{\epsilon}(p)$ does not satisfy the $MinPts$-property, point $p$ is prematurely labelled as noise. If at a later stage another point $q$ has $p$ in its $\epsilon$-neighbourhood and $q$ itself is a core point, the point $p$ is relabelled as a border point of the current cluster grown with $q$.
 
 Then the next point from the seed list $L$ is selected, and the same procedure is applied again.
-If the seed list $L$ is empty, the current cluster is done, the next not previously observed point from $DS$ is evaluated, and the whole cycle repeats again until there is no point in the data set $DS$ left.
+If the seed list $L$ is empty, the current cluster is done, the next not previously observed point from $DS$ is evaluated and the whole cycle repeats again until there is no point in the data set $DS$ left.
 
 \vspace{5mm}
 \begin{algorithm}[H]
@@ -145,7 +145,7 @@ If the seed list $L$ is empty, the current cluster is done, the next not previou
 % \scriptsize
 \SetAlgoLined
 % \DontPrintSemicolon
-\KwData{data set $DS$; seed list $L$; current cluster $C^{DB}_i$; Noise $N^{DB}$; $MinPts$; $\epsilon$}
+\KwData{data set $DS$; seed list $L$; current cluster $C^{DB}_i$; noise $N^{DB}$; minimum \# of points $MinPts$; epsilon-distance $\epsilon$}
 \KwResult{A set $R$ of clusters $C^{DB}_1,\dotsc,C^{DB}_n$ and noise $N^{DB}$}
  o := first Point of $DS\setminus \{R \cup N\}$\;
  L := [o]\;
@@ -172,7 +172,7 @@ If the seed list $L$ is empty, the current cluster is done, the next not previou
 \vspace{5mm}
 
 This algorithm was the first approach to segmenting the original data space into subintervals of importance. However, there is a drawback with using \gls{dbscan} as the first segmentation. \gls{dbscan} relies on a global parameter setting which can only find clusters with approximately the same density or higher (c.f. \autoref{fig:DBSCANhierarchy}) and therefore would not be able to find the intrinsic clustering structure well if the underlying models of the global correlations created linear correlations with different densities. 
-Note, however, that in increasing-dimensional spaces, the volume of the space increases exponentially fast, which causes the data space to become sparse. This induces that our data space might not be clusterable by a density-based approach in high-dimensional spaces. This phenomenon is also called the \textit{Curse of Dimensionality}~\cite{bellman2015adaptive}.
+Note, however, that in increasing-dimensional spaces, the volume of the space increases exponentially fast, causing the data space to become sparse. This induces that our data space might not be clusterable by a density-based approach in high-dimensional spaces. This phenomenon is also called the \textit{Curse of Dimensionality}~\cite{bellman2015adaptive}.
 
 \begin{figure}
     \centering
@@ -182,12 +182,12 @@ Note, however, that in increasing-dimensional spaces, the volume of the space in
 \end{figure}
 
 \subsection{OPTICS - In Depth}\label{ssec:OPTICSindepth} \todob{check comment}%OPTICS ONLY wide range of epsranges, not different minpts, since reachability is dependent on minpts, it extends epsilon, if minpts is not satisfied
-To tackle the detection of different densities, we replaced \gls{dbscan} with a more versatile algorithm/extension called \textit{\acrfull{optics}}. This algorithm has the capabilities to not only detect clusters of varying densities more accurately but also to keep open more possibilities for different further approaches for future work, e.g. a more extensive (bottom-up/hierarchical) approach by evaluating more density-settings at once based on different $\epsilon$-ranges.
+To tackle the detection of different densities, we replaced \gls{dbscan} with a more versatile algorithm called \textit{\acrfull{optics}}. This algorithm has the capabilities to not only detect clusters of varying densities more accurately but also to keep open more possibilities for different further approaches for future work, e.g. a more extensive (bottom-up/hierarchical) approach by evaluating more density-settings at once based on different $\epsilon$-ranges.
 
-Although \gls{optics} itself is not a clustering algorithm, it does create an ordering of the points in a database, which represents the density-based clustering structure of a wide range of $\epsilon$-parameter settings, with which it is possible to automatically create a more accurate clustering with different densities compared to \gls{dbscan}~\cite{opticsankerst1999optics}. To create such a consistent ordering \todo{cite style} \citeauthor{opticsankerst1999optics} defines the following two distances on top of the previously mentioned definitions of \autoref{ssec:DBSCANindepth}:
+Although \gls{optics} itself is not a clustering algorithm, it does create an ordering of the points in a database, which represents the density-based clustering structure of a wide range of $\epsilon$-parameter settings, with which it is possible to automatically create a more accurate clustering with different densities compared to \gls{dbscan}~\cite{opticsankerst1999optics}. To create such a consistent ordering, \citeauthor{opticsankerst1999optics} defines the following two distances on top of the previously mentioned definitions of \autoref{ssec:DBSCANindepth}: \todo{cite style} 
 \vspace{5mm}
 
-Given a point $p$ from the data set $DS$, an epsilon-distance $\epsilon$, the \todor{format} $\epsilon$-neighbourhood of $p$ $N_{\epsilon}(p)$, the minimum number of points to be a cluster $MinPts$ and the distance measure from $p$ to its $MinPts$-nearest neighbors $MinPts$-$dist(p)$. Then:
+Given a point $p$ from the data set $DS$, an epsilon-distance $\epsilon$, the \todor{format} $\epsilon$-neighbourhood of $p$ $N_{\epsilon}(p)$, the minimum number of points to be a cluster $MinPts$ and the distance measure from $p$ to its $MinPts$-nearest neighbors $MinPts$-$dist(p)$. Then the core- and reachability-distance are defined as:
 \todo{DBSCAN with one whole cluster instead of 2 separate}
 \todor{Figure without bounding box}
 \begin{figure}
@@ -209,7 +209,7 @@ Given a point $p$ from the data set $DS$, an epsilon-distance $\epsilon$, the \t
 \end{figure}
 
 \subsubsection*{Core-Distance}
-The core-distance of point $p$ describes the smallest distance $\epsilon_{core}$ with an upper bound of $\epsilon$ such that the number of points in $N_{\epsilon_{core}}(p)$ is greater than $MinPts$, i.e.\ $\epsilon_{core}$ is the smallest epsilon-distance possible for $p$ to be a core point w.r.t.\ to $\epsilon$ and $MinPts$. If $\epsilon_{core}$ exceeds $\epsilon$, then the core-distance of $p$ is \textit{undefined}. Formally the core-distance of p is defined as:
+The core-distance of point $p$ describes the smallest distance $\epsilon_{core}$ with an upper bound of $\epsilon$ such that the number of points in $N_{\epsilon_{core}}(p)$ is greater than $MinPts$, i.e.\ $\epsilon_{core}$ is the smallest epsilon-distance possible for $p$ to be a core point w.r.t.\ $\epsilon$ and $MinPts$. If $\epsilon_{core}$ exceeds $\epsilon$, then the core-distance of $p$ is \textit{undefined}. Formally, the core-distance of p is defined as:
 \begin{align}
     core\text{-}dist_{\epsilon,MinPts}(p)=
     \begin{cases}
@@ -220,7 +220,7 @@ The core-distance of point $p$ describes the smallest distance $\epsilon_{core}$
 
 \subsubsection*{Reachability-Distance}
 The reachability-distance of point $p$ w.r.t.\ another point $q$ is the smallest possible $\epsilon_{reach}$-distance with a lower bound of $core-dist(q)$ such that p is directly-density reachable from q. If $core-dist(q)$ is \textit{undefined}, then $q$ is not a possible core point and the $reach-dist(p,q)$ is also \textit{undefined}.
-Formally the reachability-distance of $p$ w.r.t.\ $q$ is defined as:
+Formally, the reachability-distance of $p$ w.r.t.\ $q$ is defined as:
 \begin{align}
     reach\text{-}dist_{\epsilon,MinPts}(p,q)=
     \begin{cases}
@@ -230,8 +230,8 @@ Formally the reachability-distance of $p$ w.r.t.\ $q$ is defined as:
 \end{align}
 
 \subsubsection*{The OPTICS-Algorithm} %This first processed point sound weird
-The \gls{optics}-algorithm maintains two data structures to create the ordering, one seed list $L$, which contains (point, reach-dist)-tuples and is ordered by the reach-dist, and the cluster ordering list $O$. 
-To create this ordering, \gls{optics} first initializes the ordering $O$ with the first point $o_{proc}$ of $DS$ and a reach-dist of $\infty$. A reachability-distance of $\infty$ from point $a$ w.r.t.\ point $b$ describes, that point $a$ is not contained in the $\epsilon$-neighbourhood of $b$ and therefore connected to the dense cluster. Since $o_{proc}$ is the first point of the ordering, it does not have a previous cluster to connect to and will never be in the reachability-distance of another point in the ordering. This first point in processing $o_{proc}$ now populates the ordered seed list $L$ with points $o_i$, belonging to the $\epsilon$-neighbourhood $N_\epsilon(o_{proc})$, and its reachability-distance w.r.t.\ $o_{proc}$, i.e.\ $reach$-$dist(o_i, o_{proc})$. The further iterations now depend on the state of the seed list $L$. Whenever $L$ is not empty, each next point $o_{proc}$ chosen for processing is taken from the ordered seed list and inserted into the cluster ordering list $O$ with its respective reachability-distance. If $L$ is empty, there is no candidate left to be density-connected and the next unprocessed point is chosen from $DS$ as a new $o_{proc}$ and inserted into $O$ with a reachability-distance of $\infty$ again. The point in process $o_{proc}$ is then used again to populate the seed list. This loop continues until there are no unprocessed points in $DS$ left.
+The \gls{optics}-algorithm maintains two data structures to create the ordering: One seed list $L$, which contains (point, reach-dist)-tuples and is ordered by the reachability-distance, and the cluster ordering list $O$. 
+To create this ordering, \gls{optics} first initializes the ordering $O$ with the first point $o_{proc}$ of $DS$ and a reach-dist of $\infty$. A reachability-distance of $\infty$ from point $a$ w.r.t.\ point $b$ describes that point $a$ is not contained in the $\epsilon$-neighbourhood of $b$ and, therefore, is connected to the dense cluster. Since $o_{proc}$ is the first point of the ordering, it does not have a previous cluster to connect to and will never be in the reachability-distance of another point in the ordering. This first point in processing $o_{proc}$ now populates the ordered seed list $L$ with points $o_i$ belonging to the $\epsilon$-neighbourhood $N_\epsilon(o_{proc})$, and its reachability-distance w.r.t.\ $o_{proc}$, i.e.\ $reach$-$dist(o_i, o_{proc})$. The further iterations now depend on the state of the seed list $L$. Whenever $L$ is not empty, each next point $o_{proc}$ chosen for processing is taken from the ordered seed list and inserted into the cluster ordering list $O$ with its respective reachability-distance. If $L$ is empty, there is no candidate left to be density-connected and the next unprocessed point is chosen from $DS$ as a new $o_{proc}$ and inserted into $O$ with a reachability-distance of $\infty$ again. The point in process $o_{proc}$ is then used again to populate the seed list. This loop continues until there are no unprocessed points in $DS$ left.
 
 \vspace{5mm}
 
@@ -260,9 +260,9 @@ To create this ordering, \gls{optics} first initializes the ordering $O$ with th
 \vspace{5mm}
 \todob{maybe chapter about reachability plots}
 
-As an illustration \gls{optics} can visualize the hierarchy using a \textit{reachability plot} (c.f. \autoref{fig:reachabilityplot}).\\
+As an illustration, \gls{optics} can visualize the hierarchy using a \textit{reachability plot} (c.f. \autoref{fig:reachabilityplot}).\\
 
-All in all, \gls{optics} provides a more capable clustering tool for different densities, with an, in practice, only 1.6 higher runtime compared to its ancestor \gls{dbscan}. In theory, the runtime complexity of \gls{optics} is heavily dominated by the runtime of the neighbourhood query. Given a tree-based spatial index structure for the neighbourhood query, the runtime becomes $\mathcal{O}(|DS| \log |DS|)$, in the worst-case however the complexity raises to $\mathcal{O}(|DS|^2)$. Nonetheless, similar to \autoref{ssec:DBSCANindepth}, \gls{optics} also suffers from the \textit{Curse of Dimensionality}.
+All in all, \gls{optics} provides a more capable clustering tool for different densities with an, in practice, only 1.6 higher runtime compared to its ancestor \gls{dbscan}. In theory, the runtime complexity of \gls{optics} is heavily dominated by the runtime of the neighbourhood query. Given a tree-based spatial index structure for the neighbourhood query, the runtime becomes $\mathcal{O}(|DS| \log |DS|)$, in the worst-case however, the complexity raises to $\mathcal{O}(|DS|^2)$~\cite{opticsankerst1999optics}. Nonetheless, similar to \autoref{ssec:DBSCANindepth}, \gls{optics} also suffers from the \textit{Curse of Dimensionality}.
 
 \begin{figure}
     \centering
@@ -290,7 +290,7 @@ y_{p_i}(m,0)
 \Rightarrow m_{p_i}(t_{p_i}) &= \frac{y_i}{x_i} - \frac{t_{p_i}}{x_i}
 \end{align}
 
-A point $p_i = (x_i, y_i)$ in data space is then characterized by each possible $(m,t)$-setting of \autoref{eq:houghparamspace}. In parameter space these continuous $(m_{p_i},t_{p_i})$-settings are uniquely defined by the function in \autoref{eq:hougheq}. A point in data space therefore can be represented as a line in the $(m,t)$-parameter space (c.f.\ \autoref{fig:houghmxt}). \todob{graphing tool} %https://www.yworks.com/products/yed.
+A point $p_i = (x_i, y_i)$ in data space is then characterized by each possible $(m,t)$-setting of \autoref{eq:houghparamspace}. In parameter space, these continuous $(m_{p_i},t_{p_i})$-settings are uniquely defined by the function in \autoref{eq:hougheq}. A point in data space, therefore, can be represented as a line in the $(m,t)$-parameter space (c.f.\ \autoref{fig:houghmxt}). \todob{graphing tool} %https://www.yworks.com/products/yed.
 
 \begin{figure}
     \centering
@@ -328,7 +328,7 @@ Since the settings $(\theta,\delta)$ and $(\theta+k\pi,-2\delta)$ represent the 
 \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{figures/TODOHOUGHTHETADIST.png}
-    \caption{Hough transform into a $(\alpha,\delta)$-parameter space\cite{CASHachtert2008global}.}
+    \caption{Hough transform into a $(\alpha,\delta)$-parameter space~\cite{CASHachtert2008global}.}
     \label{fig:TODOHOUGH}
 \end{figure}
 
@@ -347,18 +347,19 @@ Points lying on the same line in data space have a common intersection in parame
 Points lying on the same (sinusoidal) function in parameter space correspond to lines through the same point in data space.
 \end{property}
 
-Since points in parameter space correspond to a linear function in data space and a curve in parameter space corresponds to a point in data space, we can deduct that intersections of curves in parameter space correspond to points lying on the same line in data space. Therefore through the transformation, the problem of finding correlated points becomes a problem of finding points or regions of intersections of curves in parameter space. 
-Another added benefit is the parameter space's independence of the locality assumption since regardless of the points' locations in data space its functions' intersections in parameter space represent points lying on the same line. \todor{wtf sentence} 
+Since points in parameter space correspond to a linear function in data space and a curve in parameter space corresponds to a point in data space, we can deduct that intersections of curves in parameter space correspond to points lying on the same line in data space. 
+Therefore, through the transformation, the problem of finding correlated points becomes a problem of finding points or regions of intersections of curves in parameter space. 
+Another beneficial property is the parameter space's independence of the locality assumption since, regardless of the points' locations in data space, its functions' intersections in parameter space represent points lying on the same line. \todor{wtf sentence} 
 To solve this problem, there are several approaches. 
 For exact results, looking for points with high intersections can be done by solving linear equation systems of the functions in parameter space. 
 This, however, can quickly become computationally infeasible and does not cope with jitter, which causes disruptions in the exact intersections in parameter space. 
-Static predefined grid-based approaches, like searching for 2-dimensional regions of interest with a predefined grid/accumulator using a voting scheme, or dynamic approaches, like done in \textcite{CASHachtert2008global} by splitting the 2d search space more efficiently, are some computationally less expensive solutions. 
+Static predefined grid-based approaches, like searching for 2-dimensional regions of interest with a predefined grid/accumulator using a voting scheme, or dynamic approaches like done in \citeauthor{CASHachtert2008global} by splitting the 2d search space more efficiently, are some computationally less expensive solutions. 
 An in-depth explanation of one approach, namely \acrfull{cash}, will be given in the following \fullref{ssec:CASHindepth}.
 
 \subsection{CASH - In Depth}\label{ssec:CASHindepth}
 \todo{check n-dim Hough transform explanation with DK}
-\acrfull{cash} is a subspace clustering algorithm based on the principle of the Hough transform which, in contrast to the axis-parallel algorithms \acrshort{subclu}\cite{sublcukailing2004density} and \acrshort{clique}\cite{cliqueagrawal1998automatic}, can detect arbitrarily oriented subspaces (c.f.~\autoref{ssec:houghindepth}. \todor{sounds awful}
-For arbitrary-dimensional data spaces $\mathcal{D} \subseteq \R^d$ \textcite{CASHachtert2008robust} reformulates the Hough transformation via a generalized description of spherical coordinates. A $d$-dimensional point/vector $x=(x_1,\dotsc,x_d)$ w.r.t.\ the given orthonormal basis $e_1,\dotsc,e_d$, can be described with $d-1$ independent angles $\alpha_1,\dotsc,\alpha_{d-1}$ and the norm/distance to origin of vector/point $x$. The following definitions are taken from \cite{CASHachtert2008robust}:
+\acrfull{cash} is a subspace clustering algorithm based on the principle of the Hough transform which, in contrast to the axis-parallel algorithms \acrshort{subclu}~\cite{sublcukailing2004density} and \acrshort{clique}~\cite{cliqueagrawal1998automatic}, can detect arbitrarily oriented subspaces (c.f.~\autoref{ssec:houghindepth}). \todor{sounds awful}
+For arbitrary-dimensional data spaces $\mathcal{D} \subseteq \R^d$, \citeauthor{CASHachtert2008robust} reformulates the Hough transformation via a generalized description of spherical coordinates. A $d$-dimensional point $x=(x_1,\dotsc,x_d)$ w.r.t.\ the given orthonormal basis $e_1,\dotsc,e_d$, can be described with $d-1$ independent angles $\alpha_1,\dotsc,\alpha_{d-1}$ and the distance to the origin of point $x$. The following definitions are taken from~\cite{CASHachtert2008robust}:
 
 \subsubsection*{Spherical Coordinates}\label{def:spherecord}
 \todor{verbatim definition!}
@@ -367,7 +368,7 @@ Let $e_i, 1 \leq i \leq d$, be an orthonormal basis in a $d$-dimensional feature
     x_i = r \cdot (\prod_{j=1}^{i-1}\sin{\alpha_j}) \cdot \cos{\alpha_i}\text{, where } \alpha_d = 0.
 \end{align}
 
-Similar to \autoref{ssec:houghindepth}, any $d$-dimensional point $p \in \mathcal{D}$ can be explained by an infinite number of hyperplanes containing $p$. These hyperplanes can be uniquely defined by the $d-1$ angles $\alpha_1,\dotsc,\alpha_{d-1}$, with $\alpha_i \in [0,\pi)$ representing the normal vector of the hyperplanes, and a fix point $o$ on the hyperplane. To acquire a point independent representation \textcite{CASHachtert2008robust} maps the angles $\alpha_i$ and point $p$ with the following parametrization function to the shortest distance $\delta$ of the hyperplane to the origin (c.f. \ref{eq:hnfangles}).
+Similar to \autoref{ssec:houghindepth}, any $d$-dimensional point $p \in \mathcal{D}$ can be explained by an infinite number of hyperplanes containing $p$. These hyperplanes can be uniquely defined by the $d-1$ angles $\alpha_1,\dotsc,\alpha_{d-1}$, with $\alpha_i \in [0,\pi)$ representing the normal vector of the hyperplanes, and a fix point $o$ on the hyperplane. To acquire a point independent representation, \citeauthor{CASHachtert2008robust} maps the angles $\alpha_i$ and point $p$ with the following parametrization function to the shortest distance $\delta$ of the hyperplane to the origin (c.f. \ref{eq:hnfangles}).
 
 \subsubsection*{Parametrization Function}
 Let $\vec{p} = (p_1,\dotsc,p_d)$ be a $d$-dimensional vector and $\vec{n_0} = (n_1,\dotsc,n_d)$ be a $d$-dimensional unit vector specified by $d-1$ angles $\alpha_1,\dotsc,\alpha_{d-1}$ according to the \hyperref[def:spherecord]{previous definition \textit{``Spherical Coordinates''}}. Then the parametrization function $f_{\vec{p}}:\R^{d-1} \rightarrow \R$ of vector $\vec{p}$ denotes the distance of the hyperplane defined by the point $p$ and the normal vector $\vec{n}$ to the origin:
@@ -378,7 +379,7 @@ Let $\vec{p} = (p_1,\dotsc,p_d)$ be a $d$-dimensional vector and $\vec{n_0} = (n
     \end{split}
 \end{align}
 
-Given $d-1$ angles $\alpha_1,\dotsc,\alpha_{d-1}$ and shortest distance $\delta$ obtained by the parametrization function for a point $p_i = (x_1,\dotsc,x_d)$ and its infinite hyperplanes, each point $p$ in data space $\mathcal{D}$ can be mapped to a $d$-dimensional parameter space $\mathcal{P} \subseteq \R^d$ spanned by the previously mentioned parameters, again creating a function defining a hyperplane:
+Given $d-1$ angles $\alpha_1,\dotsc,\alpha_{d-1}$ and the shortest distance $\delta$ obtained by the parametrization function for a point $p_i = (x_1,\dotsc,x_d)$ and its infinite hyperplanes, each point $p$ in data space $\mathcal{D}$ can be mapped to a $d$-dimensional parameter space $\mathcal{P} \subseteq \R^d$ spanned by the previously mentioned parameters, again creating a function defining a hyperplane:
 \begin{align}
     \begin{split}
         \delta &= x_1 \cdot n_{0,1} + \dots + x_d \cdot n_{0,d}\\
@@ -389,13 +390,13 @@ Given $d-1$ angles $\alpha_1,\dotsc,\alpha_{d-1}$ and shortest distance $\delta$
 Similar to \autoref{ssec:houghindepth} the resulting hyperplane in parameter space can be transformed between  cartesian representation using a unit vector $\vec{n_0}$ and polar representation based on angles $\alpha_1,\dotsc,\alpha_{d-1}$. In the process of this thesis, we primarily use the cartesian form of the \gls{hnf} (c.f. \autoref{eq:highhnf}).
 
 
-By the means of the parametrization function \textcite{CASHachtert2008robust} extend the properties of the original Hough transformation (c.f. \autoref{ssec:properties}) to $d$-dimensional data spaces and its corresponding parameter spaces: \todor{verbatim}
+By the means of the parametrization function, \citeauthor{CASHachtert2008robust} extend the properties of the original Hough transformation (c.f. \autoref{ssec:properties}) to $d$-dimensional data spaces and its corresponding parameter spaces: \todor{verbatim}
 \begin{quoting}
 \begin{property}
 A point $p$ in data space $\mathcal{D} \subseteq \R^d$ is represented by a sinusoidal curve $f_p:\R^{d-1}\rightarrow\R$ in parameter space.
 \end{property}
 \begin{property}
-A point $p' = (\alpha_1,\dotsc,\alpha_{d-1},\delta$ in parameter space $\mathcal{P} \subseteq R^d$ corresponds to a $(d-1)$-dimensional hyperplane in data space.
+A point $p' = (\alpha_1,\dotsc,\alpha_{d-1},\delta)$ in parameter space $\mathcal{P} \subseteq R^d$ corresponds to a $(d-1)$-dimensional hyperplane in data space.
 \end{property}
 \begin{property}
 Points that are located on a $(d-1)$-dimensional hyperplane in data space correspond to sinusoidal curves through a common point in parameter space.
@@ -411,7 +412,7 @@ Points lying on the same sinusoidal curve in parameter space represent $(d-1)$-d
 %     \item Points that are located on a $(d-1)$-dimensional hyperplane in data space correspond to sinusoidal curves through a common point in parameter space.
 %     \item Points lying on the same sinusoidal curve in parameter space represent $(d-1)$-dimensional hyperplanes through the same point in data space.
 % \end{enumerate}
-\missingfigure[]{3d example, fig anfragen}
+% \missingfigure[]{3d example, fig anfragen}
 \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{figures/cash3d.png}
@@ -425,18 +426,18 @@ The boundaries of the parameter space $\mathcal{P}$ are extended to \begin{align
 \begin{align}
     [\delta_{min}, \delta_{max}] = [min_{p \in \mathcal{D}}(f_p(\alpha_p^{min})), max_{p \in \mathcal{D}}(f_p(\alpha_p^{max}))]
 \end{align} 
-where $\alpha_p^{min}$ and $\alpha_p^{max}$ denote the minimum and maximum of function $f_p$. An in detail explanation is found in \textcite{CASHachtert2008robust}.
-Applying the same concept of \autoref{ssec:houghindepth} the goal of finding $d$-dimensional points lying on the same hyperplane requires finding intersections of the corresponding $d$-dimensional curves in parameter space. Since an analytical solution of the intersections in multi-dimensional space is infeasible, the parameter space is scanned for $d$-dimensional regions/hypercuboids of a certain amount $m$ of intersections instead which additionally copes with jitter. Regions which fulfil the number of intersections are called \textit{dense grid cells}.
+where $\alpha_p^{min}$ and $\alpha_p^{max}$ denote the minimum and maximum of function $f_p$. An in detail explanation is found in \citeauthor{CASHachtert2008robust}.
+Applying the same concept of \autoref{ssec:houghindepth}, the goal of finding $d$-dimensional points lying on the same hyperplane requires finding intersections of the corresponding $d$-dimensional curves in parameter space. Since an analytical solution of the intersections in multi-dimensional space is infeasible, the parameter space is scanned for $d$-dimensional regions/hypercuboids for a certain amount $m$ of intersections instead which additionally copes with jitter. Regions fulfilling the number of intersections are called \textit{dense grid cells}.
 
 \subsubsection*{Correlation Cluster}\todor{check definition with dk}
 Since we have to distinguish correlation clusters from density-based clusters, we hereby propose a notion of correlation clusters.
 
-Correlation in a classical sense is a measure of relationship between two variables/features, but can also be extended to relations between multiple features. Commonly the relation refers to a linear relationship, but can also be non-linear. Since we want to cluster these correlations not only by orientation, but also by positioning, we define a specifically located correlation $r_{l,f,t}$, with $l$ being an unambiguous location as the source of the correlation, $f$ being a set of predictor features and $t$ being the target/correlating feature, as a hyperplane $h(t,f,l)$. In case of \gls{cash} a localized correlation/hyperplane is defined by the \gls{hnf}(c.f. \autoref{eq:highhnf}) with $f$ and $t$ being embedded in the orientation $n_{0,i} \in \{f,t\}$ and distance $\delta$ and $l$ only being embedded in the latter one. 
+Correlation in a classical sense is a measure of relationship between two features, but can also be extended to relations between multiple features. Commonly the relation refers to a linear relationship, but can also be non-linear. Since we want to cluster these correlations not only by orientation, but also by positioning, we define a specifically located correlation $r_{l,f,t}$, with $l$ being an unambiguous location as the source of the correlation, $f$ being a set of predictor features and $t$ being the target/correlating feature, as a hyperplane $h(t,f,l)$. In case of \gls{cash} a localized correlation/hyperplane is defined by the \gls{hnf}(c.f. \autoref{eq:highhnf}) with $f$ and $t$ being embedded in the orientation $n_{0,i} \in \{f,t\}$ and distance $\delta$ and $l$ only being embedded in the latter one. 
 \begin{align}
     \delta(t,f,l) = \langle \vec{x},\vec{n_0}(f,t) \rangle
 \end{align}
 
-\textit{Correlation clusters} refer to the grouping of observations/data objects within a certain interval in data space which display similar correlations in a subset of the object's features. In other words, a Correlation cluster is a group of points which have a low distance $j$, which we will refer to as \textit{jitter}, to a hyperplane $h$ modelled by a correlation within an interval. We formalize it as following:
+\textit{Correlation clusters} refer to the grouping of data objects within a certain interval in data space which display similar correlations in a subset of the object's features. In other words, a correlation cluster is a group of points which have a low distance $j$, which we will refer to as \textit{jitter}, to a hyperplane $h$ modelled by a correlation within an interval. We formalize it as following:
 
 A correlation cluster in data set $DS$ is a non-empty subset $C^{Corr} \subseteq DS$ of points $p$ which fulfil the following condition:
 \begin{align}\label{eq:pointtohyplane}
@@ -499,30 +500,10 @@ h := $\PS$\tcp*{working hypercuboid}
 All things considered, the average time complexity of \gls{cash} condenses to $\mathcal{O}(s \cdot c \cdot |DS| \cdot d^3)$, where $s$, $DS$ and $d$ are as previously mentioned and $c$ denotes the number of clusters in $DS$, however in the worst case scenario, where every point is in the deepest cell, the complexity rises to $\mathcal{O}(2^d)$. The resulting set $C$ contains all $n$-dimensional subspace clusters with $n < d$ found within the constraints of minimum points in correlation $m$ and maximum splits $s$.\\
 \todor{Check recursive CASH}
 
-We now possess the means to find density-based clusters and global subspace clusters in an original data set $DS$. The density-based approach \gls{optics} requires two parameters, a minimum number of points $minPts$ and a maximum epsilon distance $\epsilon$, which essentially specify the minimum density allowed, to acquire a hierarchical view of density-connected clusters in $DS$. The subspace clustering approach \gls{cash} also requires another two parameters, a minimum number of points/intersections $m$ and a number of splits $s$ to be considered a subspace cluster.
+We now possess the means to find density-based clusters and global subspace clusters in an original data set $DS$. The density-based approach \gls{optics} requires two parameters, a minimum number of points $minPts$ and a maximum epsilon-distance $\epsilon$, which essentially specify the minimum density allowed, to acquire a hierarchical view of density-connected clusters in $DS$. The subspace clustering approach \gls{cash} also requires another two parameters, a minimum number of points/intersections $m$ and a number of splits $s$ to be considered a subspace cluster.
 
 \section{The Algorithm}
 With the previously mentioned algorithms, we are already able to find arbitrarily shaped clusters with a density-based approach, and arbitrarily oriented subspace clusters with, e.g. \gls{4c} or \gls{cash}, however, all of them are restricted to finding those clusters in a purely local or purely global fashion. E.g. none of the previously mentioned algorithms can handle both scenarios, as shown in \autoref{fig:badscenario}.
-
-% \begin{figure}
-%     \centering
-%     \begin{minipage}{.47\textwidth}
-%       \centering
-%       \includegraphics[width=.8\textwidth]{figures_method/piecewisecorrs.pdf}
-%       \captionsetup{width=0.8\linewidth}
-%       \captionof{figure}{Separated locally dense clusters following a Correlation.}
-%       \label{fig:scenario1}
-%     \end{minipage}%
-%     \begin{minipage}{.47\textwidth}
-%       \centering
-%       \includegraphics[width=.8\textwidth]{figures_method/xcorrs.pdf}
-%       \captionsetup{width=0.8\linewidth}
-%       \captionof{figure}{Connected dense clusters following two different Correlations.}
-%       \label{fig:scenario2}
-%     \end{minipage}
-%     \caption{Problemsettings for methods with fixated scope: purely local or purely global.}
-%     \label{fig:badscenario}
-% \end{figure}
 
 \begin{figure}
     \centering
@@ -553,7 +534,7 @@ With the previously mentioned algorithms, we are already able to find arbitraril
 % \end{figure}
 \autoref{fig:scenario1} \todor{figure erstellen} depicts a setting, where the data contains multiple characteristic local correlations which however cannot be accurately described by the aforementioned global methods alone. 
 \autoref{fig:scenario2} shows a dense cross-shaped cluster which cannot be separated by \gls{dbscan} or \gls{optics} while additionally not being able to deliver their correlations. 
-The extension \gls{4c} is able to detect the local correlations, however can get skewed results in the crosses due to the correlations orientation not being accurately representable by the eigenvectors of the \gls{pca}\cite{PCAshlens2014tutorial}. 
+The extension \gls{4c} is able to detect the local correlations, however can get skewed results in the crosses due to the correlations orientation not being accurately representable by the eigenvectors of the \gls{pca}~\cite{PCAshlens2014tutorial}. 
 \gls{cash} on the other hand could find the correlations. 
 
 \begin{figure}
@@ -598,7 +579,7 @@ The second step, therefore, is the extraction of all local linear correlations o
     \label{fig:pcadifficulties}
 \end{figure}
 
-To be able to get accurate results, a \gls{pca} would be sufficient if the dense subclusters had either only a single linear correlation or almost orthogonal ones. However, the density-based clustering in step 1 cannot guarantee this property since it can detect arbitrary shapes. This means that there could be constellations of points which would heavily skew the results of \gls{pca} (c.f.~\autoref{fig:pcadifficulties})\cite{PCAshlens2014tutorial}. 
+To be able to get accurate results, a \gls{pca} would be sufficient if the dense subclusters had either only a single linear correlation or almost orthogonal ones. However, the density-based clustering in step 1 cannot guarantee this property since it can detect arbitrary shapes. This means that there could be constellations of points which would heavily skew the results of \gls{pca} (c.f.~\autoref{fig:pcadifficulties})~\cite{PCAshlens2014tutorial}. 
 
 Since \gls{4c} is basically looking for dense clusters with a biased distance function first and then applying \gls{pca} it has the same disadvantages as \gls{pca} itself~\cite{4cbohm2004computing}. Our entire subcluster already is defined as dense by the previous step, and therefore \gls{4c} is prone to also label the whole subcluster as (correlation) dense too and to just consider the whole subcluster as its target. Hence applying \gls{pca} afterwards equals to the application of only \gls{pca} onto the whole subcluster. 
 \gls{orclus} is also not suited well. It performs a $k$-means like approach first to partition the subcluster~\cite{orclusaggarwal2000finding}, however since our density-based preprocessing step finds different arbitrary shapes, which implies a different number of correlations, in each cluster partition, choosing a meaningful $k$ is difficult or impossible. \todor{soll der teil in related work? Moechte den als uebergang benutzen um die Verwendung von CASH zu begruenden}
